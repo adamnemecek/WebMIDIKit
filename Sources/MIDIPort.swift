@@ -66,12 +66,12 @@ enum MIDIPortConnectionState: Equatable {
     case open, closed, pending
 }
 
-class WebMIDIPort: Comparable, Hashable, CustomStringConvertible {
+class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     private let ref: MIDIPortRef
 
-    private weak var client: WebMIDIClient? = nil
+    private weak var client: MIDIClient? = nil
 
-    internal init(client: WebMIDIClient?, ref: MIDIPortRef) {
+    internal init(client: MIDIClient?, ref: MIDIPortRef) {
         self.ref = ref
 
         _ = client.map {
@@ -80,7 +80,7 @@ class WebMIDIPort: Comparable, Hashable, CustomStringConvertible {
         }
     }
 
-    internal init?(client: WebMIDIClient, where: (WebMIDIPort) -> Bool) {
+    internal init?(client: MIDIClient, where: (MIDIPort) -> Bool) {
         fatalError()
     }
 
@@ -137,11 +137,11 @@ class WebMIDIPort: Comparable, Hashable, CustomStringConvertible {
         return ""
     }
 
-    static func ==(lhs: WebMIDIPort, rhs: WebMIDIPort) -> Bool {
+    static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.ref == rhs.ref
     }
 
-    static func <(lhs: WebMIDIPort, rhs: WebMIDIPort) -> Bool {
+    static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.ref < rhs.ref
     }
 
@@ -156,9 +156,9 @@ class WebMIDIPort: Comparable, Hashable, CustomStringConvertible {
     }
 }
 
-final class WebMIDIInput: WebMIDIPort {
+final class MIDIInput: MIDIPort {
 
-    internal init(client: WebMIDIClient, readmidi: @escaping (MIDIPacketList) -> ()) {
+    internal init(client: MIDIClient, readmidi: @escaping (MIDIPacketList) -> ()) {
         var ref = MIDIPortRef()
 
         MIDIInputPortCreateWithBlock(client.ref, "MIDI input" as CFString, &ref) {
@@ -180,9 +180,9 @@ extension Collection where Index == Int {
     }
 }
 
-struct WebMIDIInputMap: Collection {
+struct MIDIInputMap: Collection {
     typealias Index = Int
-    typealias Element = WebMIDIInput
+    typealias Element = MIDIInput
 
     var startIndex: Index {
         return 0
@@ -198,13 +198,13 @@ struct WebMIDIInputMap: Collection {
     }
 }
 
-final class WebMIDIOutput: WebMIDIPort {
+final class MIDIOutput: MIDIPort {
 //    init(name: String) {
 //        var ref: MIDIPortRef
 //        MIDIOutputPortCreate(0, name as CFString, &ref)
 //        super.init(ref: ref)
 //    }
-    init(client: WebMIDIClient) {
+    init(client: MIDIClient) {
         var ref = MIDIPortRef()
         MIDIOutputPortCreate(client.ref, "MIDI output" as CFString, &ref)
         super.init(client: client, ref: ref)
@@ -220,9 +220,9 @@ final class WebMIDIOutput: WebMIDIPort {
 
 }
 
-struct WebMIDIOutputMap {
+struct MIDIOutputMap {
     typealias Index = Int
-    typealias Element = WebMIDIOutput
+    typealias Element = MIDIOutput
 
     var startIndex: Index {
         return 0

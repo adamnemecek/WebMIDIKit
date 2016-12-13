@@ -25,8 +25,8 @@ import AVFoundation
 
 
 protocol MIDIClientType {
-    func add(port: WebMIDIPort)
-    func receiveMIDI(port: WebMIDIPort, packet: MIDIPacketList)
+    func add(port: MIDIPort)
+    func receiveMIDI(port: MIDIPort, packet: MIDIPacketList)
 }
 
 protocol Delegate {
@@ -34,7 +34,7 @@ protocol Delegate {
     func dispatch(event: Event)
 }
 
-internal final class WebMIDIClient: Comparable, Hashable {
+internal final class MIDIClient: Comparable, Hashable {
     private(set) var ref: MIDIClientRef = MIDIClientRef()
 
     init() {
@@ -60,11 +60,11 @@ internal final class WebMIDIClient: Comparable, Hashable {
         return ref.hashValue
     }
 
-    static func ==(lhs: WebMIDIClient, rhs: WebMIDIClient) -> Bool {
+    static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref == rhs.ref
     }
 
-    static func <(lhs: WebMIDIClient, rhs: WebMIDIClient) -> Bool {
+    static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref < rhs.ref
     }
 }
@@ -140,11 +140,11 @@ fileprivate struct MIDIDestinations: Collection {
 }
 
 
-class WebMIDIManager {
-    private let clients: Set<WebMIDIClient> = []
+class MIDIManager {
+    private let clients: Set<MIDIClient> = []
 
-    let inputs: [WebMIDIInput] = []
-    let outputs: [WebMIDIOutput] = []
+    let inputs: [MIDIInput] = []
+    let outputs: [MIDIOutput] = []
 
 //    var input: WebMIDIInput {
 //        return WebMIDIInput()
@@ -155,23 +155,23 @@ class WebMIDIManager {
 //    }
 }
 
-final class WebMIDIManagerMac: WebMIDIManager {
-    let client: WebMIDIClient
+final class MIDIManagerMac: MIDIManager {
+    let client: MIDIClient
 
-    let input: WebMIDIInput
-    let output: WebMIDIOutput
+    let input: MIDIInput
+    let output: MIDIOutput
 
     let destinations: [MIDIEndpointRef]
     let sources: [MIDIEndpointRef]
 
     override init() {
-        client = WebMIDIClient()
+        client = MIDIClient()
 
-        input = WebMIDIInput(client: client) {
+        input = MIDIInput(client: client) {
             _ in
         }
 
-        output = WebMIDIOutput(client: client)
+        output = MIDIOutput(client: client)
         destinations = Array(MIDIDestinations())
         sources = MIDISources().map { source in
 
