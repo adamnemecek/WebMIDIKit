@@ -34,41 +34,6 @@ protocol Delegate {
     func dispatch(event: Event)
 }
 
-internal final class MIDIClient: Comparable, Hashable {
-    private(set) var ref: MIDIClientRef = MIDIClientRef()
-
-    init() {
-        MIDIClientCreateWithBlock("webmidi" as CFString, &self.ref) {
-            self.dispatch(event: $0.pointee)
-        }
-    }
-
-    deinit {
-        MIDIClientDispose(ref)
-    }
-
-    fileprivate func dispatch(event: MIDINotification) {
-        switch event.messageID {
-        case .msgObjectAdded:
-            break
-        default:
-            break
-        }
-    }
-
-    var hashValue: Int {
-        return ref.hashValue
-    }
-
-    static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-        return lhs.ref == rhs.ref
-    }
-
-    static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-        return lhs.ref < rhs.ref
-    }
-}
-
 fileprivate struct MIDIInputs {
     typealias Index = Int
     typealias Element = MIDIPortRef
@@ -141,7 +106,7 @@ fileprivate struct MIDIDestinations: Collection {
 
 
 class MIDIManager {
-    private let clients: Set<MIDIClient> = []
+    fileprivate let clients: Set<MIDIClient> = []
 
     let inputs: [MIDIInput] = []
     let outputs: [MIDIOutput] = []
@@ -165,10 +130,15 @@ final class MIDIManagerMac: MIDIManager {
     let sources: [MIDIEndpointRef]
 
     override init() {
-        client = MIDIClient()
+        client = MIDIClient {
+            notification in
+
+        }
 
         input = MIDIInput(client: client) {
-            _ in
+            e in
+
+//            self.clients
         }
 
         output = MIDIOutput(client: client)

@@ -9,50 +9,17 @@
 import Foundation
 import AVFoundation
 
-fileprivate func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
-    var string: Unmanaged<CFString>? = nil
-    MIDIObjectGetStringProperty(ref, property, &string)
-    return (string?.takeRetainedValue())! as String
-}
-
-fileprivate func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
-    var val: Int32 = 0
-    MIDIObjectGetIntegerProperty(ref, property, &val)
-    return Int(val)
-}
-
-fileprivate func MIDIObjectGetType(id: Int) -> MIDIObjectType {
-    var ref: MIDIObjectRef = 0
-    var type: MIDIObjectType = .other
-    MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)
-    return type
-}
-
-
 enum MIDIPortType: Equatable {
     case input, output
 
-//    fileprivate init<Port: WebMIDIPort>(port: Port) {
-//        if let _ =  port as? WebMIDIInput {
-//            self = .input
-//        }
-//        else if let _ = port as? WebMIDIOutput {
-//            self = .output
-//        }
-//        else {
-//            fatalError("")
-//        }
-//    }
-
-    fileprivate init(type: MIDIObjectType) {
-
+    fileprivate init(_ type: MIDIObjectType) {
         switch type {
-            case .source:
-                self = .input
-            case .destination:
-                self = .output
-            default:
-                fatalError("invalud type \(type)")
+        case .source:
+            self = .input
+        case .destination:
+            self = .output
+        default:
+            fatalError("invalid midi port type \(type)")
         }
     }
 }
@@ -126,7 +93,7 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     }
 
     var type: MIDIPortType {
-        return MIDIPortType(type: MIDIObjectGetType(id: id))
+        return MIDIPortType(MIDIObjectGetType(id: id))
     }
 
     var connection: MIDIPortConnectionState {
@@ -236,6 +203,26 @@ struct MIDIOutputMap {
 //        return Element(ref: MIDIGetDestination(index))
         fatalError()
     }
+}
+
+
+fileprivate func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
+    var string: Unmanaged<CFString>? = nil
+    MIDIObjectGetStringProperty(ref, property, &string)
+    return (string?.takeRetainedValue())! as String
+}
+
+fileprivate func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
+    var val: Int32 = 0
+    MIDIObjectGetIntegerProperty(ref, property, &val)
+    return Int(val)
+}
+
+fileprivate func MIDIObjectGetType(id: Int) -> MIDIObjectType {
+    var ref: MIDIObjectRef = 0
+    var type: MIDIObjectType = .other
+    MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)
+    return type
 }
 
 
