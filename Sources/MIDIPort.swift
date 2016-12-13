@@ -9,30 +9,6 @@
 import Foundation
 import AVFoundation
 
-enum MIDIPortType: Equatable {
-    case input, output
-
-    fileprivate init(_ type: MIDIObjectType) {
-        switch type {
-        case .source:
-            self = .input
-        case .destination:
-            self = .output
-        default:
-            fatalError("invalid midi port type \(type)")
-        }
-    }
-}
-
-
-enum MIDIPortDeviceState: Equatable {
-    case disconnected, connected
-}
-
-enum MIDIPortConnectionState: Equatable {
-    case open, closed, pending
-}
-
 class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     private let ref: MIDIPortRef
 
@@ -61,15 +37,6 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 
     var hashValue: Int {
         return ref.hashValue
-    }
-
-    private subscript(string property: CFString) -> String {
-        return MIDIObjectGetStringProperty(ref: ref, property: property)
-    }
-
-
-    private subscript(int property: CFString) -> Int {
-        return MIDIObjectGetIntProperty(ref: ref, property: property)
     }
 
     var id: Int {
@@ -101,7 +68,10 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     }
 
     var description: String {
-        return ""
+        return "nanufacturer: \(manufacturer)" +
+                "name: \(name)" +
+                "version: \(version)" +
+                "type: \(type)"
     }
 
     static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
@@ -120,6 +90,15 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     func close() {
         guard state != .disconnected else { return }
         fatalError()
+    }
+
+    private subscript(string property: CFString) -> String {
+        return MIDIObjectGetStringProperty(ref: ref, property: property)
+    }
+
+
+    private subscript(int property: CFString) -> Int {
+        return MIDIObjectGetIntProperty(ref: ref, property: property)
     }
 }
 
