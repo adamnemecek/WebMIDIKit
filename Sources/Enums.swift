@@ -9,7 +9,7 @@
 import Foundation
 import AVFoundation
 
-enum MIDIPortType: Equatable {
+public enum MIDIPortType: Equatable {
     case input, output
 
     internal init(_ type: MIDIObjectType) {
@@ -24,10 +24,10 @@ enum MIDIPortType: Equatable {
     }
 }
 
-enum MIDIPortDeviceState: Equatable {
+public enum MIDIPortDeviceState: Equatable {
     case disconnected, connected
 }
 
-enum MIDIPortConnectionState: Equatable {
+public enum MIDIPortConnectionState: Equatable {
     case open, closed, pending
 }

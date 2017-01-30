@@ -10,13 +10,19 @@ import Foundation
 import AVFoundation
 
 internal final class MIDIClient: Comparable, Hashable {
-    private(set) var ref: MIDIClientRef = MIDIClientRef()
+    private(set) var ref = MIDIClientRef()
 
-    init(callback: @escaping (MIDINotification) -> ()) {
+    init(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) {
         MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &self.ref) {
-            callback($0.pointee)
+            callback($0)
         }
     }
+//    init() {
+//        MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &self.ref) {
+//            print($0.pointee)
+//        }
+//    }
+
 
     deinit {
         MIDIClientDispose(ref)

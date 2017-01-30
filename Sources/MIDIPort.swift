@@ -9,8 +9,8 @@
 import Foundation
 import AVFoundation
 
-class MIDIPort: Comparable, Hashable, CustomStringConvertible {
-    private(set) var ref: MIDIPortRef
+public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
+    let ref: MIDIPortRef
 
     fileprivate weak var client: MIDIClient? = nil
 
@@ -35,50 +35,48 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 //        MIDIPortDispose(ref)
     }
 
-    var hashValue: Int {
+    public var hashValue: Int {
         return ref.hashValue
     }
 
-    var id: Int {
+    public var id: Int {
         return self[int: kMIDIPropertyUniqueID]
     }
 
-    var manufacturer: String {
+    public var manufacturer: String {
         return self[string: kMIDIPropertyManufacturer]
     }
 
-    var name: String {
+    public var name: String {
         return self[string: kMIDIPropertyDisplayName]
     }
 
-    var version: Int {
+    public var version: Int {
         return self[int: kMIDIPropertyDriverVersion]
     }
 
-    var state: MIDIPortDeviceState {
-        fatalError()
-    }
+    public internal(set) var state: MIDIPortDeviceState = .disconnected
 
-    var type: MIDIPortType {
+    public var type: MIDIPortType {
         return MIDIPortType(MIDIObjectGetType(id: id))
     }
 
-    var connection: MIDIPortConnectionState {
+    public var connection: MIDIPortConnectionState {
         fatalError()
     }
 
-    var description: String {
+    public var description: String {
         return "Manufacturer: \(manufacturer)\n" +
                 "Name: \(name)\n" +
                 "Version: \(version)\n" +
                 "Type: \(type)\n"
     }
 
-    static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+    public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.ref == rhs.ref
     }
 
-    static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+    public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.ref < rhs.ref
     }
 
@@ -87,7 +85,7 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 
     }
 
-    func close() {
+    public func close() {
         guard state != .disconnected else { return }
         fatalError()
     }
@@ -102,7 +100,7 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     }
 }
 
-final class MIDIInput: MIDIPort {
+public final class MIDIInput: MIDIPort {
 
     internal init(client: MIDIClient, readmidi: @escaping (MIDIPacketList) -> ()) {
         var ref = MIDIPortRef()
@@ -121,43 +119,45 @@ final class MIDIInput: MIDIPort {
 }
 
 extension Collection where Index == Int {
-    func index(after i: Index) -> Index {
+    public func index(after i: Index) -> Index {
         return i + 1
     }
 }
 
-struct MIDIInputMap: Collection {
-    typealias Index = Int
-    typealias Element = MIDIInput
+//public struct MIDIInputMap: Collection {
+//    public typealias Index = Int
+//    public typealias Element = MIDIInput
+//
+//    public var startIndex: Index {
+//        return 0
+//    }
+//
+//    public var endIndex: Index {
+//        return MIDIGetNumberOfSources()
+//    }
+//
+//    public subscript (index: Index) -> Element {
+//        return Element(ref: MIDIGetSource(index)) {
+//          _ in
+//        }
+//
+//    }
+//}
 
-    var startIndex: Index {
-        return 0
-    }
-
-    var endIndex: Index {
-        return MIDIGetNumberOfSources()
-    }
-
-    subscript (index: Index) -> Element {
-//        return Element(ref: MIDIGetSource(index))
-        fatalError()
-    }
-}
-
-final class MIDIOutput: MIDIPort {
+public final class MIDIOutput: MIDIPort {
 //    init(name: String) {
 //        var ref: MIDIPortRef
 //        MIDIOutputPortCreate(0, name as CFString, &ref)
 //        super.init(ref: ref)
 //    }
 
-    init(client: MIDIClient) {
+     init(client: MIDIClient) {
         var ref = MIDIPortRef()
         MIDIOutputPortCreate(client.ref, "MIDI output" as CFString, &ref)
         super.init(client: client, ref: ref)
     }
 
-    func send<S: Sequence>(data: S, timestamp: Int = 0) {
+    public func send<S: Sequence>(data: S, timestamp: Int = 0) {
 /*
         _ = client.map {
             let list = MIDIPacketList(numPackets: <#T##UInt32#>, packet: <#T##(MIDIPacket)#>)
