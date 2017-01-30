@@ -6,7 +6,6 @@
 //
 //
 
-import Foundation
 import AVFoundation
 
 internal final class MIDIClient: Comparable, Hashable {

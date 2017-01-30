@@ -6,7 +6,6 @@
 //
 //
 
-import Foundation
 import AVFoundation
 
 internal func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
