@@ -67,9 +67,9 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 
   public var description: String {
     return "Manufacturer: \(manufacturer)\n" +
-      "Name: \(name)\n" +
-      "Version: \(version)\n" +
-    "Type: \(type)\n"
+          "Name: \(name)\n" +
+          "Version: \(version)\n" +
+          "Type: \(type)\n"
   }
 
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
@@ -79,7 +79,6 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
   public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     return lhs.ref < rhs.ref
   }
-
 
   open func onstatechange(event: Int) {
 
@@ -143,12 +142,6 @@ extension Collection where Index == Int {
 //
 //    }
 //}
-
-fileprivate func MIDIPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
-  var ref = MIDIPortRef()
-  MIDIOutputPortCreate(ref, "MIDI output" as CFString, &ref)
-  return ref
-}
 
 public final class MIDIOutput: MIDIPort {
   internal init(client: MIDIClient) {

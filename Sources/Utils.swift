@@ -27,3 +27,17 @@ internal func MIDIObjectGetType(id: Int) -> MIDIObjectType {
     MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)
     return type
 }
+
+internal func MIDISources() -> [MIDIEndpointRef] {
+  return (0..<MIDIGetNumberOfSources()).map(MIDIGetSource)
+}
+
+internal func MIDIDestinations() -> [MIDIEndpointRef] {
+  return (0..<MIDIGetNumberOfDestinations()).map(MIDIGetDestination)
+}
+
+internal func MIDIPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
+  var ref = MIDIPortRef()
+  MIDIOutputPortCreate(ref, "MIDI output" as CFString, &ref)
+  return ref
+}
