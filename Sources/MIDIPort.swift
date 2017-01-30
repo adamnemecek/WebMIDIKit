@@ -102,13 +102,8 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 public final class MIDIInput: MIDIPort {
 
   internal init(client: MIDIClient, readmidi: @escaping (MIDIPacketList) -> ()) {
-    var ref = MIDIPortRef()
-
-    MIDIInputPortCreateWithBlock(client.ref, "MIDI input" as CFString, &ref) {
-      packetlist, srcconref in
-      readmidi(packetlist.pointee)
-    }
-    super.init(client: client, ref: ref)
+    let port = MIDIInputPortCreate(ref: client.ref, readmidi: readmidi)
+    super.init(client: client, ref: port)
   }
 
   //    func onmidimessage(event: Int) {

@@ -49,3 +49,16 @@ internal func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotificati
   }
   return ref
 }
+
+
+internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIPacketList) -> ()) -> MIDIPortRef {
+  var ref = MIDIPortRef()
+
+  MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &ref) {
+    packetlist, srcconref in
+    readmidi(packetlist.pointee)
+  }
+  return ref
+}
+
+
