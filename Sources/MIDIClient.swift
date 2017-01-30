@@ -11,12 +11,10 @@ import AVFoundation
 
 internal final class MIDIClient: Comparable, Hashable {
     private(set) var ref: MIDIClientRef = MIDIClientRef()
-    private let callback: (MIDINotification) -> ()
 
     init(callback: @escaping (MIDINotification) -> ()) {
-        self.callback = callback
-        MIDIClientCreateWithBlock("webmidi" as CFString, &self.ref) {
-            self.callback($0.pointee)
+        MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &self.ref) {
+            callback($0.pointee)
         }
     }
 
@@ -36,3 +34,4 @@ internal final class MIDIClient: Comparable, Hashable {
         return lhs.ref < rhs.ref
     }
 }
+

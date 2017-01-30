@@ -26,7 +26,6 @@ enum MIDIPortType: Equatable {
 
 enum MIDIPortDeviceState: Equatable {
     case disconnected, connected
-
 }
 
 enum MIDIPortConnectionState: Equatable {

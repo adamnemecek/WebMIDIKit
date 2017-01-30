@@ -10,9 +10,9 @@ import Foundation
 import AVFoundation
 
 class MIDIPort: Comparable, Hashable, CustomStringConvertible {
-    private let ref: MIDIPortRef
+    private(set) var ref: MIDIPortRef
 
-    private weak var client: MIDIClient? = nil
+    fileprivate weak var client: MIDIClient? = nil
 
     internal init(client: MIDIClient?, ref: MIDIPortRef) {
         self.ref = ref
@@ -68,10 +68,10 @@ class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     }
 
     var description: String {
-        return "nanufacturer: \(manufacturer)" +
-                "name: \(name)" +
-                "version: \(version)" +
-                "type: \(type)"
+        return "Manufacturer: \(manufacturer)\n" +
+                "Name: \(name)\n" +
+                "Version: \(version)\n" +
+                "Type: \(type)\n"
     }
 
     static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
@@ -150,6 +150,7 @@ final class MIDIOutput: MIDIPort {
 //        MIDIOutputPortCreate(0, name as CFString, &ref)
 //        super.init(ref: ref)
 //    }
+
     init(client: MIDIClient) {
         var ref = MIDIPortRef()
         MIDIOutputPortCreate(client.ref, "MIDI output" as CFString, &ref)
@@ -157,7 +158,13 @@ final class MIDIOutput: MIDIPort {
     }
 
     func send<S: Sequence>(data: S, timestamp: Int = 0) {
-
+/*
+        _ = client.map {
+            let list = MIDIPacketList(numPackets: <#T##UInt32#>, packet: <#T##(MIDIPacket)#>)
+            for e in data {
+                MIDISend(ref, , <#T##pktlist: UnsafePointer<MIDIPacketList>##UnsafePointer<MIDIPacketList>#>)
+            }
+        }*/
     }
 
     func clear() {
