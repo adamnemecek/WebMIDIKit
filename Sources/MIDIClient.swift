@@ -10,33 +10,25 @@ import Foundation
 import AVFoundation
 
 internal final class MIDIClient: Comparable, Hashable {
-    private(set) var ref = MIDIClientRef()
+    let ref: MIDIClientRef
 
-    init(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) {
-        MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &self.ref) {
-            callback($0)
-        }
+    internal init(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) {
+        self.ref = MIDIClientCreate(callback: callback)
     }
-//    init() {
-//        MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &self.ref) {
-//            print($0.pointee)
-//        }
-//    }
-
 
     deinit {
         MIDIClientDispose(ref)
     }
 
-    var hashValue: Int {
+    internal var hashValue: Int {
         return ref.hashValue
     }
 
-    static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+    internal static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref == rhs.ref
     }
 
-    static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+    internal static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref < rhs.ref
     }
 }

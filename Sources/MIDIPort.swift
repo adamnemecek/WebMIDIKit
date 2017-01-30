@@ -10,7 +10,7 @@ import Foundation
 import AVFoundation
 
 public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
-  let ref: MIDIPortRef
+  internal let ref: MIDIPortRef
 
   fileprivate weak var client: MIDIClient? = nil
 
@@ -23,9 +23,9 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     }
   }
 
-  internal init?(client: MIDIClient, where: (MIDIPort) -> Bool) {
-    fatalError()
-  }
+//  internal init?(client: MIDIClient, where: (MIDIPort) -> Bool) {
+//    fatalError()
+//  }
 
   deinit {
     _ = self.client.map {
