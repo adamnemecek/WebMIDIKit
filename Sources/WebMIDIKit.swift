@@ -28,17 +28,17 @@ public class MIDIManager {
 
 
 internal final class MIDIEndpoint: Equatable, Hashable {
-  private(set) var ref: MIDIEndpointRef
+  let ref: MIDIEndpointRef
 
   fileprivate init(ref: MIDIEndpointRef) {
     self.ref = ref
   }
 
-  var hashValue: Int {
+  internal var hashValue: Int {
     return ref.hashValue
   }
 
-  static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
+  internal static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
     return lhs.ref == rhs.ref
   }
 }
@@ -57,11 +57,11 @@ internal final class MIDIConnection: Hashable {
     MIDIPortDisconnectSource(port.ref, source.ref)
   }
 
-  static func ==(lhs: MIDIConnection, rhs: MIDIConnection) -> Bool {
+  internal static func ==(lhs: MIDIConnection, rhs: MIDIConnection) -> Bool {
     return lhs.port == rhs.port && lhs.source == rhs.source
   }
 
-  var hashValue: Int {
+  internal var hashValue: Int {
     return port.hashValue ^ source.hashValue
   }
 }
