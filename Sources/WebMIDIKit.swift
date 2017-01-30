@@ -109,7 +109,7 @@ public class MIDIManager {
 
 
 
-class MIDIEndpoint: Equatable, Hashable {
+internal final class MIDIEndpoint: Equatable, Hashable {
   private(set) var ref: MIDIEndpointRef
 
   fileprivate init(ref: MIDIEndpointRef) {
@@ -125,7 +125,7 @@ class MIDIEndpoint: Equatable, Hashable {
   }
 }
 
-final class MIDIConnection: Hashable {
+internal final class MIDIConnection: Hashable {
   fileprivate let port: MIDIPort
   fileprivate let source: MIDIEndpoint
 
@@ -148,33 +148,9 @@ final class MIDIConnection: Hashable {
   }
 }
 
-//extension MIDINotification {
-//    var addRemoveNotification: MIDIObjectAddRemoveNotification {
-//
-//    }
-//}
 
-//extension UnsafePointer {
-//  func map<T>(transform: (Pointee) -> T) -> T {
-//    return transform(pointee)
-//  }
-//}
-
-
-extension MIDIObjectAddRemoveNotification {
-  init?(ptr: UnsafePointer<MIDINotification>) {
-    switch ptr.pointee.messageID {
-    case .msgObjectAdded, .msgObjectRemoved:
-      self = ptr.withMemoryRebound(to: MIDIObjectAddRemoveNotification.self, capacity: 1) {
-        $0.pointee
-      }
-    default: return nil
-    }
-  }
-}
-
-final class MIDIManagerMac: MIDIManager {
-  static let sharedInstance = MIDIManagerMac()
+public final class WebMIDIKit: MIDIManager {
+  static let sharedInstance = WebMIDIKit()
 
   var client: MIDIClient? = nil
 
@@ -262,6 +238,10 @@ final class MIDIManagerMac: MIDIManager {
     }
     
     super.init()
+  }
+
+  deinit {
+
   }
 }
 

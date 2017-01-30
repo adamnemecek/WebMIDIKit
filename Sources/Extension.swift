@@ -27,4 +27,14 @@ extension MIDIPacketList: Sequence {
   }
 }
 
-
+extension MIDIObjectAddRemoveNotification {
+  init?(ptr: UnsafePointer<MIDINotification>) {
+    switch ptr.pointee.messageID {
+    case .msgObjectAdded, .msgObjectRemoved:
+      self = ptr.withMemoryRebound(to: MIDIObjectAddRemoveNotification.self, capacity: 1) {
+        $0.pointee
+      }
+    default: return nil
+    }
+  }
+}
