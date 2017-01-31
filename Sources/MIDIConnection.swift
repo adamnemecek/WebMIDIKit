@@ -6,7 +6,7 @@
 //
 //
 
-import AVFoundation
+import CoreMIDI
 
 internal final class MIDIEndpoint: Equatable, Hashable {
   let ref: MIDIEndpointRef

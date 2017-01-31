@@ -6,9 +6,9 @@
 //
 //
 
-import AVFoundation
+import CoreMIDI
 
-public class MIDIPort {
+public class MIDIPort: Hashable, Comparable {
   internal let ref: MIDIPortRef
 
   internal init(ref: MIDIPortRef) {
@@ -59,15 +59,26 @@ public class MIDIPort {
     guard state != .disconnected else { return }
     fatalError()
   }
-}
 
-extension MIDIPort: Hashable {
+  private func setStates(state: MIDIPortDeviceState, connection: MIDIPortConnectionState) {
+    guard (self.state, self.connection) != (state, connection) else { return }
+
+    //dispatch connection event
+  }
+
+//  public func open() {
+//    switch state {
+//      case .open: break
+//      case .closed: break
+//      case .pending: break
+//    }
+//  }
+
+
   public var hashValue: Int {
     return ref.hashValue
   }
-}
 
-extension MIDIPort: Comparable {
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     return lhs.ref == rhs.ref
   }

@@ -6,7 +6,7 @@
 //
 //
 
-import AVFoundation
+import CoreMIDI
 
 public final class WebMIDIKit {
   static let sharedInstance = WebMIDIKit()

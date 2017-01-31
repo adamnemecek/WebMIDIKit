@@ -6,7 +6,7 @@
 //
 //
 
-import AVFoundation
+import CoreMIDI
 
 internal final class MIDIClient: Comparable, Hashable {
     let ref: MIDIClientRef

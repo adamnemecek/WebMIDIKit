@@ -6,7 +6,7 @@
 //
 //
 
-import AVFoundation
+import CoreMIDI
 
 public struct Event {
   let timestamp: MIDITimeStamp

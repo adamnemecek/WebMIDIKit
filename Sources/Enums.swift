@@ -6,7 +6,7 @@
 //
 //
 
-import AVFoundation
+import CoreMIDI
 
 public enum MIDIPortType: Equatable {
     case input, output
