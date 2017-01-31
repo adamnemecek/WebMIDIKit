@@ -67,9 +67,9 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 
   public var description: String {
     return "Manufacturer: \(manufacturer)\n" +
-          "Name: \(name)\n" +
-          "Version: \(version)\n" +
-          "Type: \(type)\n"
+           "Name: \(name)\n" +
+           "Version: \(version)\n" +
+           "Type: \(type)\n"
   }
 
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
@@ -80,9 +80,7 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     return lhs.ref < rhs.ref
   }
 
-  open func onstatechange(event: Int) {
-
-  }
+  public var onStateChange: () -> () = { }
 
   public func close() {
     guard state != .disconnected else { return }

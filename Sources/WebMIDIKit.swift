@@ -57,8 +57,7 @@ public final class WebMIDIKit: MIDIManager {
           self.sources.append(conn)
         }
       case (.msgObjectAdded, .destination):
-        if let d = (destinations.first { $0 == endpoint }) {
-
+        if destinations.contains(endpoint) {
           //setoutputportstate(port, opened)
         }
         else {
@@ -79,8 +78,11 @@ public final class WebMIDIKit: MIDIManager {
         }
 
       case (.msgObjectRemoved, .destination):
-        if let d = (destinations.first { $0 == endpoint }) {
+        if destinations.contains(endpoint) {
           //setoutputportstate(d, disconnected)
+        }
+        else {
+
         }
       default: break
       }
