@@ -6,9 +6,7 @@
 //
 //
 
-
 import AVFoundation
-
 
 public class MIDIManager {
   fileprivate let clients: Set<MIDIClient> = []
@@ -26,45 +24,6 @@ public class MIDIManager {
 }
 
 
-internal final class MIDIEndpoint: Equatable, Hashable {
-  let ref: MIDIEndpointRef
-
-  fileprivate init(ref: MIDIEndpointRef) {
-    self.ref = ref
-  }
-
-  internal var hashValue: Int {
-    return ref.hashValue
-  }
-
-  internal static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-    return lhs.ref == rhs.ref
-  }
-}
-
-internal final class MIDIConnection: Hashable {
-  fileprivate let port: MIDIInput
-  fileprivate let source: MIDIEndpoint
-
-  fileprivate init(port: MIDIInput, source: MIDIEndpoint) {
-    self.port = port
-    self.source = source
-    MIDIPortConnectSource(port.ref, source.ref, nil)
-  }
-
-  deinit {
-    MIDIPortDisconnectSource(port.ref, source.ref)
-  }
-
-  internal static func ==(lhs: MIDIConnection, rhs: MIDIConnection) -> Bool {
-    return lhs.port == rhs.port && lhs.source == rhs.source
-  }
-
-  internal var hashValue: Int {
-    return port.hashValue ^ source.hashValue
-  }
-}
-
 
 public final class WebMIDIKit: MIDIManager {
   static let sharedInstance = WebMIDIKit()
@@ -81,6 +40,7 @@ public final class WebMIDIKit: MIDIManager {
 
   private(set) var destinations: [MIDIEndpoint] = []
 
+  public var onStateChange: (MIDIPort) -> () = { _ in }
 
   private func notification(ptr: UnsafePointer<MIDINotification>) {
     _ = MIDIObjectAddRemoveNotification(ptr: ptr).map {
@@ -133,11 +93,8 @@ public final class WebMIDIKit: MIDIManager {
       _ in
       lst.pointee.forEach {
           packet in
-
       }
     }
-
-
   }
 
   private override init() {

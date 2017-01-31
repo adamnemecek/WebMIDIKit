@@ -38,7 +38,6 @@ extension MIDIObjectAddRemoveNotification {
   }
 }
 
-
 extension MIDIPacket {
   var seconds: Double {
     let ns = Double(AudioConvertHostTimeToNanos(timeStamp))
