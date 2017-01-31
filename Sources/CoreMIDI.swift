@@ -51,7 +51,7 @@ internal func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
 }
 
 internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
-  var ref =  MIDIClientRef()
+  var ref = MIDIClientRef()
   MIDIClientCreateWithBlock(name as CFString, &ref, callback)
   return ref
 }
@@ -120,7 +120,8 @@ extension MIDIPacket: Hashable {
     return Int(timeStamp) ^ count
   }
 }
-//
+
+// todo: chrome has this
 //extension MIDIPacket {
 //  var seconds: Double {
 //    let ns = Double(AudioConvertHostTimeToNanos(timeStamp))
@@ -131,6 +132,11 @@ extension MIDIPacket: Hashable {
 extension MIDIPacketList: Sequence {
   public typealias Element = MIDIPacket
 
+  //
+  // Note that, despite the fact that MIDIPacketList has a count property
+  // you cannot make it a Collection because the single packets are variable 
+  // length
+  //
   public var count: Int {
     @inline(__always)
     get {

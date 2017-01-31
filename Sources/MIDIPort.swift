@@ -8,7 +8,17 @@
 
 import CoreMIDI
 
+fileprivate  struct State: Equatable {
+  let state: MIDIPortDeviceState, connection: MIDIPortConnectionState
+
+  static func ==(lhs: State, rhs: State) -> Bool {
+    return true
+  }
+}
+
+
 public class MIDIPort: Hashable, Comparable {
+
   internal let ref: MIDIPortRef
 
   internal init(ref: MIDIPortRef) {
@@ -58,28 +68,23 @@ public class MIDIPort: Hashable, Comparable {
   //
   // TODO: when is this set again
   //
-  public internal(set) var state: MIDIPortDeviceState = .disconnected {
-    didSet {
-
-    }
-  }
+  public internal(set) var state: MIDIPortDeviceState = .disconnected
 
   public var connection: MIDIPortConnectionState {
-    fatalError()
+    todo()
   }
 
-  public var onStateChange: () -> () = { }
+//  public var onStateChange: ((MIDIPort) -> ())? = nil
 
 
   public func close() {
     guard state != .disconnected else { return }
-    fatalError()
+    todo()
   }
 
   private func setStates(state: MIDIPortDeviceState, connection: MIDIPortConnectionState) {
     guard (self.state, self.connection) != (state, connection) else { return }
-
-    //todo: dispatch connection event
+    todo("dispatch connection event")
   }
 
   public func open() {

@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-internal final class MIDIEndpoint: Equatable, Hashable {
+internal final class MIDIEndpoint: Comparable, Hashable {
   let ref: MIDIEndpointRef
 
   init(ref: MIDIEndpointRef) {
@@ -22,6 +22,11 @@ internal final class MIDIEndpoint: Equatable, Hashable {
   static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
     return lhs.ref == rhs.ref
   }
+
+  static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
+    return lhs.ref < rhs.ref
+  }
+
 }
 
 internal final class MIDIConnection: Hashable {

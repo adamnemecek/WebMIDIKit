@@ -34,3 +34,4 @@ public enum MIDIPortConnectionState: Equatable {
 func todo(_ msg: String? = nil) -> Never {
   fatalError(msg ?? "")
 }
+
