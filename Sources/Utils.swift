@@ -35,29 +35,27 @@ internal func MIDIDestinations() -> [MIDIEndpointRef] {
   return (0..<MIDIGetNumberOfDestinations()).map(MIDIGetDestination)
 }
 
-internal func MIDIPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
+internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) -> MIDIPortRef {
+  var ref = MIDIPortRef()
+  MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &ref) {
+    packetlist, srcconref in
+    readmidi(packetlist)
+  }
+  return ref
+}
+
+internal func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
   var ref = MIDIPortRef()
   MIDIOutputPortCreate(ref, "MIDI output" as CFString, &ref)
   return ref
 }
 
-internal func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
+internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
   var ref =  MIDIClientRef()
-  MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
-    callback($0)
-  }
+  MIDIClientCreateWithBlock(name as CFString, &ref, callback)
   return ref
 }
 
 
-internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIPacketList) -> ()) -> MIDIPortRef {
-  var ref = MIDIPortRef()
-
-  MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &ref) {
-    packetlist, srcconref in
-    readmidi(packetlist.pointee)
-  }
-  return ref
-}
 
 

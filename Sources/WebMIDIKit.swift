@@ -26,7 +26,6 @@ public class MIDIManager {
 }
 
 
-
 internal final class MIDIEndpoint: Equatable, Hashable {
   let ref: MIDIEndpointRef
 
@@ -44,10 +43,10 @@ internal final class MIDIEndpoint: Equatable, Hashable {
 }
 
 internal final class MIDIConnection: Hashable {
-  fileprivate let port: MIDIPort
+  fileprivate let port: MIDIInput
   fileprivate let source: MIDIEndpoint
 
-  fileprivate init(port: MIDIPort, source: MIDIEndpoint) {
+  fileprivate init(port: MIDIInput, source: MIDIEndpoint) {
     self.port = port
     self.source = source
     MIDIPortConnectSource(port.ref, source.ref, nil)
@@ -70,7 +69,7 @@ internal final class MIDIConnection: Hashable {
 public final class WebMIDIKit: MIDIManager {
   static let sharedInstance = WebMIDIKit()
 
-  var client: MIDIClient? = nil
+  private var client: MIDIClient? = nil
 
 
   //let clients: [MIDIClient]
@@ -128,6 +127,19 @@ public final class WebMIDIKit: MIDIManager {
     }
   }
 
+  private func midi(src: MIDIEndpointRef, lst: UnsafePointer<MIDIPacketList>) {
+    let first = sources.first { $0.source.ref == src }
+    _ = first.map {
+      _ in
+      lst.pointee.forEach {
+          packet in
+
+      }
+    }
+
+
+  }
+
   private override init() {
 
     // the callback ReceiveMidiNotify
@@ -142,9 +154,10 @@ public final class WebMIDIKit: MIDIManager {
       //readmididispatch
       //            self.clients
     }
+    self.output = MIDIOutput(client: client)
+
     self.client = client
     self.input = input
-    self.output = MIDIOutput(client: client)
 
     self.sources = MIDISources().map {
       MIDIConnection(port: input,

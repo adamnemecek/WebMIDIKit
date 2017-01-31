@@ -11,32 +11,29 @@ import AVFoundation
 public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
   internal let ref: MIDIPortRef
 
-  fileprivate weak var client: MIDIClient? = nil
+//  fileprivate weak var client: MIDIClient? = nil
 
-  internal init(client: MIDIClient?, ref: MIDIPortRef) {
+//  internal init(client: MIDIClient?, ref: MIDIPortRef) {
+  internal init(ref: MIDIPortRef) {
     self.ref = ref
 
-    _ = client.map {
-      self.client = $0
-      fatalError("connect")
-    }
+//    _ = client.map {
+//      self.client = $0
+//      fatalError("connect")
+//    }
   }
 
 //  internal init?(client: MIDIClient, where: (MIDIPort) -> Bool) {
 //    fatalError()
 //  }
 
-  deinit {
-    _ = self.client.map {
-      MIDIPortDisconnectSource(ref, $0.ref)
-      fatalError("")
-    }
-    //        MIDIPortDispose(ref)
-  }
-
-  public var hashValue: Int {
-    return ref.hashValue
-  }
+//  deinit {
+//    _ = self.client.map {
+//      MIDIPortDisconnectSource(ref, $0.ref)
+//      fatalError("")
+//    }
+//    //        MIDIPortDispose(ref)
+//  }
 
   public var id: Int {
     return self[int: kMIDIPropertyUniqueID]
@@ -62,6 +59,10 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 
   public var connection: MIDIPortConnectionState {
     fatalError()
+  }
+
+  public var hashValue: Int {
+    return ref.hashValue
   }
 
   public var description: String {
@@ -100,15 +101,12 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
 
 public final class MIDIInput: MIDIPort {
 
-  internal init(client: MIDIClient, readmidi: @escaping (MIDIPacketList) -> ()) {
+  internal init(client: MIDIClient, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) {
     let port = MIDIInputPortCreate(ref: client.ref, readmidi: readmidi)
-    super.init(client: client, ref: port)
+    super.init(ref: port)
   }
 
-  //    func onmidimessage(event: Int) {
-  //
-  //    }
-
+  public var onMIDIMessage: (UnsafePointer<MIDIPacketList>) -> () = { _ in }
 }
 
 extension Collection where Index == Int {
@@ -139,8 +137,7 @@ extension Collection where Index == Int {
 
 public final class MIDIOutput: MIDIPort {
   internal init(client: MIDIClient) {
-    super.init(client: client,
-               ref: MIDIPortRefCreate(ref: client.ref))
+    super.init(ref: MIDIOutputPortRefCreate(ref: client.ref))
   }
 
   public func send<S: Sequence>(data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
