@@ -1,6 +1,6 @@
 //
-//  WebMIDIManager.swift
-//  WarpKit
+//  MIDIAccess.swift
+//  WebMIDIKit
 //
 //  Created by Adam Nemecek on 12/7/16.
 //
@@ -8,8 +8,8 @@
 
 import CoreMIDI
 
-public final class WebMIDIKit {
-  static let sharedInstance = WebMIDIKit()
+public final class MIDIAccess {
+//  static let sharedInstance = MIDIAccess()
 
   private var client: MIDIClient? = nil
   fileprivate let clients: Set<MIDIClient> = []
@@ -87,7 +87,7 @@ public final class WebMIDIKit {
     }
   }
 
-  private init() {
+  public init() {
 
     // the callback ReceiveMidiNotify
     let client = MIDIClient { _ in

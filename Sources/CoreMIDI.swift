@@ -56,7 +56,7 @@ internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<
   return ref
 }
 
-extension MIDIPacket: Collection {
+extension MIDIPacket: MutableCollection {
   public typealias Element = UInt8
   public typealias Index = Int
 
@@ -69,17 +69,14 @@ extension MIDIPacket: Collection {
   }
 
   public subscript(index: Index) -> Element {
-    assert(index < count)
+    get {
+      assert(index < count)
 
-//    return withUnsafeBytes(of: &data) {
-//
-//    }
+      //
+      // most midi messages are <3 bytes so this is A-OK for now
+      //
 
-    //
-    // most midi messages are <3 bytes so this is A-OK for now
-    //
-
-    switch index {
+      switch index {
       case 0: return data.0
       case 1: return data.1
       case 2: return data.2
@@ -90,7 +87,13 @@ extension MIDIPacket: Collection {
       case 7: return data.7
       case 8: return data.8
       default:
-        fatalError("todo: implement with generatorForTuple in \(#file)")
+        todo("implement with generatorForTuple in \(#file)")
+      }
+
+    }
+    set {
+      data.0 = newValue
+      fatalError()
     }
   }
 
@@ -105,7 +108,7 @@ extension MIDIPacket: Collection {
 extension MIDIPacket: Equatable {
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
-           lhs.elementsEqual(rhs)
+      lhs.elementsEqual(rhs)
   }
 }
 
@@ -118,6 +121,15 @@ extension MIDIPacket: Comparable {
 extension MIDIPacket: Hashable {
   public var hashValue: Int {
     return Int(timeStamp) ^ count
+  }
+}
+
+extension MIDIPacket: ExpressibleByArrayLiteral {
+  //  public init<S: Sequence>(seq: S) where S.Iterator.Element == Element {
+  //
+  //  }
+  public init(arrayLiteral literal: Element...) {
+
   }
 }
 
@@ -134,12 +146,13 @@ extension MIDIPacketList: Sequence {
 
   //
   // Note that, despite the fact that MIDIPacketList has a count property
-  // you cannot make it a Collection because the single packets are variable 
+  // you cannot make it a Collection because the single packets are variable
   // length
   //
   public var count: Int {
     @inline(__always)
     get {
+
       return Int(numPackets)
     }
   }
@@ -171,6 +184,17 @@ extension MIDIPacketList: Hashable {
   }
 }
 
+extension MIDIPacketList: ExpressibleByArrayLiteral {
+  //  public init<S: Sequence>(seq: S) where S.Iterator.Element == Element {
+  //
+  //  }
+  public init(arrayLiteral literal: Element...) {
+    assert(literal.count == 1, "implement with pointers")
+//    self.init(numPackets: UInt32(literal.count), packet: literal[0])
+    self.init(numPackets: 1, packet: literal[0])
+  }
+}
+
 extension MIDIObjectAddRemoveNotification {
   internal init?(ptr: UnsafePointer<MIDINotification>) {
     switch ptr.pointee.messageID {
@@ -182,3 +206,7 @@ extension MIDIObjectAddRemoveNotification {
     }
   }
 }
+
+
+
+

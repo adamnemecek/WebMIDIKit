@@ -6,8 +6,8 @@
 //
 //
 
-#ifndef WebMIDIKit_h
-#define WebMIDIKit_h
+#pragma once
 
+uint8 MIDIPacketGetValue(MIDIPacket *packet, int idx);
+void MIDIPacketSetValue(MIDIPacket *packet, int idx, uint8 value);
 
-#endif /* WebMIDIKit_h */

@@ -26,3 +26,8 @@ import CoreMIDI
 //}
 
 
+extension Collection where Index == Int {
+  public func index(after i: Index) -> Index {
+    return i + 1
+  }
+}
