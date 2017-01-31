@@ -8,7 +8,51 @@
 
 import AVFoundation
 
-extension MIDIPacketList: Sequence {
+fileprivate func generatorForTuple(_ tuple: Any) -> AnyIterator<Any> {
+  let children = Mirror(reflecting: tuple).children
+  return AnyIterator(children.makeIterator().lazy.map { $0.value }.makeIterator())
+}
+
+extension MIDIPacket: Collection {
+  public typealias Element = UInt8
+  public typealias Index = Int
+
+  public var startIndex: Index {
+    return 0
+  }
+
+  public var endIndex: Index {
+    return Index(length)
+  }
+
+  public subscript(index: Index) -> Element {
+    assert(index < count)
+
+    switch index {
+      case 0: return data.0
+      case 1: return data.1
+      case 2: return data.2
+      case 3: return data.3
+      case 4: return data.4
+      case 5: return data.5
+      default:
+        fatalError("todo: implement generator")
+    }
+  }
+}
+extension MIDIPacket: Hashable {
+  public var hashValue: Int {
+    return Int(timeStamp) ^ count
+  }
+
+  public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
+    return lhs.timeStamp == rhs.timeStamp &&
+           lhs.count == rhs.count &&
+           lhs.elementsEqual(rhs)
+  }
+}
+
+extension MIDIPacketList: Sequence, Hashable {
   public typealias Element = MIDIPacket
 
   public func makeIterator() -> AnyIterator<Element> {
@@ -23,6 +67,14 @@ extension MIDIPacketList: Sequence {
       }
       return current
     }
+  }
+
+  public var hashValue: Int {
+    return numPackets.hashValue ^ packet.hashValue
+  }
+
+  public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
+    fatalError()
   }
 }
 

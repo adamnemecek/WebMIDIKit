@@ -8,32 +8,20 @@
 
 import AVFoundation
 
-public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
+public class MIDIPort {
   internal let ref: MIDIPortRef
 
-//  fileprivate weak var client: MIDIClient? = nil
-
-//  internal init(client: MIDIClient?, ref: MIDIPortRef) {
   internal init(ref: MIDIPortRef) {
     self.ref = ref
-
-//    _ = client.map {
-//      self.client = $0
-//      fatalError("connect")
-//    }
   }
 
-//  internal init?(client: MIDIClient, where: (MIDIPort) -> Bool) {
-//    fatalError()
-//  }
+  private subscript(string property: CFString) -> String {
+    return MIDIObjectGetStringProperty(ref: ref, property: property)
+  }
 
-//  deinit {
-//    _ = self.client.map {
-//      MIDIPortDisconnectSource(ref, $0.ref)
-//      fatalError("")
-//    }
-//    //        MIDIPortDispose(ref)
-//  }
+  private subscript(int property: CFString) -> Int {
+    return MIDIObjectGetIntProperty(ref: ref, property: property)
+  }
 
   public var id: Int {
     return self[int: kMIDIPropertyUniqueID]
@@ -51,6 +39,9 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     return self[int: kMIDIPropertyDriverVersion]
   }
 
+  //
+  // TODO: when is this set again
+  //
   public internal(set) var state: MIDIPortDeviceState = .disconnected
 
   public var type: MIDIPortType {
@@ -61,17 +52,22 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
     fatalError()
   }
 
+  public var onStateChange: () -> () = { }
+
+
+  public func close() {
+    guard state != .disconnected else { return }
+    fatalError()
+  }
+}
+
+extension MIDIPort: Hashable {
   public var hashValue: Int {
     return ref.hashValue
   }
+}
 
-  public var description: String {
-    return "Manufacturer: \(manufacturer)\n" +
-           "Name: \(name)\n" +
-           "Version: \(version)\n" +
-           "Type: \(type)\n"
-  }
-
+extension MIDIPort: Comparable {
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     return lhs.ref == rhs.ref
   }
@@ -79,28 +75,27 @@ public class MIDIPort: Comparable, Hashable, CustomStringConvertible {
   public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     return lhs.ref < rhs.ref
   }
+}
 
-  public var onStateChange: () -> () = { }
-
-  public func close() {
-    guard state != .disconnected else { return }
-    fatalError()
-  }
-
-  private subscript(string property: CFString) -> String {
-    return MIDIObjectGetStringProperty(ref: ref, property: property)
-  }
-
-
-  private subscript(int property: CFString) -> Int {
-    return MIDIObjectGetIntProperty(ref: ref, property: property)
+extension MIDIPort: CustomStringConvertible {
+  public var description: String {
+    return "Manufacturer: \(manufacturer)\n" +
+           "Name: \(name)\n" +
+           "Version: \(version)\n" +
+           "Type: \(type)\n"
   }
 }
 
 public final class MIDIInput: MIDIPort {
 
   internal init(client: MIDIClient, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) {
-    let port = MIDIInputPortCreate(ref: client.ref, readmidi: readmidi)
+
+    let port = MIDIInputPortCreate(ref: client.ref) { //packet in
+//      self.onMIDIMessage.map { $0(packet) }
+      //todo
+      _ in
+      fatalError()
+    }
     super.init(ref: port)
   }
 
@@ -149,8 +144,8 @@ public final class MIDIOutput: MIDIPort {
   }
 
   public func clear() {
-
+    
   }
-
+  
 }
 
