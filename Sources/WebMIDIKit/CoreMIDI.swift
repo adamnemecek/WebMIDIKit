@@ -129,7 +129,7 @@ extension MIDIPacket: ExpressibleByArrayLiteral {
   //
   //  }
   public init(arrayLiteral literal: Element...) {
-
+    fatalError()
   }
 }
 
