@@ -104,7 +104,7 @@ public final class MIDIInput: MIDIPort {
     super.init(ref: port)
   }
 
-  public var onMIDIMessage: (UnsafePointer<MIDIPacketList>) -> () = { _ in }
+  public var onMIDIMessage: ((UnsafePointer<MIDIPacketList>) -> ())? = nil
 }
 
 extension Collection where Index == Int {
@@ -154,20 +154,3 @@ public final class MIDIOutput: MIDIPort {
 
 }
 
-//struct MIDIOutputMap {
-//    typealias Index = Int
-//    typealias Element = MIDIOutput
-//
-//    var startIndex: Index {
-//        return 0
-//    }
-//
-//    var endIndex: Index {
-//        return MIDIGetNumberOfDestinations()
-//    }
-//
-//    subscript (index: Index) -> Element {
-////        return Element(ref: MIDIGetDestination(index))
-//        fatalError()
-//    }
-//}

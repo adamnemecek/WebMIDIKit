@@ -1,6 +1,8 @@
 #WebMIDIKit
 
-This project is an implementation of the [WebMIDI standard](https://www.w3.org/TR/webmidi/) API in Swift adapted for non-web environment.  
+This project is an adapted implementation of the [WebMIDI standard](https://www.w3.org/TR/webmidi/) API in Swift 
+
+* adapted meaning that . WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit)  
 
 #Why
 The original MIDI standard is extremely unwieldy, it's over 900 pages.

@@ -8,39 +8,25 @@
 
 import AVFoundation
 
-public class MIDIManager {
-  fileprivate let clients: Set<MIDIClient> = []
-
-  let inputs: [MIDIInput] = []
-  let outputs: [MIDIOutput] = []
-
-  //    var input: WebMIDIInput {
-  //        return WebMIDIInput()
-  //    }
-  //
-  //    var output: WebMIDIOutput {
-  //        fatalError()
-  //    }
-}
-
-
-
-public final class WebMIDIKit: MIDIManager {
+public final class WebMIDIKit {
   static let sharedInstance = WebMIDIKit()
 
   private var client: MIDIClient? = nil
-
-
-  //let clients: [MIDIClient]
+  fileprivate let clients: Set<MIDIClient> = []
 
   let input: MIDIInput
+  let inputs: [MIDIInput] = []
+
   let output: MIDIOutput
+  let outputs: [MIDIOutput] = []
+
+  //let clients: [MIDIClient]
 
   private(set) var sources: [MIDIConnection] = []
 
   private(set) var destinations: [MIDIEndpoint] = []
 
-  public var onStateChange: (MIDIPort) -> () = { _ in }
+  public var onStateChange: ((MIDIPort) -> ())? = nil
 
   private func notification(ptr: UnsafePointer<MIDINotification>) {
     _ = MIDIObjectAddRemoveNotification(ptr: ptr).map {
@@ -50,7 +36,9 @@ public final class WebMIDIKit: MIDIManager {
       case (.msgObjectAdded, .source):
         if let s = (sources.first { $0.source == endpoint }) {
           s.port.state = .connected
-          //notificy clients
+          clients.forEach {
+            _ in
+          }
         }
         else {
           let conn = MIDIConnection(port: self.input, source: endpoint)
@@ -72,7 +60,7 @@ public final class WebMIDIKit: MIDIManager {
           }
           return remove
         }
-        if let s = (sources.first { $0.source == endpoint }) {
+        if let _ = (sources.first { $0.source == endpoint }) {
 
           //setinputportstate, disconnected
         }
@@ -99,13 +87,14 @@ public final class WebMIDIKit: MIDIManager {
     }
   }
 
-  private override init() {
+  private init() {
 
     // the callback ReceiveMidiNotify
     let client = MIDIClient { _ in
-      //      self?.notification(ptr: $0)
+//            self.notification(ptr: $0)
+      fatalError()
 
-      fatalError("stuff")
+//      fatalError("stuff")
     }
 
     let input = MIDIInput(client: client) {
@@ -126,8 +115,7 @@ public final class WebMIDIKit: MIDIManager {
     self.destinations = MIDIDestinations().map {
       MIDIEndpoint(ref: $0)
     }
-    
-    super.init()
+
   }
 
   deinit {

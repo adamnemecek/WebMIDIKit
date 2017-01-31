@@ -36,11 +36,12 @@ protocol MIDIReceiver {
   func receiveMIDI()
 }
 
-public struct MIDIInputMap: MutableCollection {
-  public typealias Element = MIDIOutput
-  public typealias Index = Dictionary<String, Element>.Index
+public struct MIDIPortMap: Collection {
+  public typealias Key = String
+  public typealias Value = MIDIPort
+  public typealias Index = Dictionary<Key, Value>.Index
 
-  private var content: [String: MIDIOutput]
+  private var content: [Key: Value]
 
   public var startIndex: Index {
     return content.startIndex
@@ -50,17 +51,20 @@ public struct MIDIInputMap: MutableCollection {
     return content.endIndex
   }
 
-  public subscript (index: Index) -> Element? {
-//    return content[index]
+  public subscript (key: Key) -> Value? {
     get {
-      fatalError()
+      return content[key]
     }
     set {
+      content[key] = newValue
     }
+  }
+
+  public subscript(index: Index) -> (Key, Value) {
+    return content[index]
   }
 
   public func index(after i: Index) -> Index {
     return content.index(after: i)
   }
-
 }

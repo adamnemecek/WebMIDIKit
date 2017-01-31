@@ -27,7 +27,7 @@ extension MIDIPacketList: Sequence {
 }
 
 extension MIDIObjectAddRemoveNotification {
-  init?(ptr: UnsafePointer<MIDINotification>) {
+  internal init?(ptr: UnsafePointer<MIDINotification>) {
     switch ptr.pointee.messageID {
     case .msgObjectAdded, .msgObjectRemoved:
       self = ptr.withMemoryRebound(to: MIDIObjectAddRemoveNotification.self, capacity: 1) {
