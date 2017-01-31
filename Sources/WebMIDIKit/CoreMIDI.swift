@@ -9,7 +9,6 @@
 import CoreMIDI
 import AXMIDI
 
-
 internal func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
   var string: Unmanaged<CFString>? = nil
   MIDIObjectGetStringProperty(ref, property, &string)
@@ -100,11 +99,8 @@ extension MIDIPacket: Hashable {
 }
 
 extension MIDIPacket: ExpressibleByArrayLiteral {
-  //  public init<S: Sequence>(seq: S) where S.Iterator.Element == Element {
-  //
-  //  }
   public init(arrayLiteral literal: Element...) {
-    fatalError()
+    self = MIDIPacketCreate(0, literal, Int32(literal.count))
   }
 }
 
@@ -127,7 +123,6 @@ extension MIDIPacketList: Sequence {
   public var count: Int {
     @inline(__always)
     get {
-
       return Int(numPackets)
     }
   }

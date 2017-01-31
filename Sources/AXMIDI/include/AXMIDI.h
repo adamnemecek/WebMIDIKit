@@ -8,9 +8,7 @@
 
 #import <CoreMIDI/CoreMIDI.h>
 
-#ifndef uint8
-  typedef unsigned char uint8;
-#endif
+Byte MIDIPacketGetValue(const MIDIPacket packet, int index);
+void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value);
 
-uint8 MIDIPacketGetValue(const MIDIPacket packet, int index);
-void MIDIPacketSetValue(MIDIPacket* const packet, int index, uint8 value);
+MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count);
