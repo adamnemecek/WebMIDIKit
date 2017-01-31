@@ -7,6 +7,8 @@
 //
 
 import CoreMIDI
+import AXMIDI
+
 
 internal func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
   var string: Unmanaged<CFString>? = nil
@@ -70,37 +72,10 @@ extension MIDIPacket: MutableCollection {
 
   public subscript(index: Index) -> Element {
     get {
-      assert(index < count)
-
-      //
-      // most midi messages are <3 bytes so this is A-OK for now
-      //
-
-      switch index {
-      case 0: return data.0
-      case 1: return data.1
-      case 2: return data.2
-      case 3: return data.3
-      case 4: return data.4
-      case 5: return data.5
-      case 6: return data.6
-      case 7: return data.7
-      case 8: return data.8
-      default:
-        todo("implement with generatorForTuple in \(#file)")
-      }
-
+      return MIDIPacketGetValue(self, Int32(index))
     }
     set {
-      data.0 = newValue
-      fatalError()
-    }
-  }
-
-  public func makeIterator() -> AnyIterator<Element> {
-    let i = Mirror(reflecting: data).children.makeIterator()
-    return AnyIterator {
-      i.next().map { $0.value as! Element }
+      MIDIPacketSetValue(&self, Int32(index), newValue)
     }
   }
 }

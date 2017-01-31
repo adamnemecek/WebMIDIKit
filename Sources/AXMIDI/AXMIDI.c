@@ -8,10 +8,10 @@
 
 #include "AXMIDI.h"
 
-//uint8 MIDIPacketGetValue(MIDIPacket *packet, int index) {
-//	return packet->data[index];
-//}
-//
-//void MIDIPacketSetValue(MIDIPacket *packet, int index, uint8 value) {
-//	packet->data[index] = value;
-//}
+uint8 MIDIPacketGetValue(MIDIPacket packet, int index) {
+	return packet.data[index];
+}
+
+void MIDIPacketSetValue(MIDIPacket * const packet, int index, uint8 value) {
+	packet->data[index] = value;
+}

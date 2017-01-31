@@ -6,11 +6,11 @@
 //
 //
 
-#pragma once
+#import <CoreMIDI/CoreMIDI.h>
 
-//#import <Foundation/Foundation.h>
-//
-//
-//uint8 MIDIPacketGetValue(MIDIPacket *packet, int index);
-//
-//void MIDIPacketSetValue(MIDIPacket *packet, int index, uint8 value);
+#ifndef uint8
+  typedef unsigned char uint8;
+#endif
+
+uint8 MIDIPacketGetValue(const MIDIPacket packet, int index);
+void MIDIPacketSetValue(MIDIPacket* const packet, int index, uint8 value);
