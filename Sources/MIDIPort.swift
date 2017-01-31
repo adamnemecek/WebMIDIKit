@@ -39,13 +39,29 @@ public class MIDIPort: Hashable, Comparable {
     return self[int: kMIDIPropertyDriverVersion]
   }
 
+  public var type: MIDIPortType {
+    return MIDIPortType(MIDIObjectGetType(id: id))
+  }
+
+  public var hashValue: Int {
+    return ref.hashValue
+  }
+
+  public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+    return lhs.ref == rhs.ref
+  }
+
+  public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+    return lhs.ref < rhs.ref
+  }
+
   //
   // TODO: when is this set again
   //
-  public internal(set) var state: MIDIPortDeviceState = .disconnected
+  public internal(set) var state: MIDIPortDeviceState = .disconnected {
+    didSet {
 
-  public var type: MIDIPortType {
-    return MIDIPortType(MIDIObjectGetType(id: id))
+    }
   }
 
   public var connection: MIDIPortConnectionState {
@@ -63,29 +79,17 @@ public class MIDIPort: Hashable, Comparable {
   private func setStates(state: MIDIPortDeviceState, connection: MIDIPortConnectionState) {
     guard (self.state, self.connection) != (state, connection) else { return }
 
-    //dispatch connection event
+    //todo: dispatch connection event
   }
 
-//  public func open() {
+  public func open() {
 //    switch state {
 //      case .open: break
 //      case .closed: break
 //      case .pending: break
 //    }
-//  }
-
-
-  public var hashValue: Int {
-    return ref.hashValue
   }
 
-  public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-    return lhs.ref == rhs.ref
-  }
-
-  public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-    return lhs.ref < rhs.ref
-  }
 }
 
 extension MIDIPort: CustomStringConvertible {
@@ -102,10 +106,8 @@ public final class MIDIInput: MIDIPort {
   internal init(client: MIDIClient, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) {
 
     let port = MIDIInputPortCreate(ref: client.ref) { //packet in
-//      self.onMIDIMessage.map { $0(packet) }
-      //todo
       _ in
-      fatalError()
+      todo("self.onMIDIMessage.map { $0(packet) }")
     }
     super.init(ref: port)
   }

@@ -30,3 +30,7 @@ public enum MIDIPortDeviceState: Equatable {
 public enum MIDIPortConnectionState: Equatable {
     case open, closed, pending
 }
+
+func todo(_ msg: String? = nil) -> Never {
+  fatalError(msg ?? "")
+}
