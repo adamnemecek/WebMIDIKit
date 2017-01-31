@@ -8,14 +8,13 @@
 
 import CoreMIDI
 
-fileprivate  struct State: Equatable {
+fileprivate struct MIDIPortState: Equatable {
   let state: MIDIPortDeviceState, connection: MIDIPortConnectionState
 
-  static func ==(lhs: State, rhs: State) -> Bool {
-    return true
+  static func ==(lhs: MIDIPortState, rhs: MIDIPortState) -> Bool {
+    return (lhs.state, lhs.connection) == (rhs.state, rhs.connection)
   }
 }
-
 
 public class MIDIPort: Hashable, Comparable {
 
@@ -23,6 +22,7 @@ public class MIDIPort: Hashable, Comparable {
 
   internal init(ref: MIDIPortRef) {
     self.ref = ref
+    todo("initportstate")
   }
 
   private subscript(string property: CFString) -> String {
@@ -68,10 +68,19 @@ public class MIDIPort: Hashable, Comparable {
   //
   // TODO: when is this set again
   //
-  public internal(set) var state: MIDIPortDeviceState = .disconnected
+
+  private var _portState: MIDIPortState {
+    didSet {
+      guard _portState != oldValue else { return }
+      todo("dispatch connection event")
+    }
+  }
+  public var state: MIDIPortDeviceState {
+    return _portState.state
+  }
 
   public var connection: MIDIPortConnectionState {
-    todo()
+    return _portState.connection
   }
 
 //  public var onStateChange: ((MIDIPort) -> ())? = nil
@@ -80,11 +89,6 @@ public class MIDIPort: Hashable, Comparable {
   public func close() {
     guard state != .disconnected else { return }
     todo()
-  }
-
-  private func setStates(state: MIDIPortDeviceState, connection: MIDIPortConnectionState) {
-    guard (self.state, self.connection) != (state, connection) else { return }
-    todo("dispatch connection event")
   }
 
   public func open() {
@@ -125,26 +129,6 @@ extension Collection where Index == Int {
     return i + 1
   }
 }
-
-//public struct MIDIInputMap: Collection {
-//    public typealias Index = Int
-//    public typealias Element = MIDIInput
-//
-//    public var startIndex: Index {
-//        return 0
-//    }
-//
-//    public var endIndex: Index {
-//        return MIDIGetNumberOfSources()
-//    }
-//
-//    public subscript (index: Index) -> Element {
-//        return Element(ref: MIDIGetSource(index)) {
-//          _ in
-//        }
-//
-//    }
-//}
 
 public final class MIDIOutput: MIDIPort {
   internal init(client: MIDIClient) {

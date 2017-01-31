@@ -39,3 +39,7 @@ public struct MIDIPortMap<Value: MIDIPort>: Collection {
     return content.index(after: i)
   }
 }
+//
+//extension MIDIPortMap where Value: Equatable {
+//
+//}

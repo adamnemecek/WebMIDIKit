@@ -35,7 +35,7 @@ public final class WebMIDIKit {
       switch (ptr.pointee.messageID, $0.childType) {
       case (.msgObjectAdded, .source):
         if let s = (sources.first { $0.source == endpoint }) {
-          s.port.state = .connected
+          todo("port.state = .connected")
           clients.forEach {
             _ in
           }

@@ -26,26 +26,31 @@ internal final class MIDIEndpoint: Comparable, Hashable {
   static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
     return lhs.ref < rhs.ref
   }
-
 }
 
-internal final class MIDIConnection: Hashable {
-  let port: MIDIInput, source: MIDIEndpoint
+public final class MIDIConnection: Comparable, Hashable {
+  public let port: MIDIInput
+  internal let source: MIDIEndpoint
 
-  init(port: MIDIInput, source: MIDIEndpoint) {
+  internal init(port: MIDIInput, source: MIDIEndpoint) {
     (self.port, self.source) = (port, source)
     MIDIPortConnectSource(port.ref, source.ref, nil)
   }
 
   deinit {
     MIDIPortDisconnectSource(port.ref, source.ref)
+    //the docs say that you don't need to call MIDIPortDispose but idk
   }
 
-  static func ==(lhs: MIDIConnection, rhs: MIDIConnection) -> Bool {
+  public static func ==(lhs: MIDIConnection, rhs: MIDIConnection) -> Bool {
     return (lhs.port, lhs.source) == (rhs.port, rhs.source)
   }
 
-  var hashValue: Int {
+  public static func <(lhs: MIDIConnection, rhs: MIDIConnection) -> Bool {
+    return lhs.port < rhs.port
+  }
+
+  public var hashValue: Int {
     return port.hashValue ^ source.hashValue
   }
 }

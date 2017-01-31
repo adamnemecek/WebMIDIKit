@@ -35,7 +35,13 @@ MIDIInputPort {
 * Mikmidi
 * lumi
 * gene de lisa
-* 
+* chromium 
+
+https://cs.chromium.org/chromium/src/media/midi/midi_manager_mac.cc?dr=CSs&sq=package:chromium
+
+ https://cs.chromium.org/chromium/src/third_party/WebKit/Source/modules/webmidi/?type=cs
+
+
 
 <!--  -->
 <!--void MidiManagerMac::ReceiveMidiNotify(const MIDINotification* message) {-->
