@@ -102,6 +102,10 @@ extension MIDIPacket: ExpressibleByArrayLiteral {
   public init(arrayLiteral literal: Element...) {
     self = MIDIPacketCreate(0, literal, Int32(literal.count))
   }
+
+  public init() {
+    self = []
+  }
 }
 
 // todo: chrome has this
