@@ -26,7 +26,7 @@ public final class MIDIAccess: EventTarget {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  private var client: MIDIClient? = nil
+  internal private(set) var client: MIDIClient? = nil
   private let clients: Set<MIDIClient> = []
 
   private let input: MIDIInput

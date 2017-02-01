@@ -20,15 +20,14 @@ fileprivate struct MIDIPortState: Equatable {
 
 //typealias Source<T> = () -> T
 
-///
+/// This interface represents a MIDI input or output port.
 /// https://www.w3.org/TR/webmidi/#midiport-interface
-///
+public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible, EventTarget {
 
-public class MIDIPort: Hashable, Comparable, CustomStringConvertible, EventTarget {
   //todo this isn't an int
   public typealias Event = MIDIPort
 
-  ///
+
   /// A unique ID of the port. This can be used by developers to remember ports
   /// the user has chosen for their application. The User Agent must ensure that
   /// the id is unique to only that port. The User Agent should ensure that the
@@ -45,53 +44,36 @@ public class MIDIPort: Hashable, Comparable, CustomStringConvertible, EventTarge
   /// so that a reference to that port id is likely to match the port when
   /// plugged in. Applications may use the comparison of id of MIDIPorts to test
   /// for equality.
-  ///
   public var id: Int {
     return self[int: kMIDIPropertyUniqueID]
   }
 
-  ///
   /// The manufacturer of the port.
-  ///
-
   public var manufacturer: String {
     return self[string: kMIDIPropertyManufacturer]
   }
 
-  ///
   /// The system name of the port.
-  ///
-
   public var name: String {
     return self[string: kMIDIPropertyDisplayName]
   }
 
-  ///
   /// A descriptor property to distinguish whether the port is an input or an
   /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
   /// must be "input".
-  ///
-
   public var type: MIDIPortType {
     return MIDIPortType(MIDIObjectGetType(id: id))
   }
 
-  ///
   /// The version of the port.
-  ///
   public var version: Int {
     return self[int: kMIDIPropertyDriverVersion]
   }
 
-  ///
   /// The state of the device.
-  ///
   public private(set) var state: MIDIPortDeviceState = .disconnected
 
-  ///
   /// The state of the connection to the device.
-  /// https://www.w3.org/TR/webmidi/#idl-def-MIDIPortConnectionState
-  ///
   public private(set) var connection: MIDIPortConnectionState = .closed
 
   ///

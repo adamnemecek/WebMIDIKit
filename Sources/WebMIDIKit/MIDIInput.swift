@@ -20,7 +20,7 @@ import CoreMIDI
 
 public final class MIDIInput: MIDIPort { //, MIDIReceiver {
 
-  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>>  = nil {
+  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil {
     didSet {
       open()
     }
@@ -30,16 +30,27 @@ public final class MIDIInput: MIDIPort { //, MIDIReceiver {
 
   internal override init(access: MIDIAccess) {
     super.init(access: access)
+//    self.ref = MIDIInputPortCreate(ref: access.client) {
+//      
+//    }
 //    self.ref = MIDIInputPortCreate(ref: client.ref) { packet in
 //      self.onMIDIMessage.map { $0(packet) }
 //    }
   }
 
   final override public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
-
+    super.open {
+      eventHandler?($0)
+    }
   }
 
   final override public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+    super.close {
+      eventHandler?($0)
+    }
+  }
+
+  deinit {
 
   }
 }
