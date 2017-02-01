@@ -117,14 +117,11 @@ public final class MIDIAccess: EventTarget {
   }
 
   internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
-//    MIDISend(port.ref, <#T##dest: MIDIEndpointRef##MIDIEndpointRef#>, <#T##pktlist: UnsafePointer<MIDIPacketList>##UnsafePointer<MIDIPacketList>#>)
-          /*
-     _ = client.map {
-     let list = MIDIPacketList(numPackets: <#T##UInt32#>, packet: <#T##(MIDIPacket)#>)
-     for e in data {
-     MIDISend(ref, , <#T##pktlist: UnsafePointer<MIDIPacketList>##UnsafePointer<MIDIPacketList>#>)
-     }
-     }*/
+      guard var p = MIDIPacketList(seq: data) else { return }
+//      timestamp = timestamp == 0 ? 
+
+      MIDISend(port.ref, 0, &p)
+      todo("endpoint, timestamp = 0 ?? now, notify all clients?")
 
   }
 

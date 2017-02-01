@@ -109,54 +109,69 @@ extension MIDIPacket: ExpressibleByArrayLiteral {
   }
 }
 
-// todo: chrome has this
-//extension MIDIPacket {
-//  var seconds: Double {
-//    let ns = Double(AudioConvertHostTimeToNanos(timeStamp))
-//    return ns / 1_000_000_000
-//  }
+//extension MIDIPacket todo eventtype {
+//
 //}
+
+extension MIDIPacket: MutableEventType {
+  public typealias Timestamp = MIDITimeStamp
+  
+  public var timestamp: Timestamp {
+    get {
+      return timeStamp
+    }
+    set {
+      timeStamp = newValue
+    }
+  }
+}
 
 extension MIDIPacketList: Sequence {
 	public typealias Element = MIDIPacket
 
-	//
-	// Note that, despite the fact that MIDIPacketList has a count property
-	// you cannot make it a Collection because the single packets are variable
-	// length
-	//
-	public var count: Int {
-		@inline(__always)
-		get {
-			return Int(numPackets)
-		}
-	}
-
 	public func makeIterator() -> AnyIterator<Element> {
 		var first = packet
 		let s = sequence(first: &first) { MIDIPacketNext($0) }
-           .prefix(count).makeIterator()
+           .prefix(Int(numPackets)).makeIterator()
 		return AnyIterator { s.next()?.pointee }
 	}
 }
 
-
 extension MIDIPacketList: Equatable {
   public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
-    return lhs.count == rhs.count && lhs.elementsEqual(rhs)
+    return lhs.numPackets == rhs.numPackets && lhs.elementsEqual(rhs)
   }
 }
 
 extension MIDIPacketList: Hashable {
   public var hashValue: Int {
-    return count.hashValue ^ packet.hashValue
+    return numPackets.hashValue ^ packet.hashValue
+  }
+}
+
+extension MIDIPacketList {
+
+  var timestamp: Element.Timestamp {
+    return packet.timestamp
+  }
+}
+
+extension Collection where Iterator.Element == UInt8 {
+  public func iterateMIDI() -> AnyIterator<MIDIPacket> {
+    return AnyIterator {
+      todo()
+      return nil
+    }
   }
 }
 
 extension MIDIPacketList: ExpressibleByArrayLiteral {
-  //  public init<S: Sequence>(seq: S) where S.Iterator.Element == Element {
   //
-  //  }
+  //
+  //
+  public init?<S: Sequence>(seq: S) where S.Iterator.Element == UInt8 {
+    fatalError()
+  }
 
   public init(arrayLiteral literal: Element...) {
     self.init()
@@ -178,6 +193,24 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
     //    self.init(numPackets: 1, packet: literal[0])
 
     todo("initialization")
+  }
+}
+
+public struct MIDIPacketListSlice: Sequence {
+  public typealias Element = MIDIPacket
+  public typealias Base = UnsafePointer<MIDIPacketList>
+  public let base: Base
+
+  private let range: ClosedRange<Element.Timestamp>?
+
+  internal init(base: Base, range: ClosedRange<Element.Timestamp>? = nil) {
+    self.base = base
+    self.range = range
+
+  }
+
+  public func makeIterator() -> AnyIterator<Element> {
+    return AnyIterator { nil }
   }
 
 

@@ -13,6 +13,29 @@ import CoreMIDI
 //  let status, data1, data2: UInt8
 //}
 
+public protocol EventType {
+  associatedtype Timestamp: Comparable
+  var timestamp: Timestamp { get }
+}
+
+public protocol MutableEventType: EventType {
+  var timestamp: Timestamp { get set }
+}
+
+public extension EventType where Timestamp == MIDITimeStamp {
+  public var second: Double {
+    fatalError()
+  }
+}
+
+// todo: chrome has this do this for events
+//extension MIDIPacket {
+//  var seconds: Double {
+//    let ns = Double(AudioConvertHostTimeToNanos(timeStamp))
+//    return ns / 1_000_000_000
+//  }
+//}
+
 
 
 

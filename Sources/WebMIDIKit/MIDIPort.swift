@@ -21,8 +21,7 @@ fileprivate struct MIDIPortState: Equatable {
 ///
 
 public class MIDIPort: Hashable, Comparable, EventTarget {
-
-
+  //todo this isn't an int
   public typealias Event = Int
 
   public var id: Int {
