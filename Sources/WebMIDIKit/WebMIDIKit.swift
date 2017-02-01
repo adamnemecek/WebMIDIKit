@@ -39,13 +39,14 @@ public final class MIDIAccess: EventTarget {
 
 //      fatalError("stuff")
     }
+    fatalError()
 
-    let input = MIDIInput(client: client)
+//    let input = MIDIInput(client: client)
 
     self.output = MIDIOutput(client: client)
 
     self.client = client
-    self.input = input
+//    self.input = input
 
     self.sources = MIDISources().map {
       //
@@ -113,6 +114,18 @@ public final class MIDIAccess: EventTarget {
       default: break
       }
     }
+  }
+
+  internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
+//    MIDISend(port.ref, <#T##dest: MIDIEndpointRef##MIDIEndpointRef#>, <#T##pktlist: UnsafePointer<MIDIPacketList>##UnsafePointer<MIDIPacketList>#>)
+          /*
+     _ = client.map {
+     let list = MIDIPacketList(numPackets: <#T##UInt32#>, packet: <#T##(MIDIPacket)#>)
+     for e in data {
+     MIDISend(ref, , <#T##pktlist: UnsafePointer<MIDIPacketList>##UnsafePointer<MIDIPacketList>#>)
+     }
+     }*/
+
   }
 
   private func midi(src: MIDIEndpointRef, lst: UnsafePointer<MIDIPacketList>) {

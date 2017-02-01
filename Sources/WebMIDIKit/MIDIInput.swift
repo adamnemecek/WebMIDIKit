@@ -13,15 +13,19 @@ import CoreMIDI
 //  func handleEvent()
 //}
 
-public protocol MIDIReceiver {
-  var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> { get set }
-}
+//public protocol MIDIReceiver {
+//  //todo
+//  var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> { get set }
+//}
 
-public final class MIDIInput: MIDIPort {
+public final class MIDIInput: MIDIPort { //, MIDIReceiver {
+
+  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil
+
   //todo ref var
 
-  internal init(client: MIDIClient) {
-    super.init(input: client)
+  internal override init(access: MIDIAccess) {
+    super.init(access: access)
 //    self.ref = MIDIInputPortCreate(ref: client.ref) { packet in
 //      self.onMIDIMessage.map { $0(packet) }
 //    }
@@ -31,5 +35,5 @@ public final class MIDIInput: MIDIPort {
     
   }
 
-  public var onMIDIMessage: EventHandler<Event> = nil
+
 }

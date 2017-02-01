@@ -32,8 +32,5 @@ internal final class MIDIClient: Comparable, Hashable {
     }
 }
 
-protocol MIDIReceiver {
-  func receiveMIDI()
-}
 
 

@@ -160,6 +160,7 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
 
   public init(arrayLiteral literal: Element...) {
     self.init()
+      //validator
 //    self = MIDIPacketListInit
 //    MIDIPacketListInit(&self)
 //    literal.forEach {
