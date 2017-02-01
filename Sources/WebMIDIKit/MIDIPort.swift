@@ -18,9 +18,9 @@ fileprivate struct MIDIPortState: Equatable {
 
 public class MIDIPort: Hashable, Comparable {
 
-  internal let ref: MIDIPortRef
+  internal var ref: MIDIPortRef
 
-  internal init(ref: MIDIPortRef) {
+  internal init(ref: MIDIPortRef = 0) {
     self.ref = ref
     todo("initportstate")
   }

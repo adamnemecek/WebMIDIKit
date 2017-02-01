@@ -162,8 +162,8 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
   //  }
 
   public init(arrayLiteral literal: Element...) {
-    var p = MIDIPacketList()
-    MIDIPacketListInit(&p)
+    self.init()
+    MIDIPacketListInit(&self)
 
     //    literal.forEach {
     //      MIDIPacketListAdd(<#T##pktlist: UnsafeMutablePointer<MIDIPacketList>##UnsafeMutablePointer<MIDIPacketList>#>, <#T##listSize: Int##Int#>, <#T##curPacket: UnsafeMutablePointer<MIDIPacket>##UnsafeMutablePointer<MIDIPacket>#>, <#T##time: MIDITimeStamp##MIDITimeStamp#>, <#T##nData: Int##Int#>, <#T##data: UnsafePointer<UInt8>##UnsafePointer<UInt8>#>)
@@ -173,12 +173,8 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
 
     //    self.init(numPackets: UInt32(literal.count), packet: literal[0])
     //    self.init(numPackets: 1, packet: literal[0])
-    self = p
-    todo("initialization")
-  }
 
-  public init() {
-    self = []
+    todo("initialization")
   }
 }
 

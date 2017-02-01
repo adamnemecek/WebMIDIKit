@@ -18,3 +18,8 @@ protocol EventType {
   var timestamp: Timestamp { get }
 }
 
+
+
+extension Collection where Iterator.Element == UInt8 {
+
+}

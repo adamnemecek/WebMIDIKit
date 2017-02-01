@@ -9,14 +9,12 @@
 import CoreMIDI
 
 public final class MIDIInput: MIDIPort {
-
-  internal init(client: MIDIClient, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) {
-
-    let port = MIDIInputPortCreate(ref: client.ref) { //packet in
-      _ in
-      todo("self.onMIDIMessage.map { $0(packet) }")
+  //todo ref var
+  internal init(client: MIDIClient) {
+    super.init()
+    self.ref = MIDIInputPortCreate(ref: client.ref) { packet in
+      self.onMIDIMessage.map { $0(packet) }
     }
-    super.init(ref: port)
   }
 
   public var onMIDIMessage: ((UnsafePointer<MIDIPacketList>) -> ())? = nil
