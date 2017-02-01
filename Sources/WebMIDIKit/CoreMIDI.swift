@@ -100,11 +100,9 @@ extension MIDIPacket: Hashable {
 
 extension MIDIPacket: ExpressibleByArrayLiteral {
   public init(arrayLiteral literal: Element...) {
-    self = MIDIPacketCreate(0, literal, Int32(literal.count))
-  }
-
-  public init() {
-    self = []
+      self.init()
+      memcmp(&data, literal, literal.count/4)
+      assert(elementsEqual(literal))
   }
 }
 
@@ -162,10 +160,25 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
   //  public init<S: Sequence>(seq: S) where S.Iterator.Element == Element {
   //
   //  }
+
   public init(arrayLiteral literal: Element...) {
-    assert(literal.count == 1, "implement with pointers")
-//    self.init(numPackets: UInt32(literal.count), packet: literal[0])
-    self.init(numPackets: 1, packet: literal[0])
+    var p = MIDIPacketList()
+    MIDIPacketListInit(&p)
+
+    //    literal.forEach {
+    //      MIDIPacketListAdd(<#T##pktlist: UnsafeMutablePointer<MIDIPacketList>##UnsafeMutablePointer<MIDIPacketList>#>, <#T##listSize: Int##Int#>, <#T##curPacket: UnsafeMutablePointer<MIDIPacket>##UnsafeMutablePointer<MIDIPacket>#>, <#T##time: MIDITimeStamp##MIDITimeStamp#>, <#T##nData: Int##Int#>, <#T##data: UnsafePointer<UInt8>##UnsafePointer<UInt8>#>)
+    //    }
+
+    //    assert(literal.count == 1, "implement with pointers")
+
+    //    self.init(numPackets: UInt32(literal.count), packet: literal[0])
+    //    self.init(numPackets: 1, packet: literal[0])
+    self = p
+    todo("initialization")
+  }
+
+  public init() {
+    self = []
   }
 }
 
