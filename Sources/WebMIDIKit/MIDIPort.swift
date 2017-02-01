@@ -18,14 +18,21 @@ fileprivate struct MIDIPortState: Equatable {
 
 public class MIDIPort: Hashable, Comparable {
 
-  internal var ref: MIDIPortRef
+  internal private(set) var ref: MIDIPortRef
 
   internal init(ref: MIDIPortRef = 0) {
     self.ref = ref
     todo("initportstate")
   }
 
-  
+  internal init(input client: MIDIClient) {
+    self.ref = 0
+    self.ref = MIDIInputPortCreate(ref: client.ref) {
+      _ in
+    }
+
+//    todo("initportstate")
+  }
 
   private subscript(string property: CFString) -> String {
     return MIDIObjectGetStringProperty(ref: ref, property: property)
@@ -71,18 +78,20 @@ public class MIDIPort: Hashable, Comparable {
   // TODO: when is this set again
   //
 
-  private var _portState: MIDIPortState {
-    didSet {
-      guard _portState != oldValue else { return }
-      todo("dispatch connection event")
-    }
-  }
+//  private var _portState: MIDIPortState {
+//    didSet {
+//      guard _portState != oldValue else { return }
+//      todo("dispatch connection event")
+//    }
+//  }
   public var state: MIDIPortDeviceState {
-    return _portState.state
+//    return _portState.state
+    fatalError()
   }
 
   public var connection: MIDIPortConnectionState {
-    return _portState.connection
+//    return _portState.connection
+    fatalError()
   }
 
 //  public var onStateChange: ((MIDIPort) -> ())? = nil

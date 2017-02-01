@@ -31,3 +31,14 @@ extension Collection where Index == Int {
     return i + 1
   }
 }
+
+extension RangeReplaceableCollection where Iterator.Element: Equatable {
+  //
+  // return value indicates whether the element was appended or not
+  //
+  mutating func appendUnique(newElement: Iterator.Element) -> Bool {
+    guard !contains(newElement) else { return false }
+    append(newElement)
+    return true
+  }
+}

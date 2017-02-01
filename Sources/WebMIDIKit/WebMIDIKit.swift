@@ -8,6 +8,8 @@
 
 import CoreMIDI
 
+
+
 public final class MIDIAccess {
 //  static let sharedInstance = MIDIAccess()
 
@@ -45,13 +47,9 @@ public final class MIDIAccess {
           self.sources.append(conn)
         }
       case (.msgObjectAdded, .destination):
-        if destinations.contains(endpoint) {
+        if !destinations.appendUnique(newElement: endpoint) {
           //setoutputportstate(port, opened)
         }
-        else {
-          destinations.append(endpoint)
-        }
-
       case (.msgObjectRemoved, .source):
         sources = sources.filter {
           let remove = $0.source == endpoint
