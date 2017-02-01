@@ -20,7 +20,7 @@ import CoreMIDI
 
 public final class MIDIInput: MIDIPort { //, MIDIReceiver {
 
-  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil {
+  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>>  = nil {
     didSet {
       open()
     }
@@ -35,9 +35,11 @@ public final class MIDIInput: MIDIPort { //, MIDIReceiver {
 //    }
   }
 
-  internal func connect() {
-    
+  final override public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+
   }
 
+  final override public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
 
+  }
 }
