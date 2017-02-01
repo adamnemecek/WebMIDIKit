@@ -55,7 +55,7 @@ public class MIDIInputMap: MIDIPortMap<MIDIInput> {
   }
 }
 
-public class MIDIOutputMap: MIDIPortMap<MIDIInput> {
+public class MIDIOutputMap: MIDIPortMap<MIDIOutput> {
   public override init() {
     super.init()
     

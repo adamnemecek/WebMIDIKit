@@ -8,15 +8,11 @@
 
 import CoreMIDI
 
-public struct Event {
-  let timestamp: MIDITimeStamp
-  let status, data1, data2: UInt8
-}
+//public struct Event {
+//  let timestamp: MIDITimeStamp
+//  let status, data1, data2: UInt8
+//}
 
-protocol EventType {
-  associatedtype Timestamp: Comparable
-  var timestamp: Timestamp { get }
-}
 
 
 

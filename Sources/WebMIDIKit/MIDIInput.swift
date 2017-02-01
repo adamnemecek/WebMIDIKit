@@ -13,9 +13,13 @@ import CoreMIDI
 //  func handleEvent()
 //}
 
+public protocol MIDIReceiver {
+  var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> { get set }
+}
 
 public final class MIDIInput: MIDIPort {
   //todo ref var
+
   internal init(client: MIDIClient) {
     super.init(input: client)
 //    self.ref = MIDIInputPortCreate(ref: client.ref) { packet in
@@ -27,5 +31,5 @@ public final class MIDIInput: MIDIPort {
     
   }
 
-  public var onMIDIMessage: ((UnsafePointer<MIDIPacketList>) -> ())? = nil
+  public var onMIDIMessage: EventHandler<Event> = nil
 }
