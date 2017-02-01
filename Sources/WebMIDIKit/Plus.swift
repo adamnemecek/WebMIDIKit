@@ -6,7 +6,6 @@
 //
 //
 
-
 import CoreMIDI
 
 public struct Event {
