@@ -15,6 +15,8 @@ public protocol EventTarget {
   var onStateChange: EventHandler<Event> { get set }
 }
 
+///
+/// https://www.w3.org/TR/webmidi/#midiaccess-interface
 public final class MIDIAccess: EventTarget {
 //  static let sharedInstance = MIDIAccess()
   public typealias Event = MIDIPort

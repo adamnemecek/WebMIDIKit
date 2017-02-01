@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-internal final class MIDIEndpoint: Comparable, Hashable {
+internal final class MIDIEndpoint : Equatable, Comparable, Hashable {
   let ref: MIDIEndpointRef
 
   init(ref: MIDIEndpointRef) {
@@ -28,7 +28,7 @@ internal final class MIDIEndpoint: Comparable, Hashable {
   }
 }
 
-public final class MIDIConnection: Comparable, Hashable {
+public final class MIDIConnection : Equatable, Comparable, Hashable {
   public let port: MIDIInput
   internal let source: MIDIEndpoint
 
