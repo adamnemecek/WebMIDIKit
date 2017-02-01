@@ -11,6 +11,8 @@ WebMIDI
 
 #Documentation
 
+https://github.com/cwilso/WebMIDIAPIShim/blob/gh-pages/src/midi_output.js
+
 ## MIDIPort
 <!--``` -->
 <!--class MIDIPort {-->

@@ -48,29 +48,21 @@ public class MIDIPort: Hashable, Comparable, CustomStringConvertible, EventTarge
     return self[int: kMIDIPropertyDriverVersion]
   }
 
-  public var state: MIDIPortDeviceState {
-//    return _portState.state
-    fatalError()
-  }
-
-  public var connection: MIDIPortConnectionState {
-//    return _portState.connection
-    fatalError()
-  }
-
+  public private(set) var state: MIDIPortDeviceState = .disconnected
+  public private(set) var connection: MIDIPortConnectionState = .closed
   public var onStateChange: EventHandler<Event> = nil
 
-  public func open(_ callback: () -> () = ({ _ in })) {
-//    switch state {
-//      case .open: break
-//      case .closed: break
-//      case .pending: break
-//    }
+  public func open(_ eventHandler: EventHandler<MIDIPort> = nil) {
+    guard connection != .open else { return }
+    connection = .open
+    eventHandler?(self)
   }
 
-  public func close(_ callback: () -> () = ({ _ in })) {
-    guard state != .disconnected else { return }
-    todo()
+  public func close(_ eventHandler: EventHandler<MIDIPort> = nil) {
+    guard connection != .closed else { return }
+    connection = .closed
+    onStateChange = nil
+    eventHandler?(self)
   }
 
   public var hashValue: Int {

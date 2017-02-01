@@ -44,8 +44,15 @@ public enum MIDIPortDeviceState: Equatable {
   case connected
 }
 
+///
+///
+///
 public enum MIDIPortConnectionState: Equatable {
-  case open, closed, pending
+  case open
+
+  case closed
+
+  case pending
 }
 
 func todo(_ msg: String? = nil) -> Never {
