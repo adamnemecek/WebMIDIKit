@@ -8,27 +8,66 @@
 
 import CoreMIDI
 
+public typealias EventHandler<T> = ((T) -> ())?
 
+public protocol EventTarget {
+  associatedtype Event
+  var onStateChange: EventHandler<Event> { get set }
+}
 
-public final class MIDIAccess {
+public final class MIDIAccess: EventTarget {
 //  static let sharedInstance = MIDIAccess()
+  public typealias Event = MIDIPort
+
+  public let inputs: [MIDIInput] = []
+  public let outputs: [MIDIOutput] = []
+  public var onStateChange: EventHandler<Event> = nil
 
   private var client: MIDIClient? = nil
-  fileprivate let clients: Set<MIDIClient> = []
+  private let clients: Set<MIDIClient> = []
 
-  let input: MIDIInput
-  let inputs: [MIDIInput] = []
+  private let input: MIDIInput
+  private let output: MIDIOutput
 
-  let output: MIDIOutput
-  let outputs: [MIDIOutput] = []
+  public init() {
 
-  //let clients: [MIDIClient]
+    // the callback ReceiveMidiNotify
+    let client = MIDIClient { _ in
+//            self.notification(ptr: $0)
+      fatalError()
+
+//      fatalError("stuff")
+    }
+
+    let input = MIDIInput(client: client)
+
+    self.output = MIDIOutput(client: client)
+
+    self.client = client
+    self.input = input
+
+    self.sources = MIDISources().map {
+      //
+      // connect
+      //
+      MIDIConnection(port: input,
+                     source: MIDIEndpoint(ref: $0))
+    }
+    
+    self.destinations = MIDIDestinations().map {
+      MIDIEndpoint(ref: $0)
+    }
+
+
+    self.input.onMIDIMessage = {
+      self.midi(src: 0, lst: $0)
+    }
+
+  }
 
   private(set) var sources: [MIDIConnection] = []
 
   private(set) var destinations: [MIDIEndpoint] = []
-
-  public var onStateChange: ((MIDIPort) -> ())? = nil
 
   private func notification(ptr: UnsafePointer<MIDINotification>) {
     _ = MIDIObjectAddRemoveNotification(ptr: ptr).map {
@@ -84,41 +123,7 @@ public final class MIDIAccess {
     }
   }
 
-  public init() {
 
-    // the callback ReceiveMidiNotify
-    let client = MIDIClient { _ in
-//            self.notification(ptr: $0)
-      fatalError()
-
-//      fatalError("stuff")
-    }
-
-    let input = MIDIInput(client: client)
-
-    self.output = MIDIOutput(client: client)
-
-    self.client = client
-    self.input = input
-
-    self.sources = MIDISources().map {
-      //
-      // connect
-      //
-      MIDIConnection(port: input,
-                     source: MIDIEndpoint(ref: $0))
-    }
-    
-    self.destinations = MIDIDestinations().map {
-      MIDIEndpoint(ref: $0)
-    }
-
-
-    self.input.onMIDIMessage = {
-      self.midi(src: 0, lst: $0)
-    }
-
-  }
 
   deinit {
 
