@@ -1,10 +1,10 @@
-#WebMIDIKit
+# WebMIDIKit
 
-This project is an adapted implementation of the [WebMIDI standard](https://www.w3.org/TR/webmidi/) API in Swift 
+This project is an implementation of MIDI heavily inspired by the [WebMIDI standard](https://www.w3.org/TR/webmidi/) standard. Note that there are slight API changes to account.
 
 * adapted meaning that some liberty was taken . WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit)  
 
-#Why
+
 The original MIDI standard is extremely unwieldy, it's over 900 pages and I'm not sure it's ever been implemented in it's entirety.'  
 
 WebMIDI
