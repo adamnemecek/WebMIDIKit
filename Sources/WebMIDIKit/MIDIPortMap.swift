@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-public class MIDIPortMap<Value: MIDIPort>: Collection, ExpressibleByArrayLiteral {
+public class MIDIPortMap<Value: MIDIPort>: Collection {
   public typealias Key = String
   public typealias Index = Dictionary<Key, Value>.Index
 
@@ -52,8 +52,6 @@ public class MIDIPortMap<Value: MIDIPort>: Collection, ExpressibleByArrayLiteral
 public class MIDIInputMap: MIDIPortMap<MIDIInput> {
   public override init() {
     super.init()
-    
-
   }
 }
 

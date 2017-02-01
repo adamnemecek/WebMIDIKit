@@ -55,17 +55,17 @@ public class MIDIPort: Hashable, Comparable, EventTarget {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  public func close() {
-    guard state != .disconnected else { return }
-    todo()
-  }
-
   public func open() {
 //    switch state {
 //      case .open: break
 //      case .closed: break
 //      case .pending: break
 //    }
+  }
+
+  public func close() {
+    guard state != .disconnected else { return }
+    todo()
   }
 
   public var hashValue: Int {
