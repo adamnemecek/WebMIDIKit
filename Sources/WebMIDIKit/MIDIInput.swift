@@ -20,7 +20,11 @@ import CoreMIDI
 
 public final class MIDIInput: MIDIPort { //, MIDIReceiver {
 
-  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil
+  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil {
+    didSet {
+      open()
+    }
+  }
 
   //todo ref var
 

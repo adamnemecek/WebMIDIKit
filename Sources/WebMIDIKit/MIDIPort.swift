@@ -16,11 +16,15 @@ fileprivate struct MIDIPortState: Equatable {
   }
 }
 
+//typealias Sink<T> = (T) -> ()
+
+//typealias Source<T> = () -> T
+
 ///
 /// https://www.w3.org/TR/webmidi/#midiport-interface
 ///
 
-public class MIDIPort: Hashable, Comparable, EventTarget {
+public class MIDIPort: Hashable, Comparable, CustomStringConvertible, EventTarget {
   //todo this isn't an int
   public typealias Event = Int
 
@@ -56,7 +60,7 @@ public class MIDIPort: Hashable, Comparable, EventTarget {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  public func open() {
+  public func open(_ callback: () -> () = ({ _ in })) {
 //    switch state {
 //      case .open: break
 //      case .closed: break
@@ -64,7 +68,7 @@ public class MIDIPort: Hashable, Comparable, EventTarget {
 //    }
   }
 
-  public func close() {
+  public func close(_ callback: () -> () = ({ _ in })) {
     guard state != .disconnected else { return }
     todo()
   }
@@ -81,7 +85,15 @@ public class MIDIPort: Hashable, Comparable, EventTarget {
     return lhs.ref < rhs.ref
   }
 
+  public var description: String {
+    return "Manufacturer: \(manufacturer)\n" +
+           "Name: \(name)\n" +
+           "Version: \(version)\n" +
+           "Type: \(type)\n"
+  }
+
   internal private(set) var ref: MIDIPortRef
+  //todo: should this be weak?
   internal let access: MIDIAccess
 
   internal init(ref: MIDIPortRef = 0) {
@@ -122,22 +134,8 @@ public class MIDIPort: Hashable, Comparable, EventTarget {
 //      todo("dispatch connection event")
 //    }
 //  }
-
-//  public var onStateChange: ((MIDIPort) -> ())? = nil
-
-
-
-
 }
 
-extension MIDIPort: CustomStringConvertible {
-  public var description: String {
-    return "Manufacturer: \(manufacturer)\n" +
-           "Name: \(name)\n" +
-           "Version: \(version)\n" +
-           "Type: \(type)\n"
-  }
-}
 
 
 
