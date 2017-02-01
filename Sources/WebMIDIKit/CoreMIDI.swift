@@ -58,7 +58,7 @@ internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<
   return ref
 }
 
-extension MIDIPacket : MutableCollection {
+extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
 
@@ -78,28 +78,20 @@ extension MIDIPacket : MutableCollection {
       MIDIPacketSetValue(&self, Int32(index), newValue)
     }
   }
-}
 
-extension MIDIPacket : Equatable {
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
             lhs.elementsEqual(rhs)
   }
-}
 
-extension MIDIPacket : Comparable {
   public static func <(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return lhs.timeStamp < rhs.timeStamp
   }
-}
 
-extension MIDIPacket : Hashable {
   public var hashValue: Int {
     return Int(timeStamp) ^ count
   }
-}
 
-extension MIDIPacket : ExpressibleByArrayLiteral {
   public init(arrayLiteral literal: Element...) {
 //      self.init()
 //      todo does this work?
@@ -107,9 +99,7 @@ extension MIDIPacket : ExpressibleByArrayLiteral {
       self = MIDIPacketCreate(0, literal, Int32(literal.count))
       assert(elementsEqual(literal))
   }
-}
 
-extension MIDIPacket : MutableEventType {
   public typealias Timestamp = MIDITimeStamp
   
   public var timestamp: Timestamp {
@@ -122,7 +112,7 @@ extension MIDIPacket : MutableEventType {
   }
 }
 
-extension MIDIPacketList : Sequence {
+extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLiteral {
 	public typealias Element = MIDIPacket
 
 	public func makeIterator() -> AnyIterator<Element> {
@@ -131,37 +121,19 @@ extension MIDIPacketList : Sequence {
            .prefix(Int(numPackets)).makeIterator()
 		return AnyIterator { s.next()?.pointee }
 	}
-}
 
-extension MIDIPacketList : Equatable {
   public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
     return lhs.numPackets == rhs.numPackets && lhs.elementsEqual(rhs)
   }
-}
 
-extension MIDIPacketList : Hashable {
   public var hashValue: Int {
     return numPackets.hashValue ^ packet.hashValue
   }
-}
 
-extension MIDIPacketList {
-
-  var timestamp: Element.Timestamp {
+  public var timestamp: Element.Timestamp {
     return packet.timestamp
   }
-}
 
-extension Collection where Iterator.Element == UInt8 {
-  public func iterateMIDI() -> AnyIterator<MIDIPacket> {
-    return AnyIterator {
-      todo()
-      return nil
-    }
-  }
-}
-
-extension MIDIPacketList : ExpressibleByArrayLiteral {
   //
   //
   //
@@ -189,6 +161,15 @@ extension MIDIPacketList : ExpressibleByArrayLiteral {
     //    self.init(numPackets: 1, packet: literal[0])
 
     todo("initialization")
+  }
+}
+
+extension Collection where Iterator.Element == UInt8 {
+  public func iterateMIDI() -> AnyIterator<MIDIPacket> {
+    return AnyIterator {
+      todo()
+      return nil
+    }
   }
 }
 
