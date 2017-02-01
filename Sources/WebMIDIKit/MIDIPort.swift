@@ -25,6 +25,8 @@ public class MIDIPort: Hashable, Comparable {
     todo("initportstate")
   }
 
+  
+
   private subscript(string property: CFString) -> String {
     return MIDIObjectGetStringProperty(ref: ref, property: property)
   }

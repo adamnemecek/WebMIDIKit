@@ -14,7 +14,7 @@ public struct Event {
 }
 
 protocol EventType {
-  associatedtype Timestamp
+  associatedtype Timestamp: Comparable
   var timestamp: Timestamp { get }
 }
 
@@ -23,3 +23,21 @@ protocol EventType {
 extension Collection where Iterator.Element == UInt8 {
 
 }
+
+
+//protocol TimeSeries: Collection {
+//  associatedtype Event: EventType = Iterator.Element
+//  var timerange: ClosedRange<Event.Timestamp> { get }
+//}
+
+//extension TimeSeries {
+//  var timerange: ClosedRange<Event.Timestamp>? {
+////    guard let f = first, l = 
+////    return first
+//  }
+//}
+
+//extension MIDIPacketList: TimeSeries {
+//
+//}
+

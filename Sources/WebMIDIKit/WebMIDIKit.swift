@@ -97,11 +97,8 @@ public final class MIDIAccess {
 //      fatalError("stuff")
     }
 
-    let input = MIDIInput(client: client) {
-      e in
-      //readmididispatch
-      //            self.clients
-    }
+    let input = MIDIInput(client: client)
+
     self.output = MIDIOutput(client: client)
 
     self.client = client
@@ -114,6 +111,11 @@ public final class MIDIAccess {
     
     self.destinations = MIDIDestinations().map {
       MIDIEndpoint(ref: $0)
+    }
+
+
+    self.input.onMIDIMessage = {
+      self.midi(src: 0, lst: $0)
     }
 
   }

@@ -82,7 +82,7 @@ extension MIDIPacket: MutableCollection {
 extension MIDIPacket: Equatable {
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
-      lhs.elementsEqual(rhs)
+            lhs.elementsEqual(rhs)
   }
 }
 
@@ -100,8 +100,10 @@ extension MIDIPacket: Hashable {
 
 extension MIDIPacket: ExpressibleByArrayLiteral {
   public init(arrayLiteral literal: Element...) {
-      self.init()
-      memcmp(&data, literal, literal.count/4)
+//      self.init()
+//      todo does this work?
+//      memcmp(&data, literal, literal.count/4)
+      self = MIDIPacketCreate(0, literal, Int32(literal.count))
       assert(elementsEqual(literal))
   }
 }
@@ -163,7 +165,12 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
 
   public init(arrayLiteral literal: Element...) {
     self.init()
-    MIDIPacketListInit(&self)
+//    self = MIDIPacketListInit
+//    MIDIPacketListInit(&self)
+//    literal.forEach {
+//      var p = $0
+//      MIDIPacketListAdd(&self, 0, &p, 0, 0, )
+//    }
 
     //    literal.forEach {
     //      MIDIPacketListAdd(<#T##pktlist: UnsafeMutablePointer<MIDIPacketList>##UnsafeMutablePointer<MIDIPacketList>#>, <#T##listSize: Int##Int#>, <#T##curPacket: UnsafeMutablePointer<MIDIPacket>##UnsafeMutablePointer<MIDIPacket>#>, <#T##time: MIDITimeStamp##MIDITimeStamp#>, <#T##nData: Int##Int#>, <#T##data: UnsafePointer<UInt8>##UnsafePointer<UInt8>#>)
@@ -176,6 +183,8 @@ extension MIDIPacketList: ExpressibleByArrayLiteral {
 
     todo("initialization")
   }
+
+
 }
 
 extension MIDIObjectAddRemoveNotification {

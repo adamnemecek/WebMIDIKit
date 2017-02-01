@@ -22,6 +22,8 @@ WebMIDI
 <!--      let connection: MIDIPortConnectionState-->
 <!--```-->
 
+# Extensions
+
 ### MIDIInput: MIDIPort
 MIDIInputPort {
   

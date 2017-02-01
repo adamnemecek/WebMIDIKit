@@ -8,6 +8,13 @@
 
 import CoreMIDI
 
+extension MIDIPort {
+  internal convenience init(ref: MIDIPortRef, callback: (MIDIPort) -> ()) {
+    self.init(ref: ref)
+    callback(self)
+  }
+}
+
 public final class MIDIInput: MIDIPort {
   //todo ref var
   internal init(client: MIDIClient) {
