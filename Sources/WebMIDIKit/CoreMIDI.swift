@@ -132,16 +132,11 @@ extension MIDIPacketList: Sequence {
   }
 
   public func makeIterator() -> AnyIterator<Element> {
-    var current = packet
-    var idx = 0
-
+    var first = packet
+    let s = sequence(first: &first) { MIDIPacketNext($0) }
+    var z = zip(0..<numPackets, s).makeIterator()
     return AnyIterator {
-      guard idx < self.count else { return nil }
-      defer {
-        current = MIDIPacketNext(&current).pointee
-        idx += 1
-      }
-      return current
+      z.next()?.1.pointee
     }
   }
 }

@@ -76,8 +76,7 @@ public final class MIDIAccess {
   }
 
   private func midi(src: MIDIEndpointRef, lst: UnsafePointer<MIDIPacketList>) {
-    let first = sources.first { $0.source.ref == src }
-    _ = first.map {
+    _ = sources.first { $0.source.ref == src }.map {
       _ in
       lst.pointee.forEach {
           packet in
@@ -103,6 +102,9 @@ public final class MIDIAccess {
     self.input = input
 
     self.sources = MIDISources().map {
+      //
+      // connect
+      //
       MIDIConnection(port: input,
                      source: MIDIEndpoint(ref: $0))
     }
@@ -123,6 +125,15 @@ public final class MIDIAccess {
   }
 }
 
+
+func test() {
+  let access = MIDIAccess()
+  let p: MIDIPacket = [1,2,3]
+
+
+
+
+}
 
 
 

@@ -8,11 +8,15 @@
 
 import CoreMIDI
 
-public struct MIDIPortMap<Value: MIDIPort>: Collection {
+public class MIDIPortMap<Value: MIDIPort>: Collection {
   public typealias Key = String
   public typealias Index = Dictionary<Key, Value>.Index
 
-  private var content: [Key: Value]
+  fileprivate var content: [Key: Value]
+
+  public init() {
+    content = [:]
+  }
 
   public var startIndex: Index {
     return content.startIndex
@@ -39,6 +43,16 @@ public struct MIDIPortMap<Value: MIDIPort>: Collection {
     return content.index(after: i)
   }
 }
+
+
+public class MIDIInputMap: MIDIPortMap<MIDIInput> {
+  public override init() {
+    super.init()
+    
+
+  }
+}
+
 //
 //extension MIDIPortMap where Value: Equatable {
 //
