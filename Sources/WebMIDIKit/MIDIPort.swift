@@ -16,7 +16,69 @@ fileprivate struct MIDIPortState: Equatable {
   }
 }
 
-public class MIDIPort: Hashable, Comparable {
+///
+/// https://www.w3.org/TR/webmidi/#midiport-interface
+///
+
+public class MIDIPort: Hashable, Comparable, EventTarget {
+  public typealias Event = Int
+
+  public var id: Int {
+    return self[int: kMIDIPropertyUniqueID]
+  }
+
+  public var manufacturer: String {
+    return self[string: kMIDIPropertyManufacturer]
+  }
+
+  public var name: String {
+    return self[string: kMIDIPropertyDisplayName]
+  }
+
+  public var type: MIDIPortType {
+    return MIDIPortType(MIDIObjectGetType(id: id))
+  }
+
+  public var version: Int {
+    return self[int: kMIDIPropertyDriverVersion]
+  }
+
+  public var state: MIDIPortDeviceState {
+//    return _portState.state
+    fatalError()
+  }
+
+  public var connection: MIDIPortConnectionState {
+//    return _portState.connection
+    fatalError()
+  }
+
+  public var onStateChange: EventHandler<Event> = nil
+
+  public func close() {
+    guard state != .disconnected else { return }
+    todo()
+  }
+
+  public func open() {
+//    switch state {
+//      case .open: break
+//      case .closed: break
+//      case .pending: break
+//    }
+  }
+
+  public var hashValue: Int {
+    return ref.hashValue
+  }
+
+  public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+    return lhs.ref == rhs.ref
+  }
+
+  public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+    return lhs.ref < rhs.ref
+  }
 
   internal private(set) var ref: MIDIPortRef
 
@@ -42,37 +104,6 @@ public class MIDIPort: Hashable, Comparable {
     return MIDIObjectGetIntProperty(ref: ref, property: property)
   }
 
-  public var id: Int {
-    return self[int: kMIDIPropertyUniqueID]
-  }
-
-  public var manufacturer: String {
-    return self[string: kMIDIPropertyManufacturer]
-  }
-
-  public var name: String {
-    return self[string: kMIDIPropertyDisplayName]
-  }
-
-  public var version: Int {
-    return self[int: kMIDIPropertyDriverVersion]
-  }
-
-  public var type: MIDIPortType {
-    return MIDIPortType(MIDIObjectGetType(id: id))
-  }
-
-  public var hashValue: Int {
-    return ref.hashValue
-  }
-
-  public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-    return lhs.ref == rhs.ref
-  }
-
-  public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-    return lhs.ref < rhs.ref
-  }
 
   //
   // TODO: when is this set again
@@ -84,31 +115,11 @@ public class MIDIPort: Hashable, Comparable {
 //      todo("dispatch connection event")
 //    }
 //  }
-  public var state: MIDIPortDeviceState {
-//    return _portState.state
-    fatalError()
-  }
-
-  public var connection: MIDIPortConnectionState {
-//    return _portState.connection
-    fatalError()
-  }
 
 //  public var onStateChange: ((MIDIPort) -> ())? = nil
 
 
-  public func close() {
-    guard state != .disconnected else { return }
-    todo()
-  }
 
-  public func open() {
-//    switch state {
-//      case .open: break
-//      case .closed: break
-//      case .pending: break
-//    }
-  }
 
 }
 

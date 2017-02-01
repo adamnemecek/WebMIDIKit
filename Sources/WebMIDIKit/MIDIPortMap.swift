@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-public class MIDIPortMap<Value: MIDIPort>: Collection {
+public class MIDIPortMap<Value: MIDIPort>: Collection, ExpressibleByArrayLiteral {
   public typealias Key = String
   public typealias Index = Dictionary<Key, Value>.Index
 
@@ -42,10 +42,22 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
   public func index(after i: Index) -> Index {
     return content.index(after: i)
   }
+
+//  public init(arrayLiteral literal: Value...) {
+//
+//  }
 }
 
 
 public class MIDIInputMap: MIDIPortMap<MIDIInput> {
+  public override init() {
+    super.init()
+    
+
+  }
+}
+
+public class MIDIOutputMap: MIDIPortMap<MIDIInput> {
   public override init() {
     super.init()
     

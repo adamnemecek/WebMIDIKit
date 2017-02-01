@@ -19,9 +19,10 @@ public final class MIDIAccess: EventTarget {
 //  static let sharedInstance = MIDIAccess()
   public typealias Event = MIDIPort
 
-  public let inputs: [MIDIInput] = []
+  public let inputs: MIDIInputMap
   public let outputs: [MIDIOutput] = []
   public var onStateChange: EventHandler<Event> = nil
+
 
   private var client: MIDIClient? = nil
   private let clients: Set<MIDIClient> = []
