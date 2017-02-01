@@ -81,7 +81,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
-            lhs.elementsEqual(rhs)
+           lhs.elementsEqual(rhs)
   }
 
   public static func <(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
@@ -114,6 +114,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
 extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLiteral {
 	public typealias Element = MIDIPacket
+  public typealias Timestamp = Element.Timestamp
 
 	public func makeIterator() -> AnyIterator<Element> {
 		var first = packet
@@ -130,7 +131,7 @@ extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLite
     return numPackets.hashValue ^ packet.hashValue
   }
 
-  public var timestamp: Element.Timestamp {
+  public var timestamp: Timestamp {
     return packet.timestamp
   }
 

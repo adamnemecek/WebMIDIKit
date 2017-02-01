@@ -21,12 +21,11 @@ fileprivate struct MIDIPortState: Equatable {
 //typealias Source<T> = () -> T
 
 /// This interface represents a MIDI input or output port.
-/// https://www.w3.org/TR/webmidi/#midiport-interface
+/// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
 public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible, EventTarget {
 
   //todo this isn't an int
   public typealias Event = MIDIPort
-
 
   /// A unique ID of the port. This can be used by developers to remember ports
   /// the user has chosen for their application. The User Agent must ensure that
@@ -131,7 +130,6 @@ public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible,
 
   internal init(access: MIDIAccess/*port state*/) {
     self.access = access
-    todo("initportstate")
   }
 
   //  internal init(input client: MIDIClient) {
