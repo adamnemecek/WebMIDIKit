@@ -10,8 +10,8 @@ import CoreMIDI
 
 
 public final class MIDIOutput: MIDIPort {
-  internal init(client: MIDIClient) {
-    super.init(ref: MIDIOutputPortRefCreate(ref: client.ref))
+  internal init(access: MIDIAccess) {
+    super.init(access: access, ref: MIDIOutputPortRefCreate(ref: access.client!.ref))
   }
 
   public func send<S: Sequence>(data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {

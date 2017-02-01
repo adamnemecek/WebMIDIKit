@@ -29,8 +29,8 @@ public final class MIDIAccess: EventTarget {
   internal private(set) var client: MIDIClient? = nil
   private let clients: Set<MIDIClient> = []
 
-  private let input: MIDIInput
-  private let output: MIDIOutput
+  private var input: MIDIInput! = nil
+  private var output: MIDIOutput! = nil
 
   public init() {
 
@@ -41,14 +41,11 @@ public final class MIDIAccess: EventTarget {
 
 //      fatalError("stuff")
     }
-    fatalError()
-
-//    let input = MIDIInput(client: client)
-
-    self.output = MIDIOutput(client: client)
-
+//    fatalError()
     self.client = client
-//    self.input = input
+
+    self.input = MIDIInput(access: self)
+    self.output = MIDIOutput(access: self)
 
     self.sources = MIDISources().map {
       //

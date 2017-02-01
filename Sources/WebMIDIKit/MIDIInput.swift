@@ -28,14 +28,12 @@ public final class MIDIInput: MIDIPort { //, MIDIReceiver {
 
   //todo ref var
 
-  internal override init(access: MIDIAccess) {
-    super.init(access: access)
-//    self.ref = MIDIInputPortCreate(ref: access.client) {
-//      
-//    }
-//    self.ref = MIDIInputPortCreate(ref: client.ref) { packet in
-//      self.onMIDIMessage.map { $0(packet) }
-//    }
+  internal init(access: MIDIAccess) {
+    super.init(access: access, ref: 0)
+
+    self.ref = MIDIInputPortCreate(ref: access.client!.ref) {
+      self.onMIDIMessage?($0)
+    }
   }
 
   final override public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {

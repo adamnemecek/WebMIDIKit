@@ -103,6 +103,7 @@ public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible,
     return ref.hashValue
   }
 
+  /// Two ports are equal todo
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     //    return lhs.ref == rhs.ref todo read documnetation?
     return lhs.id == rhs.id
@@ -119,17 +120,18 @@ public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible,
     "Type: \(type)\n"
   }
 
-  internal private(set) var ref: MIDIPortRef
+  internal var ref: MIDIPortRef
   //todo: should this be weak?
   internal let access: MIDIAccess
 
-  internal init(ref: MIDIPortRef = 0) {
-    self.ref = ref
-    todo("initportstate")
-  }
+//  internal init(ref: MIDIPortRef = 0) {
+//    self.ref = ref
+//    todo("initportstate")
+//  }
 
-  internal init(access: MIDIAccess/*port state*/) {
+  internal init(access: MIDIAccess, ref: @autoclosure () -> (MIDIPortRef)) {
     self.access = access
+    self.ref = ref()
   }
 
   //  internal init(input client: MIDIClient) {
