@@ -117,29 +117,28 @@ extension MIDIPacket: ExpressibleByArrayLiteral {
 //}
 
 extension MIDIPacketList: Sequence {
-  public typealias Element = MIDIPacket
+	public typealias Element = MIDIPacket
 
-  //
-  // Note that, despite the fact that MIDIPacketList has a count property
-  // you cannot make it a Collection because the single packets are variable
-  // length
-  //
-  public var count: Int {
-    @inline(__always)
-    get {
-      return Int(numPackets)
-    }
-  }
+	//
+	// Note that, despite the fact that MIDIPacketList has a count property
+	// you cannot make it a Collection because the single packets are variable
+	// length
+	//
+	public var count: Int {
+		@inline(__always)
+		get {
+			return Int(numPackets)
+		}
+	}
 
-  public func makeIterator() -> AnyIterator<Element> {
-    var first = packet
-    let s = sequence(first: &first) { MIDIPacketNext($0) }
-    var z = zip(0..<numPackets, s).makeIterator()
-    return AnyIterator {
-      z.next()?.1.pointee
-    }
-  }
+	public func makeIterator() -> AnyIterator<Element> {
+		var first = packet
+		let s = sequence(first: &first) { MIDIPacketNext($0) }
+           .prefix(count).makeIterator()
+		return AnyIterator { s.next()?.pointee }
+	}
 }
+
 
 extension MIDIPacketList: Equatable {
   public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {

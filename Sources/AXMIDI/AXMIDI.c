@@ -12,7 +12,7 @@ Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
 	return packet.data[index];
 }
 
-void MIDIPacketSetValue(MIDIPacket * const packet, int index, Byte value) {
+void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
 	packet->data[index] = value;
 }
 
