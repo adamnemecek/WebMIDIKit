@@ -83,7 +83,7 @@ public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible,
   ///
   ///
   ///
-  open func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     //    guard connection != .open else { return }
     connection = .open
     eventHandler?(self)
@@ -92,7 +92,7 @@ public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible,
   ///
   ///
   ///
-  open func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     //    guard connection != .closed else { return }
     connection = .closed
     onStateChange = nil

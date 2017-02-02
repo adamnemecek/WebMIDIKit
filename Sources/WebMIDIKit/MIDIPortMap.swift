@@ -14,9 +14,9 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
 
   fileprivate var content: [Key: Value]
 
-  public init() {
-    content = [:]
-  }
+//  public init() {
+//    content = [:]
+//  }
 
   public var startIndex: Index {
     return content.startIndex
@@ -36,11 +36,19 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
   }
 
   public subscript(index: Index) -> (Key, Value) {
+    assert(content[index].value.connection == .open)
     return content[index]
   }
 
   public func index(after i: Index) -> Index {
     return content.index(after: i)
+  }
+
+  internal let access: MIDIAccess
+
+  internal init(access: MIDIAccess) {
+    self.access = access
+    content = [:]
   }
 
 //  public init(arrayLiteral literal: Value...) {
@@ -50,14 +58,15 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
 
 
 public class MIDIInputMap: MIDIPortMap<MIDIInput> {
-  public override init() {
-    super.init()
+  internal override init(access: MIDIAccess) {
+    super.init(access: access)
+
   }
 }
 
 public class MIDIOutputMap: MIDIPortMap<MIDIOutput> {
-  public override init() {
-    super.init()
+  internal override init(access: MIDIAccess) {
+    super.init(access: access)
     
 
   }

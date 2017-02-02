@@ -21,12 +21,12 @@ public final class MIDIAccess: EventTarget {
 //  static let sharedInstance = MIDIAccess()
   public typealias Event = MIDIPort
 
-  public private(set) var inputs = MIDIInputMap()
-  public private(set) var outputs = MIDIOutputMap()
+  public private(set) var inputs: MIDIInputMap! = nil
+  public private(set) var outputs: MIDIOutputMap! = nil
 
   public var onStateChange: EventHandler<Event> = nil
 
-  internal private(set) var client: MIDIClient? = nil
+  internal private(set) var client: MIDIClient! = nil
   private let clients: Set<MIDIClient> = []
 
   private var input: MIDIInput! = nil
@@ -43,6 +43,9 @@ public final class MIDIAccess: EventTarget {
     }
 //    fatalError()
     self.client = client
+
+    self.inputs = MIDIInputMap(access: self)
+    self.outputs = MIDIOutputMap(access: self)
 
     self.input = MIDIInput(access: self)
     self.output = MIDIOutput(access: self)

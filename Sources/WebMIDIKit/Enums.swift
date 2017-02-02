@@ -19,7 +19,6 @@ public enum MIDIPortType: Equatable {
   /// If a MIDIPort is an input port, the type member must be this value.
   case input
 
-
   /// If a MIDIPort is an output port, the type member must be this value.
   case output
 
