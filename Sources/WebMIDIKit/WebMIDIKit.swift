@@ -17,7 +17,7 @@ public protocol EventTarget {
 
 ///
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
-public final class MIDIAccess : EventTarget {
+public final class MIDIAccess : EventTarget, CustomStringConvertible {
 //  static let sharedInstance = MIDIAccess()
   public typealias Event = MIDIPort
 
@@ -96,8 +96,11 @@ public final class MIDIAccess : EventTarget {
       default:
         break
       }
-
     }
+  }
+
+  public var description: String {
+    fatalError()
   }
 
   internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {

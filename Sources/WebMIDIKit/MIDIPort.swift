@@ -71,9 +71,20 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   /// The state of the device.
   public private(set) var state: MIDIPortDeviceState = .disconnected
+//{
+//    didSet {
+//      guard oldValue != state else { return }
+//      onStateChange?(self)
+//    }
+//  }
 
   /// The state of the connection to the device.
-  public private(set) var connection: MIDIPortConnectionState = .closed
+  public private(set) var connection: MIDIPortConnectionState = .closed {
+    didSet {
+      guard oldValue != connection else { return }
+      onStateChange?(self)
+    }
+  }
 
   ///
   ///
@@ -95,6 +106,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     //    guard connection != .closed else { return }
     connection = .closed
+
     onStateChange = nil
     eventHandler?(self)
   }
@@ -114,10 +126,9 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 
   public var description: String {
-    return "Manufacturer: \(manufacturer)\n" +
+    return "Type: \(type)\n" +
+           "Manufacturer: \(manufacturer)\n" +
            "Name: \(name)\n" +
-           "Version: \(version)\n" +
-           "Type: \(type)\n" +
            "Id: \(id)"
   }
 
@@ -134,7 +145,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   internal init(client: MIDIClient, endpoint: MIDIEndpoint? = nil, ref: @autoclosure () -> (MIDIPortRef)) {
     self.client = client
-    self.endpoint = endpoint
+    self.endpoint = endpoint ?? MIDIEndpoint()
     self.ref = ref()
   }
 

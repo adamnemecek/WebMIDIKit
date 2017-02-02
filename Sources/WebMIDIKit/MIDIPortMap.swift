@@ -54,7 +54,9 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     self.client = client
     content = [:]
   }
-
+  //
+  // todo should this be doing key, value?
+  //
   internal subscript (endpoint: MIDIEndpoint) -> Value? {
     get {
       return content.first { $0.value.endpoint == endpoint }?.value

@@ -26,8 +26,6 @@ public final class MIDIInput : MIDIPort { //, MIDIReceiver {
     }
   }
 
-  //todo ref var
-
   internal init(client: MIDIClient, endpoint: MIDIEndpoint? = nil) {
     super.init(client: client, endpoint: endpoint, ref: 0) //todo 0?
   }
