@@ -6,8 +6,9 @@
 //
 //
 
-#import <CoreMIDI/CoreMIDI.h>
+#pragma once
 
+#import <CoreMIDI/CoreMIDI.h>
 //
 // Note that marking packet as const 
 //

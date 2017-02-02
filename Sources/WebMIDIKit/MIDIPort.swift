@@ -22,7 +22,7 @@ fileprivate struct MIDIPortState: Equatable {
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
-public class MIDIPort: Equatable, Comparable, Hashable, CustomStringConvertible, EventTarget {
+public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible, EventTarget {
 
   //todo this isn't an int
   public typealias Event = MIDIPort

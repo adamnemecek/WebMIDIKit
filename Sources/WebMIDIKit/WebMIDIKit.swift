@@ -17,7 +17,7 @@ public protocol EventTarget {
 
 ///
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
-public final class MIDIAccess: EventTarget {
+public final class MIDIAccess : EventTarget {
 //  static let sharedInstance = MIDIAccess()
   public typealias Event = MIDIPort
 
@@ -79,6 +79,7 @@ public final class MIDIAccess: EventTarget {
 
       switch (ptr.pointee.messageID, $0.childType) {
       case (.msgObjectAdded, .source):
+//        let q = self.inputs.first {  $0.1.ref }
         if let s = (sources.first { $0.source == endpoint }) {
           todo("port.state = .connected")
           clients.forEach {
@@ -88,6 +89,7 @@ public final class MIDIAccess: EventTarget {
         else {
           let conn = MIDIConnection(port: self.input, source: endpoint)
           self.sources.append(conn)
+//            self.inputs[]
         }
       case (.msgObjectAdded, .destination):
         if !destinations.appendUnique(newElement: endpoint) {

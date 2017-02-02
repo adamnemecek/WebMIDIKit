@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-internal final class MIDIClient: Comparable, Hashable {
+internal final class MIDIClient : Comparable, Hashable {
     let ref: MIDIClientRef
 
     internal init(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) {

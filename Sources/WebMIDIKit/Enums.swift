@@ -14,7 +14,7 @@ import CoreMIDI
 /// be "input".
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortType)
 ///
-public enum MIDIPortType: Equatable {
+public enum MIDIPortType : Equatable {
 
   /// If a MIDIPort is an input port, the type member must be this value.
   case input
@@ -36,7 +36,7 @@ public enum MIDIPortType: Equatable {
 
 /// The state of the device.
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortDeviceState)
-public enum MIDIPortDeviceState: Equatable {
+public enum MIDIPortDeviceState : Equatable {
 
   /// The device that MIDIPort represents is disconnected from the system. When
   /// a device is disconnected from the system, it should not appear in the
@@ -51,7 +51,7 @@ public enum MIDIPortDeviceState: Equatable {
 
 /// The state of the connection to the device.
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortConnectionState)
-public enum MIDIPortConnectionState: Equatable {
+public enum MIDIPortConnectionState : Equatable {
 
   /// The device that MIDIPort represents has been opened (either implicitly or
   /// explicitly) and is available for use.

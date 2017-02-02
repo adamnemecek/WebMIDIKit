@@ -18,7 +18,7 @@ public protocol EventType {
   var timestamp: Timestamp { get }
 }
 
-public protocol MutableEventType: EventType {
+public protocol MutableEventType : EventType {
   var timestamp: Timestamp { get set }
 }
 
