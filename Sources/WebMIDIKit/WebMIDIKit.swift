@@ -26,7 +26,7 @@ public final class MIDIAccess : EventTarget {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  internal private(set) var client: MIDIClient! = nil
+  internal let client: MIDIClient
   private let clients: Set<MIDIClient> = []
 
   private var input: MIDIInput! = nil
@@ -35,25 +35,28 @@ public final class MIDIAccess : EventTarget {
   public init() {
     // the callback ReceiveMidiNotify
 
-    self.client = MIDIClient()
+    let client = MIDIClient()
 
-    self.inputs = MIDIInputMap(client: self.client)
-    self.outputs = MIDIOutputMap(client: self.client)
+    self.client = client
+    self.inputs = MIDIInputMap(client: client)
+    self.outputs = MIDIOutputMap(client: client)
 
+
+    /// these are virtual ports, i.e. ports without an associated endpoint
     self.input = MIDIInput(client: client)
     self.output = MIDIOutput(client: client)
 
-    self.sources = MIDISources().map {
-      //
-      // connect
-      //
-      MIDIConnection(port: input,
-                     source: MIDIEndpoint(ref: $0))
-    }
-    
-    self.destinations = MIDIDestinations().map {
-      MIDIEndpoint(ref: $0)
-    }
+//    self.sources = MIDISources().map {
+//      //
+//      // connect
+//      //
+//      MIDIConnection(port: input,
+//                     source: MIDIEndpoint(ref: $0))
+//    }
+//    
+//    self.destinations = MIDIDestinations().map {
+//      MIDIEndpoint(ref: $0)
+//    }
 
 
     self.input.onMIDIMessage = {
@@ -62,54 +65,38 @@ public final class MIDIAccess : EventTarget {
 
   }
 
-  private(set) var sources: [MIDIConnection] = []
+//  private(set) var sources: [MIDIConnection] = []
 
-  private(set) var destinations: [MIDIEndpoint] = []
+//  private(set) var destinations: [MIDIEndpoint] = []
 
   private func notification(ptr: UnsafePointer<MIDINotification>) {
+    //todo string(p.id)
     _ = MIDIObjectAddRemoveNotification(ptr: ptr).map {
-      let endpoint = MIDIEndpoint(ref: $0.child)
+      let endpoint = $0.endpoint
+      let type = MIDIPortType($0.childType)
 
-      switch (ptr.pointee.messageID, $0.childType) {
-      case (.msgObjectAdded, .source):
-//        let q = self.inputs.first {  $0.1.ref }
-        if let s = (sources.first { $0.source == endpoint }) {
-          todo("port.state = .connected")
-          clients.forEach {
-            _ in
-          }
-        }
-        else {
-          let conn = MIDIConnection(port: self.input, source: endpoint)
-          self.sources.append(conn)
-//            self.inputs[]
-        }
-      case (.msgObjectAdded, .destination):
-        if !destinations.appendUnique(newElement: endpoint) {
-          //setoutputportstate(port, opened)
-        }
-      case (.msgObjectRemoved, .source):
-        sources = sources.filter {
-          let remove = $0.source == endpoint
-          if remove {
-            //            $0.port.connection = .disconnected
-          }
-          return remove
-        }
-        if let _ = (sources.first { $0.source == endpoint }) {
+      switch (ptr.pointee.messageID, type) {
 
-          //setinputportstate, disconnected
-        }
+      case (.msgObjectAdded, .input):
+        let p = MIDIInput(client: self.client, endpoint: endpoint)
+        self.inputs[String(p.id)] = p
 
-      case (.msgObjectRemoved, .destination):
-        if destinations.contains(endpoint) {
-          //setoutputportstate(d, disconnected)
-        }
-        else {
+      case (.msgObjectAdded, .output):
+        let p = MIDIOutput(client: self.client, endpoint: endpoint)
+        self.outputs[String(p.id)] = p
 
-        }
-      default: break
+      case (.msgObjectRemoved, .input):
+        assert(self.inputs[endpoint] != nil)
+        self.inputs[endpoint] = nil
+
+      case (.msgObjectRemoved, .output):
+        assert(self.outputs[endpoint] != nil)
+        self.outputs[endpoint] = nil
+
+      default:
+        break
       }
+
     }
   }
 
@@ -123,12 +110,12 @@ public final class MIDIAccess : EventTarget {
   }
 
   private func midi(src: MIDIEndpointRef, lst: UnsafePointer<MIDIPacketList>) {
-    _ = sources.first { $0.source.ref == src }.map {
-      _ in
-      lst.pointee.forEach {
-          packet in
-      }
-    }
+//    _ = sources.first { $0.source.ref == src }.map {
+//      _ in
+//      lst.pointee.forEach {
+//          packet in
+//      }
+//    }
   }
 
 

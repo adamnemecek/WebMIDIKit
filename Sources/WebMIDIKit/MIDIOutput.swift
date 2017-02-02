@@ -10,8 +10,13 @@ import CoreMIDI
 
 
 public final class MIDIOutput : MIDIPort {
-  internal init(client: MIDIClient) {
-    super.init(client: client, ref: MIDIOutputPortRefCreate(ref: client.ref))
+  internal init(client: MIDIClient, endpoint: MIDIEndpoint? = nil) {
+    super.init(client: client, endpoint: endpoint, ref: MIDIOutputPortRefCreate(ref: client.ref))
+  }
+
+  public override func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+    super.open(eventHandler)
+    //
   }
 
   public func send<S: Sequence>(data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {

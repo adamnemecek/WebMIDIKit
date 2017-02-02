@@ -15,13 +15,13 @@ import CoreMIDI
 //  }
 //}
 
-func callback(ptr: UnsafePointer<MIDINotification>) {
+fileprivate func callback(ptr: UnsafePointer<MIDINotification>) {
 //  NotificationCenter.default.post(Notification())
 }
 
 
 ///
-///
+/// Kind of like a session or context.
 ///
 internal final class MIDIClient : Comparable, Hashable {
     let ref: MIDIClientRef

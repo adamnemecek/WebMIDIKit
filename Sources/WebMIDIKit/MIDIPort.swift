@@ -100,7 +100,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 
   public var hashValue: Int {
-    return ref.hashValue
+    return id
   }
 
   /// Two ports are equal todo
@@ -115,23 +115,26 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   public var description: String {
     return "Manufacturer: \(manufacturer)\n" +
-      "Name: \(name)\n" +
-      "Version: \(version)\n" +
-    "Type: \(type)\n"
+           "Name: \(name)\n" +
+           "Version: \(version)\n" +
+           "Type: \(type)\n" +
+           "Id: \(id)"
   }
 
   internal var ref: MIDIPortRef
   //todo: should this be weak?
 //  internal let access: MIDIAccess
   internal let client: MIDIClient
+  internal let endpoint: MIDIEndpoint?
 
 //  internal init(ref: MIDIPortRef = 0) {
 //    self.ref = ref
 //    todo("initportstate")
 //  }
 
-  internal init(client: MIDIClient, ref: @autoclosure () -> (MIDIPortRef)) {
+  internal init(client: MIDIClient, endpoint: MIDIEndpoint? = nil, ref: @autoclosure () -> (MIDIPortRef)) {
     self.client = client
+    self.endpoint = endpoint
     self.ref = ref()
   }
 

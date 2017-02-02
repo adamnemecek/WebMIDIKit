@@ -31,8 +31,10 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
       assert(content[key]?.connection == .open)
       return content[key]
     }
+    //
+    // this is called by the notification handler in midiaccess
+    //
     set {
-//      assert(content[index].value.connection == .open)
       content[key] = newValue
     }
   }
@@ -53,6 +55,16 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     content = [:]
   }
 
+  internal subscript (endpoint: MIDIEndpoint) -> Value? {
+    get {
+      return content.first { $0.value.endpoint == endpoint }?.value
+    }
+    set {
+      guard let id = (newValue ?? self[endpoint])?.id else { return }
+      //should i be closing it?
+      self[String(id)] = newValue
+    }
+  }
 //  public init(arrayLiteral literal: Value...) {
 //
 //  }
@@ -62,8 +74,8 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 public class MIDIInputMap : MIDIPortMap<MIDIInput> {
   internal override init(client: MIDIClient) {
     super.init(client: client)
-    MIDISources().forEach { _ in
-      self.content[""] = MIDIInput(client: client)
+    MIDISources().forEach {
+      self[$0] = MIDIInput(client: client, endpoint: $0)
     }
   }
 }
@@ -71,8 +83,8 @@ public class MIDIInputMap : MIDIPortMap<MIDIInput> {
 public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
   internal override init(client: MIDIClient) {
     super.init(client: client)
-    MIDIDestinations().forEach { _ in
-      self.content[""] = MIDIOutput(client: client)
+    MIDIDestinations().forEach {
+      self[$0] = MIDIOutput(client: client, endpoint: $0)
     }
   }
 }

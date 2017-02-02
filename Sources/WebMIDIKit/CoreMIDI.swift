@@ -29,12 +29,16 @@ internal func MIDIObjectGetType(id: Int) -> MIDIObjectType {
   return type
 }
 
-internal func MIDISources() -> [MIDIEndpointRef] {
-  return (0..<MIDIGetNumberOfSources()).map(MIDIGetSource)
+internal func MIDISources() -> [MIDIEndpoint] {
+  return (0..<MIDIGetNumberOfSources()).map {
+    MIDIEndpoint(ref: MIDIGetSource($0))
+  }
 }
 
-internal func MIDIDestinations() -> [MIDIEndpointRef] {
-  return (0..<MIDIGetNumberOfDestinations()).map(MIDIGetDestination)
+internal func MIDIDestinations() -> [MIDIEndpoint] {
+  return (0..<MIDIGetNumberOfDestinations()).map{
+    MIDIEndpoint(ref: MIDIGetDestination($0))
+  }
 }
 
 internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) -> MIDIPortRef {
@@ -112,13 +116,21 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 }
 
-extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLiteral {
+//extension MIDIPacket : RangeReplaceableCollection {
+//  mutating
+//  public func replaceSubrange<C : Collection>(_ subrange: Range<Index>, with newElements: C) where C.Iterator.Element == Element {
+////    let diff = Int(numericCast(newElements.count)) - Int(numericCast(count))
+//
+//    fatalError()
+//  }
+//}
+
+extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral {
   public typealias Element = MIDIPacket
   public typealias Timestamp = Element.Timestamp
 
   public func makeIterator() -> AnyIterator<Element> {
     var first = packet
-
     let s = sequence(first: &first) { MIDIPacketNext($0) }
       .prefix(Int(numPackets)).makeIterator()
     return AnyIterator { s.next()?.pointee }
@@ -126,6 +138,10 @@ extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLite
 
   public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
     return lhs.numPackets == rhs.numPackets && lhs.elementsEqual(rhs)
+  }
+
+  public static func <(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
+    return lhs.timestamp < rhs.timestamp
   }
 
   public var hashValue: Int {
@@ -214,14 +230,13 @@ extension MIDIObjectAddRemoveNotification: CustomStringConvertible {
 
   public var description: String {
     return Mirror(reflecting: self).children.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
-//    return
-//      "id \(messageID)\n" +
-//      "size \(messageSize)\n" +
-//      "child \(child)" +
-//      "childType \(childType)" +
-//      "parent \(parent)" +
-//      "parentType \(parentType)"
   }
+
+  internal var endpoint: MIDIEndpoint {
+    return MIDIEndpoint(ref: child)
+  }
+
+//  var type: M
 }
 
 

@@ -46,6 +46,21 @@ public extension EventType where Timestamp == MIDITimeStamp {
   }
 }
 
+//struct TimeSignature: Equatable {
+//	let numerator: Int
+//	let denominator: Int
+//}
+//
+//func ==(lhs: TimeSignature, rhs: TimeSignature) -> Bool {
+//	return lhs.numerator == rhs.numerator &&
+//		   lhs.denominator == rhs.denominator
+//}
+//
+//func /(lhs: Int, rhs: Int) -> TimeSignature {
+//	return TimeSignature(numerator: lhs, denominator: rhs)
+//}
+
+
 // todo: chrome has this do this for events
 //extension MIDIPacket {
 //  var seconds: Double {

@@ -28,13 +28,15 @@ public final class MIDIInput : MIDIPort { //, MIDIReceiver {
 
   //todo ref var
 
-  internal init(client: MIDIClient) {
-    super.init(client: client, ref: 0)
+  internal init(client: MIDIClient, endpoint: MIDIEndpoint? = nil) {
+    super.init(client: client, endpoint: endpoint, ref: 0) //todo 0?
   }
 
   final override public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     super.open {
       self.ref = MIDIInputPortCreate(ref: self.client.ref) {
+        // what happens with virtual ports that don't have an endpoint
+        MIDIPortConnectSource(self.ref, self.endpoint?.ref ?? 0, nil)
         self.onMIDIMessage?($0)
       }
 
@@ -49,6 +51,6 @@ public final class MIDIInput : MIDIPort { //, MIDIReceiver {
   }
 
   deinit {
-
+    close()
   }
 }
