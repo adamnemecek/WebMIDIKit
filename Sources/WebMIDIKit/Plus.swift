@@ -22,6 +22,24 @@ public protocol MutableEventType : EventType {
   var timestamp: Timestamp { get set }
 }
 
+//public protocol TimeSeries: Sequence {
+//  associatedtype Timestamp: Comparable
+//  subscript (timerange range: ClosedRange<Timestamp>) -> SubSequence { get }
+//}
+//
+//public protocol MutableTimeSeries: TimeSeries {
+//  subscript (timerange range: ClosedRange<Timestamp>) -> SubSequence { get set }
+//}
+
+//extension MIDIPacketList: TimeSeries {
+//  public typealias Timestamp = MIDITimeStamp
+//  public typealias SubSequence = MIDIPacketList
+//
+//  public subscript (timerange range: ClosedRange<Timestamp>) -> SubSequence {
+//    fatalError()
+//  }
+//}
+
 public extension EventType where Timestamp == MIDITimeStamp {
   public var second: Double {
     fatalError()

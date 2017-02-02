@@ -7,6 +7,10 @@ This project is an implementation of MIDI heavily inspired by the [WebMIDI stand
 
 The original MIDI standard is extremely unwieldy, it's over 900 pages and I'm not sure it's ever been implemented in it's entirety.'  
 
+* one of the main issues of the coremidi api is the confusion of reference types and value types
+
+* 
+
 WebMIDI
 
 #Documentation

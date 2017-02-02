@@ -81,7 +81,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
-           lhs.elementsEqual(rhs)
+      lhs.elementsEqual(rhs)
   }
 
   public static func <(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
@@ -93,15 +93,15 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public init(arrayLiteral literal: Element...) {
-//      self.init()
-//      todo does this work?
-//      memcmp(&data, literal, literal.count/4)
-      self = MIDIPacketCreate(0, literal, Int32(literal.count))
-      assert(elementsEqual(literal))
+    //      self.init()
+    //      todo does this work?
+    //      memcmp(&data, literal, literal.count/4)
+    self = MIDIPacketCreate(0, literal, Int32(literal.count))
+    assert(elementsEqual(literal))
   }
 
   public typealias Timestamp = MIDITimeStamp
-  
+
   public var timestamp: Timestamp {
     get {
       return timeStamp
@@ -113,15 +113,16 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 }
 
 extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLiteral {
-	public typealias Element = MIDIPacket
+  public typealias Element = MIDIPacket
   public typealias Timestamp = Element.Timestamp
 
-	public func makeIterator() -> AnyIterator<Element> {
-		var first = packet
-		let s = sequence(first: &first) { MIDIPacketNext($0) }
-           .prefix(Int(numPackets)).makeIterator()
-		return AnyIterator { s.next()?.pointee }
-	}
+  public func makeIterator() -> AnyIterator<Element> {
+    var first = packet
+
+    let s = sequence(first: &first) { MIDIPacketNext($0) }
+      .prefix(Int(numPackets)).makeIterator()
+    return AnyIterator { s.next()?.pointee }
+  }
 
   public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
     return lhs.numPackets == rhs.numPackets && lhs.elementsEqual(rhs)
@@ -144,13 +145,13 @@ extension MIDIPacketList : Sequence, Equatable, Hashable, ExpressibleByArrayLite
 
   public init(arrayLiteral literal: Element...) {
     self.init()
-      //validator
-//    self = MIDIPacketListInit
-//    MIDIPacketListInit(&self)
-//    literal.forEach {
-//      var p = $0
-//      MIDIPacketListAdd(&self, 0, &p, 0, 0, )
-//    }
+    //validator
+    //    self = MIDIPacketListInit
+    //    MIDIPacketListInit(&self)
+    //    literal.forEach {
+    //      var p = $0
+    //      MIDIPacketListAdd(&self, 0, &p, 0, 0, )
+    //    }
 
     //    literal.forEach {
     //      MIDIPacketListAdd(<#T##pktlist: UnsafeMutablePointer<MIDIPacketList>##UnsafeMutablePointer<MIDIPacketList>#>, <#T##listSize: Int##Int#>, <#T##curPacket: UnsafeMutablePointer<MIDIPacket>##UnsafeMutablePointer<MIDIPacket>#>, <#T##time: MIDITimeStamp##MIDITimeStamp#>, <#T##nData: Int##Int#>, <#T##data: UnsafePointer<UInt8>##UnsafePointer<UInt8>#>)
@@ -180,27 +181,27 @@ extension Collection where Iterator.Element == UInt8 {
 //  }
 //}
 
-public struct MIDIPacketListSlice : Sequence {
-  public typealias Element = MIDIPacket
-  public typealias Base = UnsafePointer<MIDIPacketList>
-  public let base: Base
+//public struct MIDIPacketListSlice : Sequence {
+//  public typealias Element = MIDIPacket
+//  public typealias Base = UnsafePointer<MIDIPacketList>
+//  public let base: Base
+//
+//  private let range: ClosedRange<Element.Timestamp>?
+//
+//  internal init(base: Base, range: ClosedRange<Element.Timestamp>? = nil) {
+//    self.base = base
+//    self.range = range
+//
+//  }
+//
+//  public func makeIterator() -> AnyIterator<Element> {
+//    return AnyIterator { nil }
+//  }
+//
+//
+//}
 
-  private let range: ClosedRange<Element.Timestamp>?
-
-  internal init(base: Base, range: ClosedRange<Element.Timestamp>? = nil) {
-    self.base = base
-    self.range = range
-
-  }
-
-  public func makeIterator() -> AnyIterator<Element> {
-    return AnyIterator { nil }
-  }
-
-
-}
-
-extension MIDIObjectAddRemoveNotification {
+extension MIDIObjectAddRemoveNotification: CustomStringConvertible {
   internal init?(ptr: UnsafePointer<MIDINotification>) {
     switch ptr.pointee.messageID {
     case .msgObjectAdded, .msgObjectRemoved:
@@ -209,6 +210,17 @@ extension MIDIObjectAddRemoveNotification {
       }
     default: return nil
     }
+  }
+
+  public var description: String {
+    return Mirror(reflecting: self).children.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+//    return
+//      "id \(messageID)\n" +
+//      "size \(messageSize)\n" +
+//      "child \(child)" +
+//      "childType \(childType)" +
+//      "parent \(parent)" +
+//      "parentType \(parentType)"
   }
 }
 

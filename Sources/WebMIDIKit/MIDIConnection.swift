@@ -8,7 +8,10 @@
 
 import CoreMIDI
 
-internal final class MIDIEndpoint : Equatable, Comparable, Hashable {
+//
+//
+//
+internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
   let ref: MIDIEndpointRef
 
   init(ref: MIDIEndpointRef) {

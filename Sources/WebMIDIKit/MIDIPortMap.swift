@@ -28,9 +28,11 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 
   public subscript (key: Key) -> Value? {
     get {
+      assert(content[key]?.connection == .open)
       return content[key]
     }
     set {
+//      assert(content[index].value.connection == .open)
       content[key] = newValue
     }
   }
@@ -60,15 +62,18 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 public class MIDIInputMap : MIDIPortMap<MIDIInput> {
   internal override init(access: MIDIAccess) {
     super.init(access: access)
-
+    MIDISources().forEach { _ in
+      self.content[""] = MIDIInput(access: access)
+    }
   }
 }
 
 public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
   internal override init(access: MIDIAccess) {
     super.init(access: access)
-    
-
+    MIDIDestinations().forEach { _ in
+      self.content[""] = MIDIOutput(access: access)
+    }
   }
 }
 
