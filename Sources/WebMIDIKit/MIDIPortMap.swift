@@ -12,7 +12,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   public typealias Key = String
   public typealias Index = Dictionary<Key, Value>.Index
 
-  fileprivate var content: [Key: Value]
+  private var content: [Key: Value]
 
 //  public init() {
 //    content = [:]
@@ -60,9 +60,9 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
       return content.first { $0.value.endpoint == endpoint }?.value
     }
     set {
-      guard let id = (newValue ?? self[endpoint])?.id else { return }
-      //should i be closing it?
-      self[String(id)] = newValue
+      _ = (newValue ?? self[endpoint]).map {
+        self[String($0.id)] = newValue
+      }
     }
   }
 //  public init(arrayLiteral literal: Value...) {
