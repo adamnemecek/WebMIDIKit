@@ -46,10 +46,10 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     return content.index(after: i)
   }
 
-  internal let access: MIDIAccess
+  internal let client: MIDIClient
 
-  internal init(access: MIDIAccess) {
-    self.access = access
+  internal init(client: MIDIClient) {
+    self.client = client
     content = [:]
   }
 
@@ -60,19 +60,19 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 
 
 public class MIDIInputMap : MIDIPortMap<MIDIInput> {
-  internal override init(access: MIDIAccess) {
-    super.init(access: access)
+  internal override init(client: MIDIClient) {
+    super.init(client: client)
     MIDISources().forEach { _ in
-      self.content[""] = MIDIInput(access: access)
+      self.content[""] = MIDIInput(client: client)
     }
   }
 }
 
 public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
-  internal override init(access: MIDIAccess) {
-    super.init(access: access)
+  internal override init(client: MIDIClient) {
+    super.init(client: client)
     MIDIDestinations().forEach { _ in
-      self.content[""] = MIDIOutput(access: access)
+      self.content[""] = MIDIOutput(client: client)
     }
   }
 }

@@ -10,14 +10,14 @@ import CoreMIDI
 
 
 public final class MIDIOutput : MIDIPort {
-  internal init(access: MIDIAccess) {
-    super.init(access: access, ref: MIDIOutputPortRefCreate(ref: access.client!.ref))
+  internal init(client: MIDIClient) {
+    super.init(client: client, ref: MIDIOutputPortRefCreate(ref: client.ref))
   }
 
   public func send<S: Sequence>(data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
     //validate data
     open()
-    access.send(port: self, data: data, timestamp: timestamp)
+//    access.send(port: self, data: data, timestamp: timestamp)
   }
 
   public func clear() {

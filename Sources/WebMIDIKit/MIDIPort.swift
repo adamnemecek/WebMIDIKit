@@ -122,15 +122,16 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   internal var ref: MIDIPortRef
   //todo: should this be weak?
-  internal let access: MIDIAccess
+//  internal let access: MIDIAccess
+  internal let client: MIDIClient
 
 //  internal init(ref: MIDIPortRef = 0) {
 //    self.ref = ref
 //    todo("initportstate")
 //  }
 
-  internal init(access: MIDIAccess, ref: @autoclosure () -> (MIDIPortRef)) {
-    self.access = access
+  internal init(client: MIDIClient, ref: @autoclosure () -> (MIDIPortRef)) {
+    self.client = client
     self.ref = ref()
   }
 

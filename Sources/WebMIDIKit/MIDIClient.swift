@@ -6,13 +6,28 @@
 //
 //
 
+import Cocoa
 import CoreMIDI
 
+//extension Notification {
+//  init(midi: MIDIObjectAddRemoveNotification) {
+////    self.init
+//  }
+//}
+
+func callback(ptr: UnsafePointer<MIDINotification>) {
+//  NotificationCenter.default.post(Notification())
+}
+
+
+///
+///
+///
 internal final class MIDIClient : Comparable, Hashable {
     let ref: MIDIClientRef
 
-    internal init(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) {
-        self.ref = MIDIClientCreate(name: "WebMIDIKit") { callback($0) }
+    internal init() {
+        self.ref = MIDIClientCreate(name: "WebMIDIKit") { callback(ptr: $0) }
     }
 
     deinit {

@@ -33,22 +33,15 @@ public final class MIDIAccess : EventTarget {
   private var output: MIDIOutput! = nil
 
   public init() {
-
     // the callback ReceiveMidiNotify
-    let client = MIDIClient { _ in
-//            self.notification(ptr: $0)
-      fatalError()
 
-//      fatalError("stuff")
-    }
-//    fatalError()
-    self.client = client
+    self.client = MIDIClient()
 
-    self.inputs = MIDIInputMap(access: self)
-    self.outputs = MIDIOutputMap(access: self)
+    self.inputs = MIDIInputMap(client: self.client)
+    self.outputs = MIDIOutputMap(client: self.client)
 
-    self.input = MIDIInput(access: self)
-    self.output = MIDIOutput(access: self)
+    self.input = MIDIInput(client: client)
+    self.output = MIDIOutput(client: client)
 
     self.sources = MIDISources().map {
       //
