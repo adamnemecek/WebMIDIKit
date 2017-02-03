@@ -30,4 +30,16 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
   static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
     return lhs.ref < rhs.ref
   }
+
+  subscript(string property: CFString) -> String {
+    return MIDIObjectGetStringProperty(ref: ref, property: property)
+  }
+
+  subscript(int property: CFString) -> Int {
+    return MIDIObjectGetIntProperty(ref: ref, property: property)
+  }
+  //todo
+  var isVirtual: Bool {
+    return ref == 0
+  }
 }

@@ -28,7 +28,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 
   public subscript (key: Key) -> Value? {
     get {
-      assert(content[key]?.connection == .open)
       return content[key]
     }
     //
@@ -40,13 +39,16 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   }
 
   public subscript(index: Index) -> (Key, Value) {
-    assert(content[index].value.connection == .open)
     return content[index]
   }
 
   public func index(after i: Index) -> Index {
     return content.index(after: i)
   }
+
+//  public var description: String {
+//    return dump(self).description
+//  }
 
   internal let client: MIDIClient
 

@@ -55,12 +55,14 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// The system name of the port.
   public var name: String {
     return self[string: kMIDIPropertyDisplayName]
+//    MIDIObjectGetStringProperty(, kMIDIPropertyName, <#T##str: UnsafeMutablePointer<Unmanaged<CFString>?>##UnsafeMutablePointer<Unmanaged<CFString>?>#>)
   }
 
   /// A descriptor property to distinguish whether the port is an input or an
   /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
   /// must be "input".
   public var type: MIDIPortType {
+    open()
     return MIDIPortType(MIDIObjectGetType(id: id))
   }
 
@@ -100,6 +102,10 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     eventHandler?(self)
   }
 
+
+  internal func connect(ref: @autoclosure () -> MIDIPortRef) {
+    self.ref = ref()
+  }
   ///
   ///
   ///
@@ -132,21 +138,21 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
            "Id: \(id)"
   }
 
-  internal var ref: MIDIPortRef
+  internal var ref: MIDIPortRef = 0
   //todo: should this be weak?
 //  internal let access: MIDIAccess
   internal let client: MIDIClient
-  internal let endpoint: MIDIEndpoint?
+  internal let endpoint: MIDIEndpoint
 
 //  internal init(ref: MIDIPortRef = 0) {
 //    self.ref = ref
 //    todo("initportstate")
 //  }
 
-  internal init(client: MIDIClient, endpoint: MIDIEndpoint? = nil, ref: @autoclosure () -> (MIDIPortRef)) {
+  internal init(client: MIDIClient, endpoint: MIDIEndpoint, ref: MIDIPortRef) {
     self.client = client
-    self.endpoint = endpoint ?? MIDIEndpoint()
-    self.ref = ref()
+    self.endpoint = endpoint
+    self.ref = ref
   }
 
   //  internal init(input client: MIDIClient) {
@@ -159,11 +165,11 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   //  }
 
   private subscript(string property: CFString) -> String {
-    return MIDIObjectGetStringProperty(ref: ref, property: property)
+    return endpoint[string: property]
   }
 
   private subscript(int property: CFString) -> Int {
-    return MIDIObjectGetIntProperty(ref: ref, property: property)
+    return endpoint[int: property]
   }
 
 

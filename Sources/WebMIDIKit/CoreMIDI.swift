@@ -42,18 +42,18 @@ internal func MIDIDestinations() -> [MIDIEndpoint] {
 }
 
 internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) -> MIDIPortRef {
-  var ref = MIDIPortRef()
-  MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &ref) {
+  var port = MIDIPortRef()
+  MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
     packetlist, srcconref in
     readmidi(packetlist)
   }
-  return ref
+  return port
 }
 
 internal func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
-  var ref = MIDIPortRef()
-  MIDIOutputPortCreate(ref, "MIDI output" as CFString, &ref)
-  return ref
+  var port = MIDIPortRef()
+  MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
+  return port
 }
 
 internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {

@@ -21,8 +21,8 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 //  static let sharedInstance = MIDIAccess()
   public typealias Event = MIDIPort
 
-  public private(set) var inputs: MIDIInputMap! = nil
-  public private(set) var outputs: MIDIOutputMap! = nil
+  public let inputs: MIDIInputMap
+  public let outputs: MIDIOutputMap
 
   public var onStateChange: EventHandler<Event> = nil
 
