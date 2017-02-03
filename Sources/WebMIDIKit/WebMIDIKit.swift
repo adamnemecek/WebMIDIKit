@@ -60,11 +60,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     //todo remove the assert
     assert(MIDIPortType(n.childType) == endpoint.type)
 
-    /// we can force unwrap the type because we know that this 
-    /// is a non-virtual endpoint
-    assert(!endpoint.isVirtual)
     switch (n.messageID, endpoint.type) {
-
     case (.msgObjectAdded, .input):
       inputs.add(endpoint)
 

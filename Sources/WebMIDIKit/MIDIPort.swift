@@ -78,21 +78,14 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     guard connection != .open else { return }
     assert(ref == 0)
     
-    switch (type, endpoint.isVirtual) {
+    switch type {
 
-    case (.input, false):
+    case .input:
       let input = self as! MIDIInput
       ref = MIDIInputPortCreate(ref: client.ref) { input.onMIDIMessage?($0.0) }
 
-    case (.input, true):
-
-      break
-
-    case (.output, false):
+    case .output:
       ref = MIDIOutputPortRefCreate(ref: client.ref)
-
-    case (.output, true):
-      break
     }
     connection = .open
     eventHandler?(self)

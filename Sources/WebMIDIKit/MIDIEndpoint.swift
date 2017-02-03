@@ -15,10 +15,6 @@ import CoreMIDI
 internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   final let ref: MIDIEndpointRef
 
-  var isVirtual: Bool {
-    return false
-  }
-
   init(ref: MIDIEndpointRef) {
     self.ref = ref
   }
@@ -74,10 +70,6 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
 }
 
 class VirtualMIDIEndpoint: MIDIEndpoint {
-  override var isVirtual: Bool {
-    return true
-  }
-
   deinit {
     MIDIEndpointDispose(ref)
   }
