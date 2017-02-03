@@ -54,22 +54,22 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     }
 
     self.observer = NotificationCenter.default.observeMIDIEndpoints {
-      self.notification(messageID: $0, endpoint: $1)
+      self.notification(endpoint: $0, change: $1)
     }
   }
 
-  private func notification(messageID: MIDIEndpointChange, endpoint: MIDIEndpoint) {
-    switch (messageID, endpoint.type) {
-    case (.added, .input):
+  private func notification(endpoint: MIDIEndpoint, change: MIDIEndpointChange) {
+    switch (endpoint.type, change) {
+    case (.input, .added):
       inputs.add(endpoint)
 
-    case (.added, .output):
-      outputs.add(endpoint)
-
-    case (.removed, .input):
+    case (.input, .removed):
       inputs.remove(endpoint)
 
-    case (.removed, .output):
+    case (.output, .added):
+      outputs.add(endpoint)
+
+    case (.output, .removed):
       outputs.remove(endpoint)
     }
   }
@@ -79,10 +79,10 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
   }
 
   internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
-    guard var p = MIDIPacketList(seq: data) else { return }
+    //    guard var p = MIDIPacketList(seq: data) else { return }
     //      timestamp = timestamp == 0 ?
 
-    MIDISend(port.ref, 0, &p)
+    //    MIDISend(port.ref, 0, &p)
     todo("endpoint, timestamp = 0 ?? now, notify all clients?")
   }
 
@@ -99,6 +99,16 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
   deinit {
     observer.map(NotificationCenter.default.removeObserver)
+  }
+}
+
+fileprivate extension NotificationCenter {
+  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointChange) -> ()) -> NSObjectProtocol {
+    return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
+      _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
+        callback($0.endpoint, MIDIEndpointChange($0.messageID))
+      }
+    }
   }
 }
 

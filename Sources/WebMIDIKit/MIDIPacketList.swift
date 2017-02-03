@@ -8,7 +8,25 @@
 
 import CoreMIDI
 
-extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral {
+struct AXMIDIPacket {
+  init(data: [UInt8]) {
+    _currentPacket = MIDIPacketListInit(&lst)
+    add(data: data)
+  }
+
+  mutating func add(data: [UInt8]) {
+    _currentPacket = MIDIPacketListAdd(&lst, MemoryLayout<MIDIPacketList>.size, _currentPacket, 0, data.count, data)
+  }
+
+  private var lst: MIDIPacketList = MIDIPacketList()
+  private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
+
+  mutating func send(to output: MIDIOutput) {
+      MIDISend(output.ref, output.endpoint.ref, &lst)
+  }
+}
+
+extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible {
   public typealias Element = MIDIPacket
   public typealias Timestamp = Element.Timestamp
 
@@ -35,31 +53,35 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
     return packet.timestamp
   }
 
-  //
-  //
-  //
-  public init?<S : Sequence>(seq: S) where S.Iterator.Element == UInt8 {
-    let data = Array(seq)
+//  //
+//  //
+//  //
+//  public init?<S : Sequence>(seq: S) where S.Iterator.Element == UInt8 {
+//    let data = Array(seq)
+//
+//    fatalError()
+//    var packet = MIDIPacketList()
+//    MIDIPacketListInit(&packet)
+//
+//    self = packet
+//  }
 
-    fatalError()
-    var packet = MIDIPacketList()
-    MIDIPacketListInit(&packet)
+//  mutating
+//  func add(_ packet: MIDIPacket, timestamp: MIDITimeStamp? = nil) -> MIDIPacket {
+//    var p = packet
+//    return MIDIPacketListAdd(&self, MemoryLayout<MIDIPacketList>.size, &p, timestamp ?? 0, packet.count, Array(packet)).pointee
+//  }
 
-    self = packet
-  }
-
-  mutating
-  func add(_ packet: MIDIPacket, timestamp: MIDITimeStamp? = nil) -> MIDIPacket {
-    var p = packet
-    return MIDIPacketListAdd(&self, MemoryLayout<MIDIPacketList>.size, &p, timestamp ?? 0, packet.count, Array(packet)).pointee
-  }
-
-  init(data: [UInt8]) {
+  init(data: [UInt8], timestamp: MIDITimeStamp = 0) {
     var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
     let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
     pkt = MIDIPacketListInit(pktList)
-    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, data.count, data)
+    pkt = MIDIPacketListAdd(pktList, 1024, pkt, timestamp, data.count, data)
     self = pktList.pointee
+  }
+
+  public var description: String {
+    return "MIDIPacketList: count: \(numPackets)" + Array(self).description
   }
 
   public init(arrayLiteral literal: Element...) {

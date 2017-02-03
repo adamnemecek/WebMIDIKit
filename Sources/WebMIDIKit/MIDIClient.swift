@@ -13,24 +13,15 @@ extension Notification.Name {
   static let MIDISetupNotification = Notification.Name(rawValue: "\(MIDIObjectAddRemoveNotification.self)")
 }
 
-extension NotificationCenter {
-  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpointChange, MIDIEndpoint) -> ()) -> NSObjectProtocol {
-    return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
-      _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
-        callback(MIDIEndpointChange($0.messageID), $0.endpoint)
-      }
-    }
-  }
-}
 
-fileprivate func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
+fileprivate func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
   var ref = MIDIClientRef()
-  MIDIClientCreateWithBlock(name as CFString, &ref, callback)
+  MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref, callback)
   return ref
 }
 
-fileprivate func MIDIClientCreateExt(name: String, callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
-  return MIDIClientCreate(name: name) {
+fileprivate func MIDIClientCreateExt(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
+  return MIDIClientCreate {
     _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
   }
 }
@@ -42,7 +33,7 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   let ref: MIDIClientRef
 
   internal init() {
-    ref = MIDIClientCreateExt(name: "WebMIDIKit") {
+    ref = MIDIClientCreateExt {
       NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
     }
   }
