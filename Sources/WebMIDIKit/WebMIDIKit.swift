@@ -34,6 +34,8 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
   private let input: MIDIInput
   private let output: MIDIOutput
 
+  private var observer: NSObjectProtocol? = nil
+
   public init() {
     let client = MIDIClient()
 
@@ -51,7 +53,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
       print($0)
     }
 
-    let obj = NotificationCenter.default.observeMIDIEndpoints {
+    self.observer = NotificationCenter.default.observeMIDIEndpoints {
       self.notification(messageID: $0, endpoint: $1)
     }
   }
@@ -96,7 +98,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
 
   deinit {
-    NotificationCenter.default.removeObserver(self)
+    observer.map(NotificationCenter.default.removeObserver)
   }
 }
 
