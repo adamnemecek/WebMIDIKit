@@ -18,10 +18,25 @@ public final class MIDIOutput : MIDIPort {
 
   public func send(_ packet: MIDIPacket, timestamp: Int = 0) {
     print(packet)
+    open()
+    var list = MIDIPacketList(packet: packet)
+    for e in list {
+      print("dd", e)
+    }
+//    MIDISend(ref, endpoint.ref, &list)
+    MIDIReceived(endpoint.ref, &list)
   }
 
 
   public func clear() {
+    endpoint.flush()
+  }
 
+  internal convenience init(virtual client: MIDIClient, block: @escaping MIDIReadBlock) {
+    self.init(client: client, endpoint: MIDIEndpoint(output: client, block: block))
   }
 }
+
+
+
+

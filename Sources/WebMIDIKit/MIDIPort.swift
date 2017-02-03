@@ -70,6 +70,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   ///
   public var onStateChange: ((MIDIPort) -> ())? = nil
+
   ///
   ///
   ///
@@ -77,15 +78,21 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     guard connection != .open else { return }
     assert(ref == 0)
     
-    switch type {
+    switch (type, endpoint.isVirtual) {
 
-    case .input:
+    case (.input, false):
       let input = self as! MIDIInput
-      ref = MIDIInputPortCreate(ref: client.ref) { input.onMIDIMessage?($0) }
-      MIDIPortConnectSource(ref, endpoint.ref, nil)
+      ref = MIDIInputPortCreate(ref: client.ref) { input.onMIDIMessage?($0.0) }
 
-    case .output:
+    case (.input, true):
+
+      break
+
+    case (.output, false):
       ref = MIDIOutputPortRefCreate(ref: client.ref)
+
+    case (.output, true):
+      break
     }
     connection = .open
     eventHandler?(self)
@@ -115,13 +122,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     return endpoint.hashValue
   }
 
-  /// Two ports are equal todo
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     return lhs.endpoint == rhs.endpoint
   }
 
   public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-    return lhs.endpoint == rhs.endpoint
+    return lhs.endpoint < rhs.endpoint
   }
 
   public var description: String {
@@ -141,7 +147,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   internal let client: MIDIClient
   internal let endpoint: MIDIEndpoint
 
-  internal init(client: MIDIClient, endpoint: MIDIEndpoint = MIDIEndpoint()) {
+  internal init(client: MIDIClient, endpoint: MIDIEndpoint) {
     self.client = client
     self.endpoint = endpoint
     self.ref = 0

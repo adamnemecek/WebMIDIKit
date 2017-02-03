@@ -41,13 +41,15 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     self.inputs = MIDIInputMap(client: client)
     self.outputs = MIDIOutputMap(client: client)
 
-    self.input = MIDIInput(client: client)
-    self.output = MIDIOutput(client: client)
+    self.input = MIDIInput(virtual: client)
+    self.output = MIDIOutput(virtual: client) {
+      _ in
+    }
     //todo
-        self.input.onMIDIMessage = {
-//          self.midi(src: 0, lst: $0)
-          print($0)
-        }
+    self.input.onMIDIMessage = {
+      //          self.midi(src: 0, lst: $0)
+      print($0)
+    }
     NotificationCenter.default.addObserver(self, selector: #selector(notification), name: nil, object: nil)
   }
 
@@ -59,20 +61,20 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
     /// we can force unwrap the type because we know that this 
     /// is a non-virtual endpoint
-
+    assert(!endpoint.isVirtual)
     switch (n.messageID, endpoint.type!) {
 
     case (.msgObjectAdded, .input):
-      self.inputs.add(endpoint)
+      inputs.add(endpoint)
 
     case (.msgObjectAdded, .output):
-      self.outputs.add(endpoint)
+      outputs.add(endpoint)
 
     case (.msgObjectRemoved, .input):
-      self.inputs.remove(endpoint)
+      inputs.remove(endpoint)
 
     case (.msgObjectRemoved, .output):
-      self.outputs.remove(endpoint)
+      outputs.remove(endpoint)
 
     default:
       break
@@ -116,6 +118,9 @@ func test() {
   
   
 }
+
+@_exported import struct CoreMIDI.MIDIPacket
+@_exported import struct CoreMIDI.MIDIPacketList
 
 
 

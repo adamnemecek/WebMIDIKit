@@ -36,16 +36,30 @@ internal func MIDISources() -> [MIDIEndpoint] {
 }
 
 internal func MIDIDestinations() -> [MIDIEndpoint] {
-  return (0..<MIDIGetNumberOfDestinations()).map{
+  return (0..<MIDIGetNumberOfDestinations()).map {
     MIDIEndpoint(ref: MIDIGetDestination($0))
   }
 }
 
-internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> ()) -> MIDIPortRef {
+
+//todo cleanup
+internal func MIDISourceCreate(ref: MIDIClientRef) -> MIDIEndpointRef {
+  var endpoint: MIDIEndpointRef = 0
+  MIDISourceCreate(ref, "Virtual MIDI output" as CFString, &endpoint)
+  return endpoint
+}
+
+internal func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
+  var endpoint: MIDIEndpointRef = 0
+  MIDIDestinationCreateWithBlock(ref, "WebMIDIKit" as CFString, &endpoint, block)
+  return endpoint
+}
+
+internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MIDIReadBlock) -> MIDIPortRef {
   var port = MIDIPortRef()
   MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
     packetlist, srcconref in
-    readmidi(packetlist)
+    readmidi(packetlist, srcconref)
   }
   return port
 }
@@ -99,7 +113,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public init(arrayLiteral literal: Element...) {
     self = MIDIPacketCreate(0, literal, Int32(literal.count))
-    assert(elementsEqual(literal))
+    assert(count == literal.count && elementsEqual(literal))
   }
 
   public typealias Timestamp = MIDITimeStamp
@@ -165,6 +179,21 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
     MIDIPacketListInit(&packet)
 
     self = packet
+  }
+
+  mutating
+  func add(_ packet: MIDIPacket, timestamp: MIDITimeStamp? = nil) -> MIDIPacket {
+    var p = packet
+    return MIDIPacketListAdd(&self, MemoryLayout<MIDIPacketList>.size, &p, timestamp ?? 0, packet.count, Array(packet)).pointee
+  }
+
+  init(packet: MIDIPacket) {
+    var lst = MIDIPacketList()
+    MIDIPacketListInit(&lst)
+    lst.packet = packet
+    lst.numPackets = 1
+    self = lst
+
   }
 
   public init(arrayLiteral literal: Element...) {

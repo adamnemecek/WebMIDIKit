@@ -13,11 +13,27 @@ import CoreMIDI
 // you can think of this as the HW port
 //
 
-internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
+internal final class MIDIEndpoint : Equatable, Comparable, Hashable {
   let ref: MIDIEndpointRef
 
-  init(ref: MIDIEndpointRef = MIDIEntityRef()) {
+  init(ref: MIDIEndpointRef) {
     self.ref = ref
+    self.isVirtual = false
+  }
+
+  init(input client: MIDIClient) {
+    self.isVirtual = true
+    self.ref = MIDISourceCreate(ref: client.ref)
+  }
+
+  init(output client: MIDIClient, block: @escaping MIDIReadBlock) {
+    self.isVirtual = true
+    self.ref = MIDIDestinationCreate(ref: client.ref, block: block)
+
+  }
+
+  deinit {
+    fatalError()
   }
 
   var hashValue: Int {
@@ -33,9 +49,7 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 
   //todo
-  var isVirtual: Bool {
-    return ref == 0
-  }
+  let isVirtual: Bool
 
   var id: Int {
     return self[int: kMIDIPropertyUniqueID]
