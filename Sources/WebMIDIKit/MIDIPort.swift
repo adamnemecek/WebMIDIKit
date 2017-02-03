@@ -44,18 +44,17 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// plugged in. Applications may use the comparison of id of MIDIPorts to test
   /// for equality.
   public var id: Int {
-    return self[int: kMIDIPropertyUniqueID]
+    return endpoint.id
   }
 
   /// The manufacturer of the port.
   public var manufacturer: String {
-    return self[string: kMIDIPropertyManufacturer]
+    return endpoint.manufacturer
   }
 
   /// The system name of the port.
   public var name: String {
-    return self[string: kMIDIPropertyDisplayName]
-//    MIDIObjectGetStringProperty(, kMIDIPropertyName, <#T##str: UnsafeMutablePointer<Unmanaged<CFString>?>##UnsafeMutablePointer<Unmanaged<CFString>?>#>)
+    return endpoint.name
   }
 
   /// A descriptor property to distinguish whether the port is an input or an
@@ -63,12 +62,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// must be "input".
   public var type: MIDIPortType {
     open()
-    return MIDIPortType(MIDIObjectGetType(id: id))
+    return endpoint.type
   }
 
   /// The version of the port.
   public var version: Int {
-    return self[int: kMIDIPropertyDriverVersion]
+    return endpoint.version
   }
 
   /// The state of the device.
@@ -124,17 +123,17 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// Two ports are equal todo
   public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
     //    return lhs.ref == rhs.ref todo read documnetation?
-    return lhs.id == rhs.id
+    return lhs.endpoint == rhs.endpoint
   }
 
   public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-    return lhs.id < rhs.id
+    return lhs.endpoint == rhs.endpoint
   }
 
   public var description: String {
     return "Type: \(type)\n" +
-           "Manufacturer: \(manufacturer)\n" +
            "Name: \(name)\n" +
+           "Manufacturer: \(manufacturer)\n" +
            "Id: \(id)"
   }
 
@@ -163,15 +162,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   //
   ////    todo("initportstate")
   //  }
-
-  private subscript(string property: CFString) -> String {
-    return endpoint[string: property]
-  }
-
-  private subscript(int property: CFString) -> Int {
-    return endpoint[int: property]
-  }
-
 
   //
   // TODO: when is this set again
