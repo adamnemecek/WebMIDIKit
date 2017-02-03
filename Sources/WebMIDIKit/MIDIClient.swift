@@ -20,9 +20,8 @@ extension Notification.Name {
 extension NotificationCenter {
   func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpointChange, MIDIEndpoint) -> ()) -> NSObjectProtocol {
     return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) { notification in
-        guard let n = (notification.object as? UnsafePointer<MIDINotification>),
-          let nn = MIDIObjectAddRemoveNotification(ptr: n) else { return }
-        callback(MIDIEndpointChange(nn.messageID), nn.endpoint)
+        guard let n = (notification.object as? MIDIObjectAddRemoveNotification) else { return }
+        callback(MIDIEndpointChange(n.messageID), n.endpoint)
     }
   }
 }
@@ -33,15 +32,12 @@ fileprivate func MIDIClientCreate(name: String, callback: @escaping (UnsafePoint
   return ref
 }
 
-//fileprivate func MIDIClientCreate(name: String, callback: @escaping ((MIDINotificationMessageID, MIDIEndpoint)) -> ()) -> MIDIClientRef {
-//  var ref = MIDIClientRef()
-//  MIDIClientCreateWithBlock(name as CFString, &ref) {
-//    _ = MIDIObjectAddRemoveNotification(ptr: $0).map {
-//      callback(($0.messageID, $0.endpoint)
-//    }
-//  }
-//  return ref
-//}
+fileprivate func MIDIClientCreateExt(name: String, callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
+  return MIDIClientCreate(name: name) {
+    guard let nn = MIDIObjectAddRemoveNotification(ptr: $0) else { return }
+    callback(nn)
+  }
+}
 
 ///
 /// Kind of like a session, context or handle, it doesn't really do anything.
@@ -50,9 +46,8 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   let ref: MIDIClientRef
 
   internal init() {
-    //todo: maybe hide the pointers away
-    ref = MIDIClientCreate(name: "WebMIDIKit") { (n: UnsafePointer<MIDINotification>) in
-      NotificationCenter.default.post(name: .MIDISetupNotification, object: n)
+    ref = MIDIClientCreateExt(name: "WebMIDIKit") {
+      NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
     }
   }
 
