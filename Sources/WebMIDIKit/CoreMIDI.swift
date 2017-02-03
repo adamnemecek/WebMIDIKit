@@ -62,7 +62,7 @@ internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<
   return ref
 }
 
-extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, MutableEventType {
+extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
 
@@ -84,12 +84,13 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
-    return (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
+    return
+      (lhs.timestamp, lhs.count) == (rhs.timestamp, rhs.count) &&
       lhs.elementsEqual(rhs)
   }
 
   public static func <(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
-    return lhs.timeStamp < rhs.timeStamp
+    return lhs.timestamp < rhs.timestamp
   }
 
   public var hashValue: Int {
@@ -111,6 +112,11 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
       timeStamp = newValue
     }
   }
+
+  public var description: String {
+    return "MIDIPacket: timestamp: \(timestamp), data: \(Array(self))"
+  }
+
 }
 
 //extension MIDIPacket : RangeReplaceableCollection {

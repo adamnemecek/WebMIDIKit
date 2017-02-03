@@ -43,7 +43,7 @@ public enum MIDIPortType : Equatable {
     case is MIDIOutput:
       self = .output
     default:
-      fatalError()
+      fatalError("Unexpected port type \(port.self)")
     }
   }
 }

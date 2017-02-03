@@ -8,6 +8,7 @@
 
 import CoreMIDI
 
+
 //
 // you can think of this as the HW port
 //
@@ -71,3 +72,5 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
     MIDIFlushOutput(ref)
   }
 }
+
+

@@ -9,13 +9,16 @@
 import CoreMIDI
 
 public final class MIDIOutput : MIDIPort {
-  public func send<S: Sequence>(data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
+  public func send<S: Sequence>(_ data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
     open()
-    guard var packet = MIDIPacketList(seq: data) else { return }
-    MIDISend(ref, endpoint.ref, &packet)
+    guard var lst = MIDIPacketList(seq: data) else { return }
+    MIDISend(ref, endpoint.ref, &lst)
 //    access.send(port: self, data: data, timestamp: timestamp)
   }
 
+  public func send(_ packet: MIDIPacket, timestamp: Int = 0) {
+    print(packet)
+  }
 
 
   public func clear() {
