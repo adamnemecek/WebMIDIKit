@@ -152,8 +152,13 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
   //
   //
   //
-  public init?<S: Sequence>(seq: S) where S.Iterator.Element == UInt8 {
-    fatalError()
+  public init?<S : Sequence>(seq: S) where S.Iterator.Element == UInt8 {
+    let data = Array(seq)
+
+    var packet = MIDIPacketList()
+    MIDIPacketListInit(&packet)
+
+    self = packet
   }
 
   public init(arrayLiteral literal: Element...) {
@@ -214,7 +219,11 @@ extension Collection where Iterator.Element == UInt8 {
 //
 //}
 
-extension MIDIObjectAddRemoveNotification: CustomStringConvertible {
+func describe(_ obj: Any) -> String {
+  return Mirror(reflecting: obj).children.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+}
+
+extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
   internal init?(ptr: UnsafePointer<MIDINotification>) {
     switch ptr.pointee.messageID {
     case .msgObjectAdded, .msgObjectRemoved:
@@ -226,7 +235,7 @@ extension MIDIObjectAddRemoveNotification: CustomStringConvertible {
   }
 
   public var description: String {
-    return Mirror(reflecting: self).children.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+    return describe(self)
   }
 
   internal var endpoint: MIDIEndpoint {

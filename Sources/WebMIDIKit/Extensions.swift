@@ -42,3 +42,19 @@ extension RangeReplaceableCollection where Iterator.Element: Equatable {
     return true
   }
 }
+
+extension MIDIObjectType : CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .other: return "other"
+    case .device: return "device"
+    case .entity: return "entity"
+    case .source: return "source"
+    case .destination: return "destination"
+    case .externalDevice: return "externalDevice"
+    case .externalEntity: return "externalEntity"
+    case .externalSource: return "externalSource"
+    case .externalDestination: return "externalDestination"
+    }
+  }
+}

@@ -6,7 +6,7 @@
 //
 //
 
-import Cocoa
+import Foundation
 import CoreMIDI
 
 //extension Notification {
@@ -15,36 +15,34 @@ import CoreMIDI
 //  }
 //}
 
-fileprivate func callback(ptr: UnsafePointer<MIDINotification>) {
-//  NotificationCenter.default.post(Notification())
-}
-
 
 ///
-/// Kind of like a session or context.
+/// Kind of like a session, context or handle, it doesn't really do anything.
 ///
-internal final class MIDIClient : Comparable, Hashable {
-    let ref: MIDIClientRef
+internal final class MIDIClient : Equatable, Comparable, Hashable {
+  let ref: MIDIClientRef
 
-    internal init() {
-        self.ref = MIDIClientCreate(name: "WebMIDIKit") { callback(ptr: $0) }
+  internal init() {
+    ref = MIDIClientCreate(name: "WebMIDIKit") {
+      NotificationCenter.default.post(name: "nn", object: $0)
     }
+  }
 
-    deinit {
-        MIDIClientDispose(ref)
-    }
+  deinit {
+    MIDIClientDispose(ref)
+  }
 
-    internal var hashValue: Int {
-        return ref.hashValue
-    }
+  internal var hashValue: Int {
+    return ref.hashValue
+  }
 
-    internal static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-        return lhs.ref == rhs.ref
-    }
+  internal static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+    return lhs.ref == rhs.ref
+  }
 
-    internal static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-        return lhs.ref < rhs.ref
-    }
+  internal static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+    return lhs.ref < rhs.ref
+  }
 }
 
 

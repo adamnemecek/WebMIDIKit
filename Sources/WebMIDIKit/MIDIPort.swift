@@ -38,7 +38,10 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
   /// must be "input".
   public var type: MIDIPortType {
-    return endpoint.type
+
+    /// we try to determine the enpoint type (this will return nil if the port
+    /// is virtual in which case fall back to determining it from the type
+    return endpoint.type ?? MIDIPortType(port: self)
   }
 
   /// The version of the port.
@@ -73,7 +76,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
     assert(ref == 0)
-
+    
     switch type {
 
     case .input:
@@ -123,12 +126,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   public var description: String {
     return "type: \(type)\n" +
-      "name: \(name)\n" +
-      "manufacturer: \(manufacturer)\n" +
-      "id: \(id)" +
-      "state: \(state)\n" +
-      "connection: \(connection)\n" +
-    "version: \(version)"
+          "name: \(name)\n" +
+          "manufacturer: \(manufacturer)\n" +
+          "id: \(id)" +
+          "state: \(state)\n" +
+          "connection: \(connection)\n" +
+          "version: \(version)"
   }
 
   internal private(set) var ref: MIDIPortRef

@@ -49,7 +49,9 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[string: kMIDIPropertyName]
   }
 
-  var type: MIDIPortType {
+
+  ///todo comment: note this is an optional, this 
+  var type: MIDIPortType? {
     return MIDIPortType(MIDIObjectGetType(id: id))
   }
 

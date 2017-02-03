@@ -8,13 +8,6 @@
 
 import CoreMIDI
 
-extension Dictionary {
-  init<S: Sequence>(seq: S) where S.Iterator.Element == (Key, Value) {
-    self.init()
-    seq.forEach { self[$0] = $1 }
-  }
-}
-
 public class MIDIPortMap<Value: MIDIPort> : Collection {
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
@@ -53,13 +46,12 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     return dump(content).description
   }
 
-  // todo weak?
+  // todo weak? maybe we don't even need it?
   private let client: MIDIClient
 
   internal init(client: MIDIClient, ports: [Value]) {
     self.client = client
     self.content = [:]
-
     ports.forEach {
       self[$0.id] = $0
     }
