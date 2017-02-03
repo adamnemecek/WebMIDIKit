@@ -51,27 +51,24 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
       print($0)
     }
 
-    let obj = NotificationCenter.default.observeMIDI {
+    let obj = NotificationCenter.default.observeMIDIEndpoints {
       self.notification(messageID: $0, endpoint: $1)
     }
   }
 
-  private func notification(messageID: MIDINotificationMessageID, endpoint: MIDIEndpoint) {
+  private func notification(messageID: MIDIEndpointChange, endpoint: MIDIEndpoint) {
     switch (messageID, endpoint.type) {
-    case (.msgObjectAdded, .input):
+    case (.added, .input):
       inputs.add(endpoint)
 
-    case (.msgObjectAdded, .output):
+    case (.added, .output):
       outputs.add(endpoint)
 
-    case (.msgObjectRemoved, .input):
+    case (.removed, .input):
       inputs.remove(endpoint)
 
-    case (.msgObjectRemoved, .output):
+    case (.removed, .output):
       outputs.remove(endpoint)
-
-    default:
-      break
     }
   }
 

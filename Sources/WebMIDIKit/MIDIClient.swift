@@ -18,11 +18,11 @@ struct Notifications {
 //}
 
 extension NotificationCenter {
-  func observeMIDI(callback: @escaping (MIDINotificationMessageID, MIDIEndpoint) -> ()) -> NSObjectProtocol {
+  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpointChange, MIDIEndpoint) -> ()) -> NSObjectProtocol {
     return addObserver(forName: Notifications.MIDISetupNotification, object: nil, queue: nil) { notification in
         guard let n = (notification.object as? UnsafePointer<MIDINotification>),
           let nn = MIDIObjectAddRemoveNotification(ptr: n) else { return }
-        callback(nn.messageID, nn.endpoint)
+        callback(MIDIEndpointChange(nn.messageID), nn.endpoint)
     }
   }
 }

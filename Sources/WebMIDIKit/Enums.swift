@@ -7,6 +7,7 @@
 //
 
 import enum CoreMIDI.MIDIObjectType
+import enum CoreMIDI.MIDINotificationMessageID
 
 ///
 /// A descriptor property to distinguish whether the port is an input or an
@@ -45,6 +46,18 @@ public enum MIDIPortType : Equatable {
 //      fatalError("Unexpected port type \(port.self)")
 //    }
 //  }
+}
+
+internal enum MIDIEndpointChange {
+  case added, removed
+
+  init(_ messageID: MIDINotificationMessageID) {
+    switch messageID {
+      case .msgObjectAdded: self = .added
+      case .msgObjectRemoved: self = .removed
+      default: fatalError("unpexpected")
+    }
+  }
 }
 
 /// The state of the device.
