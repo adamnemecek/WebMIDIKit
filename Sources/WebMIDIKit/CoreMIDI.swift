@@ -23,10 +23,10 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
   }
 
   internal var endpoint: MIDIEndpoint {
+    assert(MIDIPortType(childType) == MIDIEndpoint(ref: child).type)
     return MIDIEndpoint(ref: child)
   }
 
-//  var type: M
 }
 
 

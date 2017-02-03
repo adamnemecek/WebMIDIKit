@@ -50,17 +50,14 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
       //          self.midi(src: 0, lst: $0)
       print($0)
     }
-    NotificationCenter.default.addObserver(self, selector: #selector(notification), name: nil, object: nil)
+
+    let obj = NotificationCenter.default.observeMIDI {
+      self.notification(messageID: $0, endpoint: $1)
+    }
   }
 
-  /// And
-  @objc private func notification(ptr: UnsafePointer<MIDINotification>) {
-    guard let n = MIDIObjectAddRemoveNotification(ptr: ptr) else { return }
-    let endpoint = n.endpoint
-    //todo remove the assert
-    assert(MIDIPortType(n.childType) == endpoint.type)
-
-    switch (n.messageID, endpoint.type) {
+  private func notification(messageID: MIDINotificationMessageID, endpoint: MIDIEndpoint) {
+    switch (messageID, endpoint.type) {
     case (.msgObjectAdded, .input):
       inputs.add(endpoint)
 
