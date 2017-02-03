@@ -6,7 +6,7 @@
 //
 //
 
-import CoreMIDI
+import enum CoreMIDI.MIDIObjectType
 
 //fileprivate func generatorForTuple(_ tuple: Any) -> AnyIterator<Any> {
 //  let children = Mirror(reflecting: tuple).children
@@ -40,5 +40,21 @@ extension RangeReplaceableCollection where Iterator.Element: Equatable {
     guard !contains(newElement) else { return false }
     append(newElement)
     return true
+  }
+}
+
+extension MIDIObjectType : CustomStringConvertible {
+  public var description: String {
+    switch self {
+    case .other: return "other"
+    case .device: return "device"
+    case .entity: return "entity"
+    case .source: return "source"
+    case .destination: return "destination"
+    case .externalDevice: return "externalDevice"
+    case .externalEntity: return "externalEntity"
+    case .externalSource: return "externalSource"
+    case .externalDestination: return "externalDestination"
+    }
   }
 }

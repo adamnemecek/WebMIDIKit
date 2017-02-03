@@ -13,19 +13,22 @@ import CoreMIDI
 //  func handleEvent()
 //}
 
+//public protocol MIDIReceiver {
+//  //todo
+//  var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> { get set }
+//}
 
-public final class MIDIInput: MIDIPort {
-  //todo ref var
-  internal init(client: MIDIClient) {
-    super.init(input: client)
-//    self.ref = MIDIInputPortCreate(ref: client.ref) { packet in
-//      self.onMIDIMessage.map { $0(packet) }
-//    }
+public final class MIDIInput : MIDIPort {
+  public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil {
+    didSet {
+      open()
+    }
   }
 
-  internal func connect() {
-    
+  convenience internal init(virtual client: MIDIClient) {
+    self.init(client: client, endpoint: VirtualMIDISource(client: client))
   }
-
-  public var onMIDIMessage: ((UnsafePointer<MIDIPacketList>) -> ())? = nil
 }
+
+
+

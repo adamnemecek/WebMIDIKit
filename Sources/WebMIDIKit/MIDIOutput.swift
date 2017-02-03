@@ -8,23 +8,35 @@
 
 import CoreMIDI
 
-public final class MIDIOutput: MIDIPort {
-  internal init(client: MIDIClient) {
-    super.init(ref: MIDIOutputPortRefCreate(ref: client.ref))
+public final class MIDIOutput : MIDIPort {
+  public func send<S: Sequence>(_ data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
+    open()
+    guard var lst = MIDIPacketList(seq: data) else { return }
+    MIDISend(ref, endpoint.ref, &lst)
+//    access.send(port: self, data: data, timestamp: timestamp)
   }
 
-  public func send<S: Sequence>(data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
-    /*
-     _ = client.map {
-     let list = MIDIPacketList(numPackets: <#T##UInt32#>, packet: <#T##(MIDIPacket)#>)
-     for e in data {
-     MIDISend(ref, , <#T##pktlist: UnsafePointer<MIDIPacketList>##UnsafePointer<MIDIPacketList>#>)
-     }
-     }*/
+  public func send(_ packet: MIDIPacket, timestamp: Int = 0) {
+    print(packet)
+    open()
+    var list = MIDIPacketList(packet: packet)
+    for e in list {
+      print("dd", e)
+    }
+//    MIDISend(ref, endpoint.ref, &list)
+    MIDIReceived(endpoint.ref, &list)
   }
+
 
   public func clear() {
-    
+    endpoint.flush()
   }
-  
+
+  internal convenience init(virtual client: MIDIClient, block: @escaping MIDIReadBlock) {
+    self.init(client: client, endpoint: VirtualMIDIDestination(client: client, block: block))
+  }
 }
+
+
+
+
