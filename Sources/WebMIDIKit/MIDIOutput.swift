@@ -29,22 +29,11 @@ public final class MIDIOutput : MIDIPort {
 
   public func send(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
     open()
-//    var midiClient = MIDIClientRef()
-//    var result = MIDIClientCreate("Foo Client" as CFString, nil, nil, &midiClient)
-//
-//
-//    var outputPort = MIDIPortRef()
-//    result = MIDIOutputPortCreate(midiClient, "Output" as CFString, &outputPort);
-//
-//    var endPoint = MIDIObjectRef()
-//    var foundObj: MIDIObjectType = .other
-//    result = MIDIObjectFindByUniqueID(1621423490, &endPoint, &foundObj)
 
     var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
-    var pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
-//    let midiData : [UInt8] = [UInt8(144), UInt8(60), UInt8(5)]
+    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
     pkt = MIDIPacketListInit(pktList)
-    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, 3, data)
+    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, data.count, data)
     
     MIDISend(ref, endpoint.ref, pktList)
 

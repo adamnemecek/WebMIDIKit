@@ -79,7 +79,11 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
     case .input:
       let input = self as! MIDIInput
-      ref = MIDIInputPortCreate(ref: client.ref) { input.onMIDIMessage?($0.0) }
+      ref = MIDIInputPortCreate(ref: client.ref) { (lst, src) in
+        lst.pointee.forEach {
+          input.onMIDIMessage?($0)
+        }
+      }
 
     case .output:
       ref = MIDIOutputPortRefCreate(ref: client.ref)

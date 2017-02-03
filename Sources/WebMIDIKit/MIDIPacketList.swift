@@ -8,8 +8,6 @@
 
 import CoreMIDI
 
-@_exported import struct CoreMIDI.MIDIPacketList
-
 extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral {
   public typealias Element = MIDIPacket
   public typealias Timestamp = Element.Timestamp
