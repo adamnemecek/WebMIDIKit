@@ -20,7 +20,7 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 
   var hashValue: Int {
-    return ref.hashValue
+    return id
   }
 
   static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
@@ -44,8 +44,8 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[string: kMIDIPropertyManufacturer]
   }
 
-  /// The system name of the port.
   var name: String {
+    //todo fullanme
     return self[string: kMIDIPropertyName]
   }
 
@@ -63,5 +63,9 @@ internal struct MIDIEndpoint : Equatable, Comparable, Hashable {
 
   private subscript(int property: CFString) -> Int {
     return MIDIObjectGetIntProperty(ref: ref, property: property)
+  }
+
+  func flush() {
+    MIDIFlushOutput(ref)
   }
 }

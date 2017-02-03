@@ -97,9 +97,6 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public init(arrayLiteral literal: Element...) {
-    //      self.init()
-    //      todo does this work?
-    //      memcmp(&data, literal, literal.count/4)
     self = MIDIPacketCreate(0, literal, Int32(literal.count))
     assert(elementsEqual(literal))
   }

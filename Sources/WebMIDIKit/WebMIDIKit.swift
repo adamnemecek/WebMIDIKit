@@ -7,6 +7,7 @@
 //
 
 import CoreMIDI
+import Foundation
 
 public typealias EventHandler<T> = ((T) -> ())?
 
@@ -26,11 +27,11 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  internal let client: MIDIClient
+  private let client: MIDIClient
   private let clients: Set<MIDIClient> = []
 
-  private var input: MIDIInput! = nil
-  private var output: MIDIOutput! = nil
+  private let input: MIDIInput
+  private let output: MIDIOutput
 
   public init() {
     // the callback ReceiveMidiNotify
@@ -46,52 +47,33 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     self.input = MIDIInput(client: client)
     self.output = MIDIOutput(client: client)
 
-//    self.sources = MIDISources().map {
-//      //
-//      // connect
-//      //
-//      MIDIConnection(port: input,
-//                     source: MIDIEndpoint(ref: $0))
-//    }
-//    
-//    self.destinations = MIDIDestinations().map {
-//      MIDIEndpoint(ref: $0)
-//    }
-
-
     self.input.onMIDIMessage = {
       self.midi(src: 0, lst: $0)
     }
 
+
   }
 
-//  private(set) var sources: [MIDIConnection] = []
-
-//  private(set) var destinations: [MIDIEndpoint] = []
-
   private func notification(ptr: UnsafePointer<MIDINotification>) {
-    //todo string(p.id)
+
     _ = MIDIObjectAddRemoveNotification(ptr: ptr).map {
       let endpoint = $0.endpoint
-      let type = MIDIPortType($0.childType)
+      //todo remove the assert
+      assert(MIDIPortType($0.childType) == endpoint.type)
 
-      switch (ptr.pointee.messageID, type) {
+      switch ($0.messageID, endpoint.type) {
 
       case (.msgObjectAdded, .input):
-        let p = MIDIInput(client: self.client, endpoint: endpoint)
-        self.inputs[String(p.id)] = p
+        self.inputs.add(endpoint)
 
       case (.msgObjectAdded, .output):
-        let p = MIDIOutput(client: self.client, endpoint: endpoint)
-        self.outputs[String(p.id)] = p
+        self.outputs.add(endpoint)
 
       case (.msgObjectRemoved, .input):
-        assert(self.inputs[endpoint] != nil)
-        self.inputs[endpoint] = nil
+        self.inputs.remove(endpoint)
 
       case (.msgObjectRemoved, .output):
-        assert(self.outputs[endpoint] != nil)
-        self.outputs[endpoint] = nil
+        self.outputs.remove(endpoint)
 
       default:
         break
