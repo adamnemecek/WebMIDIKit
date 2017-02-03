@@ -54,14 +54,12 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
     return MIDIPacketListAdd(&self, MemoryLayout<MIDIPacketList>.size, &p, timestamp ?? 0, packet.count, Array(packet)).pointee
   }
 
-  init(packet: MIDIPacket) {
-    fatalError()
-//    var lst = MIDIPacketList()
-//    MIDIPacketListInit(&lst)
-//    lst.packet = packet
-//    lst.numPackets = 1
-//    self = lst
-
+  init(data: [UInt8]) {
+    var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
+    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
+    pkt = MIDIPacketListInit(pktList)
+    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, data.count, data)
+    self = pktList.pointee
   }
 
   public init(arrayLiteral literal: Element...) {

@@ -27,15 +27,24 @@ public final class MIDIOutput : MIDIPort {
 //    MIDIReceived(endpoint.ref, &list)
 //  }
 
+//  public func send(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
+//    open()
+//
+//    var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
+//    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
+//    pkt = MIDIPacketListInit(pktList)
+//    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, data.count, data)
+//    
+//    MIDISend(ref, endpoint.ref, pktList)
+//
+////    MIDIReceived(endpoint.ref, pktList)
+//  }
+
   public func send(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
     open()
+    var pktList = MIDIPacketList(data: data)
 
-    var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
-    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
-    pkt = MIDIPacketListInit(pktList)
-    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, data.count, data)
-    
-    MIDISend(ref, endpoint.ref, pktList)
+    MIDISend(ref, endpoint.ref, &pktList)
 
 //    MIDIReceived(endpoint.ref, pktList)
   }
