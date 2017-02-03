@@ -75,10 +75,10 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     assert(ref == 0)
 
     switch type {
+
     case .input:
-      ref = MIDIInputPortCreate(ref: client.ref) {
-        (self as! MIDIInput).onMIDIMessage?($0)
-      }
+      let input = self as! MIDIInput
+      ref = MIDIInputPortCreate(ref: client.ref) { input.onMIDIMessage?($0) }
       MIDIPortConnectSource(ref, endpoint.ref, nil)
 
     case .output:

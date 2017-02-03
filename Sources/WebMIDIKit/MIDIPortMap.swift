@@ -53,7 +53,8 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     return dump(content).description
   }
 
-  internal let client: MIDIClient
+  // todo weak?
+  private let client: MIDIClient
 
   internal init(client: MIDIClient, ports: [Value]) {
     self.client = client
@@ -89,15 +90,15 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   //
   // todo should this be doing key, value?
   //
-  internal private(set) subscript (endpoint: MIDIEndpoint) -> Value? {
-    get {
-      return content.first { $0.value.endpoint == endpoint }?.value
-    }
-    set {
-      _ = (newValue ?? self[endpoint]).map {
-        self[$0.id] = newValue
-      }
-    }
+  private subscript (endpoint: MIDIEndpoint) -> Value? {
+//    get {
+    return content.first { $0.value.endpoint == endpoint }?.value
+//    }
+//    set {
+//      _ = (newValue ?? self[endpoint]).map {
+//        self[$0.id] = newValue
+//      }
+//    }
   }
 //  public init(arrayLiteral literal: Value...) {
 //

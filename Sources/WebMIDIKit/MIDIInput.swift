@@ -18,7 +18,7 @@ import CoreMIDI
 //  var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> { get set }
 //}
 
-public final class MIDIInput : MIDIPort { //, MIDIReceiver {
+public final class MIDIInput : MIDIPort {
   public var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> = nil {
     didSet {
       open()
