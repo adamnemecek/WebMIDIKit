@@ -70,7 +70,27 @@ public extension EventType where Timestamp == MIDITimeStamp {
 //}
 
 
+/*
 
+var midiClient = MIDIClientRef()
+var result = MIDIClientCreate("Foo Client" as CFString, nil, nil, &midiClient)
+
+
+var outputPort = MIDIPortRef()
+result = MIDIOutputPortCreate(midiClient, "Output" as CFString, &outputPort);
+
+var endPoint = MIDIObjectRef()
+var foundObj: MIDIObjectType = .other
+result = MIDIObjectFindByUniqueID(1621423490, &endPoint, &foundObj)
+
+var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
+var pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
+let midiData : [Byte] = [Byte(144), Byte(36), Byte(5)]
+pkt = MIDIPacketListInit(pktList)
+pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, 3, midiData)
+
+MIDISend(outputPort, endPoint, pktList) 
+*/
 
 extension Collection where Iterator.Element == UInt8 {
 

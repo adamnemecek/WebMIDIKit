@@ -103,14 +103,6 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 }
 
 
-func test() {
-  let access = MIDIAccess()
-  let p: MIDIPacket = [1,2,3]
-  
-  
-  
-  
-}
 
 
 

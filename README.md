@@ -2,14 +2,19 @@
 
 This project is an implementation of MIDI heavily inspired by the [WebMIDI standard](https://www.w3.org/TR/webmidi/) standard. Note that there are slight API changes to account.
 
+* decadent midi framework
+
+
 * adapted meaning that some liberty was taken . WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit)  
 
-
-The original MIDI standard is extremely unwieldy, it's over 900 pages and I'm not sure it's ever been implemented in it's entirety.'  
+ original MIDI standard is extremely unwieldy, it's over 900 pages and I'm not sure it's ever been implemented in it's entirety.'  
 
 * one of the main issues of the coremidi api is the confusion of reference types and value types
 
 * 
+# bad code
+
+* http://stackoverflow.com/questions/4058790/coremidi-framework-sending-midi-commands
 
 WebMIDI
 

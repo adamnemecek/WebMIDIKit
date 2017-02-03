@@ -66,7 +66,15 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     return "MIDIPacket: timestamp: \(timestamp), data: \(Array(self))"
   }
 
+  public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {
+    fatalError()
+  }
 }
+
+//protocol Parser: Collection {
+//  associatedtype Raw
+//  init?<S: Sequence>(seq: S) where S.Iterator.Element == Raw
+//}
 
 //extension MIDIPacket : RangeReplaceableCollection {
 //  mutating

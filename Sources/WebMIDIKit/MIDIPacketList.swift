@@ -1,4 +1,4 @@
-//
+
 //  MIDIPacketList.swift
 //  WebMIDIKit
 //
@@ -43,6 +43,7 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
   public init?<S : Sequence>(seq: S) where S.Iterator.Element == UInt8 {
     let data = Array(seq)
 
+    fatalError()
     var packet = MIDIPacketList()
     MIDIPacketListInit(&packet)
 
@@ -56,11 +57,12 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
   }
 
   init(packet: MIDIPacket) {
-    var lst = MIDIPacketList()
-    MIDIPacketListInit(&lst)
-    lst.packet = packet
-    lst.numPackets = 1
-    self = lst
+    fatalError()
+//    var lst = MIDIPacketList()
+//    MIDIPacketListInit(&lst)
+//    lst.packet = packet
+//    lst.numPackets = 1
+//    self = lst
 
   }
 
