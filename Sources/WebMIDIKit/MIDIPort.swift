@@ -38,9 +38,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
   /// must be "input".
   public var type: MIDIPortType {
-
-    /// we try to determine the enpoint type (this will return nil if the port
-    /// is virtual in which case fall back to determining it from the type
     return endpoint.type
   }
 
@@ -50,7 +47,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 
   /// The state of the device.
-  public private(set) var state: MIDIPortDeviceState = .disconnected
+  public private(set) var state: MIDIPortDeviceState = .connected
   //{
   //    didSet {
   //      guard oldValue != state else { return }

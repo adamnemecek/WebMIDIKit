@@ -47,7 +47,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   }
 
   // todo weak? maybe we don't even need it?
-  private let client: MIDIClient
+  fileprivate let client: MIDIClient
 
   internal init(client: MIDIClient, ports: [Value]) {
     self.client = client
@@ -57,20 +57,9 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     }
   }
 
-  internal func add(_ endpoint: MIDIEndpoint) {
-      fatalError()
-//    switch Value.Type {
-//      case is MIDIInput:
-//        let p = Self(client: client, endpoint: endpoint)
-//        self[p.id] = p
-//      case .output:
-//        let p = MIDIOutput(client: client, endpoint: endpoint)
-//        self[p.id] = p
-//
-//    }
-//    assert(endpoint.type == p.type)
+  internal func add(_ port: Value) {
+      self[port.id] = port
   }
-
 
   internal func remove(_ endpoint: MIDIEndpoint) {
     //disconnect?
@@ -102,12 +91,20 @@ public class MIDIInputMap : MIDIPortMap<MIDIInput> {
     let ports = MIDISources().map { MIDIInput(client: client, endpoint: $0) }
     super.init(client: client, ports: ports)
   }
+
+  func add(_ endpoint: MIDIEndpoint) {
+    add(MIDIInput(client: client, endpoint: endpoint))
+  }
 }
 
 public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
   internal init(client: MIDIClient) {
     let ports = MIDIDestinations().map { MIDIOutput(client: client, endpoint: $0) }
     super.init(client: client, ports: ports)
+  }
+
+  func add(_ endpoint: MIDIEndpoint) {
+    add(MIDIOutput(client: client, endpoint: endpoint))
   }
 }
 
