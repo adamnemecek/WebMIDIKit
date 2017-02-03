@@ -7,8 +7,21 @@
 //
 
 import CoreMIDI
+import AXMIDI
 
-struct AXMIDIPacket {
+//protocol Builder: MutableCollection {
+//  func append(element: Iterator.Element)
+//}
+//
+//extension Builder where Self: RangeReplaceableCollection {
+//  func append(element: Iterator.Element) {
+//
+//  }
+//
+//
+//}
+
+struct MIDIPacketListBuilder {
   init(data: [UInt8]) {
     _currentPacket = MIDIPacketListInit(&lst)
     add(data: data)
@@ -21,8 +34,8 @@ struct AXMIDIPacket {
   private var lst: MIDIPacketList = MIDIPacketList()
   private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
 
-  mutating func send(to output: MIDIOutput) {
-      MIDISend(output.ref, output.endpoint.ref, &lst)
+  func send(to output: MIDIOutput) {
+      MIDISendExt(output.ref, output.endpoint.ref, lst)
   }
 }
 
@@ -72,13 +85,13 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
 //    return MIDIPacketListAdd(&self, MemoryLayout<MIDIPacketList>.size, &p, timestamp ?? 0, packet.count, Array(packet)).pointee
 //  }
 
-  init(data: [UInt8], timestamp: MIDITimeStamp = 0) {
-    var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
-    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
-    pkt = MIDIPacketListInit(pktList)
-    pkt = MIDIPacketListAdd(pktList, 1024, pkt, timestamp, data.count, data)
-    self = pktList.pointee
-  }
+//  init(data: [UInt8], timestamp: MIDITimeStamp = 0) {
+//    var pkt = UnsafeMutablePointer<MIDIPacket>.allocate(capacity: 1)
+//    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
+//    pkt = MIDIPacketListInit(pktList)
+//    pkt = MIDIPacketListAdd(pktList, 1024, pkt, timestamp, data.count, data)
+//    self = pktList.pointee
+//  }
 
   public var description: String {
     return "MIDIPacketList: count: \(numPackets)" + Array(self).description

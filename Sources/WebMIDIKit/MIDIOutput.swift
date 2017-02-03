@@ -42,7 +42,7 @@ public final class MIDIOutput : MIDIPort {
 
   public func send(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
     open()
-    var p = AXMIDIPacket(data: data)
+    let p = MIDIPacketListBuilder(data: data)
     p.send(to: self)
 
   }

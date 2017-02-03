@@ -6,6 +6,7 @@
 //
 //
 
+
 #include "AXMIDI.h"
 
 Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
@@ -24,4 +25,6 @@ MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count
   return p;
 }
 
-
+void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
+  MIDISend(port, dest, &list);
+}
