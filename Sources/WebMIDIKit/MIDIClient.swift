@@ -23,8 +23,9 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   let ref: MIDIClientRef
 
   internal init() {
-    ref = MIDIClientCreate(name: "WebMIDIKit") {
-      NotificationCenter.default.post(name: "nn", object: $0)
+    ref = MIDIClientCreate(name: "WebMIDIKit") { _ in
+        fatalError()
+//      NotificationCenter.default.post(name: "nn", object: $0)
     }
   }
 
