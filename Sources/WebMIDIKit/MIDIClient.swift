@@ -13,15 +13,12 @@ extension Notification.Name {
   static let MIDISetupNotification = Notification.Name(rawValue: "\(MIDIObjectAddRemoveNotification.self)")
 }
 
-//class Dispatcher<T>: NotificationCenter {
-//
-//}
-
 extension NotificationCenter {
   func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpointChange, MIDIEndpoint) -> ()) -> NSObjectProtocol {
-    return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) { notification in
-        guard let n = (notification.object as? MIDIObjectAddRemoveNotification) else { return }
-        callback(MIDIEndpointChange(n.messageID), n.endpoint)
+    return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
+      _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
+        callback(MIDIEndpointChange($0.messageID), $0.endpoint)
+      }
     }
   }
 }
@@ -34,8 +31,7 @@ fileprivate func MIDIClientCreate(name: String, callback: @escaping (UnsafePoint
 
 fileprivate func MIDIClientCreateExt(name: String, callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
   return MIDIClientCreate(name: name) {
-    guard let nn = MIDIObjectAddRemoveNotification(ptr: $0) else { return }
-    callback(nn)
+    _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
   }
 }
 
