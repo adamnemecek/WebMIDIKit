@@ -43,7 +43,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
     self.input = MIDIInput(virtual: client)
     self.output = MIDIOutput(virtual: client) {
-      _ in
+      print($0.0)
     }
     //todo
     self.input.onMIDIMessage = {
@@ -53,6 +53,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     NotificationCenter.default.addObserver(self, selector: #selector(notification), name: nil, object: nil)
   }
 
+  /// And
   @objc private func notification(ptr: UnsafePointer<MIDINotification>) {
     guard let n = MIDIObjectAddRemoveNotification(ptr: ptr) else { return }
     let endpoint = n.endpoint
@@ -62,7 +63,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     /// we can force unwrap the type because we know that this 
     /// is a non-virtual endpoint
     assert(!endpoint.isVirtual)
-    switch (n.messageID, endpoint.type!) {
+    switch (n.messageID, endpoint.type) {
 
     case (.msgObjectAdded, .input):
       inputs.add(endpoint)

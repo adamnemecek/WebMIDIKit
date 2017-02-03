@@ -41,20 +41,6 @@ internal func MIDIDestinations() -> [MIDIEndpoint] {
   }
 }
 
-
-//todo cleanup
-internal func MIDISourceCreate(ref: MIDIClientRef) -> MIDIEndpointRef {
-  var endpoint: MIDIEndpointRef = 0
-  MIDISourceCreate(ref, "Virtual MIDI output" as CFString, &endpoint)
-  return endpoint
-}
-
-internal func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
-  var endpoint: MIDIEndpointRef = 0
-  MIDIDestinationCreateWithBlock(ref, "WebMIDIKit" as CFString, &endpoint, block)
-  return endpoint
-}
-
 internal func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MIDIReadBlock) -> MIDIPortRef {
   var port = MIDIPortRef()
   MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
@@ -68,12 +54,6 @@ internal func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
   var port = MIDIPortRef()
   MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
   return port
-}
-
-internal func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
-  var ref = MIDIClientRef()
-  MIDIClientCreateWithBlock(name as CFString, &ref, callback)
-  return ref
 }
 
 extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {

@@ -22,30 +22,29 @@ public enum MIDIPortType : Equatable {
   /// If a MIDIPort is an output port, the type member must be this value.
   case output
 
-  internal init?(_ type: MIDIObjectType) {
+  internal init(_ type: MIDIObjectType) {
     switch type {
     case .source:
       self = .input
     case .destination:
       self = .output
-    /// This is a virtual port, use the other init
     case .other:
-      return nil
+      fatalError("You didn't initialize a virtual port")
     default:
       fatalError("Unexpected port type \(type)")
     }
   }
 
-  internal init(port: MIDIPort) {
-    switch port {
-    case is MIDIInput:
-      self = .input
-    case is MIDIOutput:
-      self = .output
-    default:
-      fatalError("Unexpected port type \(port.self)")
-    }
-  }
+//  internal init(port: MIDIPort) {
+//    switch port {
+//    case is MIDIInput:
+//      self = .input
+//    case is MIDIOutput:
+//      self = .output
+//    default:
+//      fatalError("Unexpected port type \(port.self)")
+//    }
+//  }
 }
 
 /// The state of the device.

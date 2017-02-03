@@ -15,6 +15,11 @@ import CoreMIDI
 //  }
 //}
 
+fileprivate func MIDIClientCreate(name: String, callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
+  var ref = MIDIClientRef()
+  MIDIClientCreateWithBlock(name as CFString, &ref, callback)
+  return ref
+}
 
 ///
 /// Kind of like a session, context or handle, it doesn't really do anything.

@@ -8,6 +8,19 @@
 
 import CoreMIDI
 
+//todo cleanup
+fileprivate func MIDISourceCreate(ref: MIDIClientRef) -> MIDIEndpointRef {
+  var endpoint: MIDIEndpointRef = 0
+  MIDISourceCreate(ref, "Virtual MIDI source endpoint" as CFString, &endpoint)
+  return endpoint
+}
+
+fileprivate func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
+  var endpoint: MIDIEndpointRef = 0
+  MIDIDestinationCreateWithBlock(ref, "Virtual MIDI destination endpoint" as CFString, &endpoint, block)
+  return endpoint
+}
+
 
 //
 // you can think of this as the HW port
@@ -15,25 +28,27 @@ import CoreMIDI
 
 internal final class MIDIEndpoint : Equatable, Comparable, Hashable {
   let ref: MIDIEndpointRef
+  let isVirtual: Bool
 
-  init(ref: MIDIEndpointRef) {
+  init(ref: MIDIEndpointRef, isVirtual: Bool = false) {
     self.ref = ref
-    self.isVirtual = false
+    self.isVirtual = isVirtual
   }
 
   init(input client: MIDIClient) {
-    self.isVirtual = true
     self.ref = MIDISourceCreate(ref: client.ref)
+    self.isVirtual = true
   }
 
   init(output client: MIDIClient, block: @escaping MIDIReadBlock) {
-    self.isVirtual = true
     self.ref = MIDIDestinationCreate(ref: client.ref, block: block)
-
+    self.isVirtual = true
   }
 
   deinit {
-    fatalError()
+    if isVirtual {
+      MIDIEndpointDispose(ref)
+    }
   }
 
   var hashValue: Int {
@@ -48,9 +63,6 @@ internal final class MIDIEndpoint : Equatable, Comparable, Hashable {
     return lhs.id < rhs.id
   }
 
-  //todo
-  let isVirtual: Bool
-
   var id: Int {
     return self[int: kMIDIPropertyUniqueID]
   }
@@ -64,9 +76,10 @@ internal final class MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[string: kMIDIPropertyName]
   }
 
-
-  ///todo comment: note this is an optional, this 
-  var type: MIDIPortType? {
+  /// For our purposes, enpoint can only be an input, output or other (if it's
+  /// virtual). If it's virtual, we cannot determine whether it's an input 
+  /// or output based on the
+  var type: MIDIPortType {
     return MIDIPortType(MIDIObjectGetType(id: id))
   }
 

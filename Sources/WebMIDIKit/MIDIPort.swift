@@ -41,7 +41,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
     /// we try to determine the enpoint type (this will return nil if the port
     /// is virtual in which case fall back to determining it from the type
-    return endpoint.type ?? MIDIPortType(port: self)
+    return endpoint.type
   }
 
   /// The version of the port.
@@ -134,7 +134,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     return "type: \(type)\n" +
           "name: \(name)\n" +
           "manufacturer: \(manufacturer)\n" +
-          "id: \(id)" +
+          "id: \(id)\n" +
           "state: \(state)\n" +
           "connection: \(connection)\n" +
           "version: \(version)"
