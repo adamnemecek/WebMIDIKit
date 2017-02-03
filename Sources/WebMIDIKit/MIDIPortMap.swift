@@ -110,3 +110,16 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     super.init(client: client, ports: ports)
   }
 }
+
+
+fileprivate func MIDISources() -> [MIDIEndpoint] {
+  return (0..<MIDIGetNumberOfSources()).map {
+    MIDIEndpoint(ref: MIDIGetSource($0))
+  }
+}
+
+fileprivate func MIDIDestinations() -> [MIDIEndpoint] {
+  return (0..<MIDIGetNumberOfDestinations()).map {
+    MIDIEndpoint(ref: MIDIGetDestination($0))
+  }
+}

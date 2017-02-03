@@ -6,7 +6,7 @@
 //
 //
 
-import CoreMIDI
+import enum CoreMIDI.MIDIObjectType
 
 //fileprivate func generatorForTuple(_ tuple: Any) -> AnyIterator<Any> {
 //  let children = Mirror(reflecting: tuple).children

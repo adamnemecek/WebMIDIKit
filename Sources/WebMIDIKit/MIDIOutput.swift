@@ -33,7 +33,7 @@ public final class MIDIOutput : MIDIPort {
   }
 
   internal convenience init(virtual client: MIDIClient, block: @escaping MIDIReadBlock) {
-    self.init(client: client, endpoint: MIDIEndpoint(output: client, block: block))
+    self.init(client: client, endpoint: VirtualMIDIDestination(client: client, block: block))
   }
 }
 

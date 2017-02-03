@@ -154,6 +154,21 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 }
 
+fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MIDIReadBlock) -> MIDIPortRef {
+  var port = MIDIPortRef()
+  MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+    packetlist, srcconref in
+    readmidi(packetlist, srcconref)
+  }
+  return port
+}
+
+fileprivate func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
+  var port = MIDIPortRef()
+  MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
+  return port
+}
+
 
 
 

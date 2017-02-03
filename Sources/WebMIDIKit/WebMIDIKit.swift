@@ -120,9 +120,6 @@ func test() {
   
 }
 
-@_exported import struct CoreMIDI.MIDIPacket
-@_exported import struct CoreMIDI.MIDIPacketList
-
 
 
 

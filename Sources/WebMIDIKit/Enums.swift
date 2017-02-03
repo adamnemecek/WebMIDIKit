@@ -6,7 +6,7 @@
 //
 //
 
-import CoreMIDI
+import enum CoreMIDI.MIDIObjectType
 
 ///
 /// A descriptor property to distinguish whether the port is an input or an
