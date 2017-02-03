@@ -9,7 +9,7 @@
 import Foundation
 import CoreMIDI
 
-struct Notifications {
+extension Notification.Name {
   static let MIDISetupNotification = Notification.Name(rawValue: "\(MIDIObjectAddRemoveNotification.self)")
 }
 
@@ -19,7 +19,7 @@ struct Notifications {
 
 extension NotificationCenter {
   func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpointChange, MIDIEndpoint) -> ()) -> NSObjectProtocol {
-    return addObserver(forName: Notifications.MIDISetupNotification, object: nil, queue: nil) { notification in
+    return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) { notification in
         guard let n = (notification.object as? UnsafePointer<MIDINotification>),
           let nn = MIDIObjectAddRemoveNotification(ptr: n) else { return }
         callback(MIDIEndpointChange(nn.messageID), nn.endpoint)
@@ -52,7 +52,7 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   internal init() {
     //todo: maybe hide the pointers away
     ref = MIDIClientCreate(name: "WebMIDIKit") { (n: UnsafePointer<MIDINotification>) in
-      NotificationCenter.default.post(name: Notifications.MIDISetupNotification, object: n)
+      NotificationCenter.default.post(name: .MIDISetupNotification, object: n)
     }
   }
 
