@@ -9,19 +9,14 @@
 
 #include "AXMIDI.h"
 
-struct MIDIPacketListSlice {
-  const MIDIPacketList* base;
-   // in bytes
-  int startIndex;
-  int endIndex;
-};
+
 
 Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
-	return packet.data[index];
+  return packet.data[index];
 }
 
 void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
-	packet->data[index] = value;
+  packet->data[index] = value;
 }
 
 MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count) {
@@ -39,25 +34,64 @@ void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
 
 CF_INLINE MIDIPacket* MIDIPacketNextExt(const MIDIPacket *pkt)
 {
-//	#if TARGET_CPU_ARM || TARGET_CPU_ARM64
+  //	#if TARGET_CPU_ARM || TARGET_CPU_ARM64
 		// MIDIPacket must be 4-byte aligned
-//		return	(MIDIPacket *)(((uintptr_t)(&pkt->data[pkt->length]) + 3) & ~3);
-//	#else
+  //		return	(MIDIPacket *)(((uintptr_t)(&pkt->data[pkt->length]) + 3) & ~3);
+  //	#else
 		return	(MIDIPacket *)&pkt->data[pkt->length];
-//	#endif
+  //	#endif
 }
 
-MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
+const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
   switch (notification->messageID) {
     case kMIDIMsgObjectAdded:
     case kMIDIMsgObjectRemoved:
-      return (MIDIObjectAddRemoveNotification*)notification;
+      return (const MIDIObjectAddRemoveNotification*)notification;
     default:
       return NULL;
   }
 }
 
+//MIDIPacketList* MIDIPacketListCreate(const UInt8* data, int count) {
+//
+//}
+#define __out
+#define __in
 
+void MIDIPacketListIteratorCreate(const MIDIPacketList* lst, MIDIPacketListIterator* iter) {
+
+}
+
+const MIDIPacketListIterator* MIDIPacketListIteratorNext(const MIDIPacketListIterator* iter) {
+  if (true) {
+    return iter;
+  }
+  return NULL;
+}
+
+const MIDIPacket* MIDIPacketListIteratorToPacket(const MIDIPacketListIterator* iter) {
+  return NULL;
+}
+
+//
+//const MIDIPacket* MIDIPacketListSliceToPacket(const MIDIPacketListSlice* slice) {
+//  return NULL;
+//}
+//
+//void MIDIPacketListSliceCreate(const MIDIPacketList lst, MIDIPacketListSlice* slice) {
+//
+////  MIDIPacket* current = lst->
+//  return NULL;
+//}
+//
+//const MIDIPacketListSlice* MIDIPacketListSliceNext(const MIDIPacketListSlice* slice) {
+//  return NULL;
+//}
+
+//void Add () {
+//  MIDIPacketListAdd(<#MIDIPacketList * _Nonnull pktlist#>, <#ByteCount listSize#>, <#MIDIPacket * _Nonnull curPacket#>, <#MIDITimeStamp time#>, <#ByteCount nData#>, <#const Byte * _Nonnull data#>)
+//
+//}
 //
 // creates a
 //

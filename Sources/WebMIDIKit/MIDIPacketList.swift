@@ -9,6 +9,77 @@
 import CoreMIDI
 import AXMIDI
 
+
+
+//@_exported import AXMIDI.MIDIPacketListSlice
+
+extension MIDIPacketListSlice: Collection, IteratorProtocol {
+  public typealias Index = Int
+  public typealias Element = MIDIPacket
+
+  init(lst: UnsafePointer<MIDIPacketList>) {
+//    self.init(
+    fatalError()
+  }
+
+  public var startIndex: Index {
+    return Index(startIndex_)
+  }
+
+  public var endIndex: Index {
+    return Index(startIndex_)
+  }
+   public subscript(index: Index) -> Element {
+//    return base[index]
+    fatalError()
+  }
+
+  public func index(after i: Index) -> Index {
+    return i + 1
+  }
+
+  public func next() -> MIDIPacket? {
+    return nil
+  }
+}
+
+extension MIDIPacketListIterator: IteratorProtocol {
+  public typealias Element = MIDIPacket
+  public typealias Index = Int
+
+  init() {
+    startIndex_ = 0
+    endIndex_ = 0
+    base = nil
+  }
+
+  init(lst: UnsafePointer<MIDIPacketList>) {
+    fatalError()
+//    self.init(
+//    self = 
+  }
+
+  public var startIndex: Index {
+    return Index(startIndex_)
+  }
+
+  public var endIndex: Index {
+    return Index(startIndex_)
+  }
+   public subscript(index: Index) -> Element {
+//    return base[index]
+    fatalError()
+  }
+
+  public func index(after i: Index) -> Index {
+    return i + 1
+  }
+
+  public func next() -> MIDIPacket? {
+    return nil
+  }
+}
+
 //protocol Builder: MutableCollection {
 //  func append(element: Iterator.Element)
 //}
@@ -21,29 +92,30 @@ import AXMIDI
 //
 //}
 
-struct MIDIChomper: Sequence {
-  typealias Element = ArraySlice<UInt8>
-  let content: [UInt8]
-
-  init(content: [UInt8]) {
-    self.content = content
-  }
-
-  func makeIterator() -> AnyIterator<Element> {
-    var start = 0
-    var current = 0
-
-    return AnyIterator {
-      while current < self.content.endIndex {
-        current += 1
-      }
-      defer {
-        start = current
-      }
-      return self.content[start..<current]
-    }
-  }
-}
+//struct MIDIChomper: Sequence {
+//  typealias Element = ArraySlice<UInt8>
+//  let content: [UInt8]
+//
+//  init(content: [UInt8]) {
+//    self.content = content
+//  }
+//
+//  func makeIterator() -> AnyIterator<Element> {
+//
+//    var start = 0
+//    var current = 0
+//
+//    return AnyIterator {
+//      while current < self.content.endIndex {
+//        current += 1
+//      }
+//      defer {
+//        start = current
+//      }
+//      return self.content[start..<current]
+//    }
+//  }
+//}
 
 func dump(_ lst: MIDIPacketList) {
   print("numPackets: \(lst.numPackets) packet: \(lst.packet)")
@@ -99,12 +171,26 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
   public typealias Element = MIDIPacket
   public typealias Timestamp = Element.Timestamp
 
+//  public func makeIterator() -> AnyIterator<Element> {
+//
+//    var first = packet
+//    let s = sequence(first: &first) { MIDIPacketNext($0) }
+//      .prefix(Int(numPackets)).makeIterator()
+//    return AnyIterator { s.next()?.pointee }
+//  }
   public func makeIterator() -> AnyIterator<Element> {
+//    var iter = MIDIPacketListIterator()
+//    MIDIPacketListIteratorCreate(&self, &iter);
 
-    var first = packet
-    let s = sequence(first: &first) { MIDIPacketNext($0) }
-      .prefix(Int(numPackets)).makeIterator()
-    return AnyIterator { s.next()?.pointee }
+
+    return AnyIterator {
+      nil
+//      guard iter != nil else { return nil }
+//      defer {
+//        iter = MIDIPacketListIteratorNext(&iter)?.pointee
+//      }
+//      return MIDIPacketListIteratorToPacket(&iter)?.pointee
+    }
   }
 
   public static func ==(lhs: MIDIPacketList, rhs: MIDIPacketList) -> Bool {
