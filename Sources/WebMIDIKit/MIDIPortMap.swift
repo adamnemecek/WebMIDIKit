@@ -68,6 +68,17 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     self[port.id] = nil
   }
 
+  /// Prompts the user to select a MIDIPort
+  public func prompt() -> Value? {
+    var i = 0
+    forEach {
+      print("\(i) select: \($1)")
+      i += 1
+    }
+    fatalError()
+    return nil
+  }
+
   //
   // todo should this be doing key, value?
   //

@@ -32,9 +32,8 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public subscript(index: Index) -> Element {
     get {
-      let r = MIDIPacketGetValue(self, Int32(index))
-      print("index \(index), value: \(r), length: \(count)")
-      return r
+      print("index \(index), value: \(MIDIPacketGetValue(self, Int32(index))), length: \(count)")
+      return MIDIPacketGetValue(self, Int32(index))
     }
     set {
       MIDIPacketSetValue(&self, Int32(index), newValue)

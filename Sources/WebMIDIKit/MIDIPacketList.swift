@@ -13,35 +13,35 @@ import AXMIDI
 
 //@_exported import AXMIDI.MIDIPacketListSlice
 
-extension MIDIPacketListSlice: Collection, IteratorProtocol {
-  public typealias Index = Int
-  public typealias Element = MIDIPacket
-
-  init(lst: UnsafePointer<MIDIPacketList>) {
-//    self.init(
-    fatalError()
-  }
-
-  public var startIndex: Index {
-    return Index(startIndex_)
-  }
-
-  public var endIndex: Index {
-    return Index(startIndex_)
-  }
-   public subscript(index: Index) -> Element {
-//    return base[index]
-    fatalError()
-  }
-
-  public func index(after i: Index) -> Index {
-    return i + 1
-  }
-
-  public func next() -> MIDIPacket? {
-    return nil
-  }
-}
+//extension MIDIPacketListSlice: Collection, IteratorProtocol {
+//  public typealias Index = Int
+//  public typealias Element = MIDIPacket
+//
+//  init(lst: UnsafePointer<MIDIPacketList>) {
+////    self.init(
+//    fatalError()
+//  }
+//
+//  public var startIndex: Index {
+//    return Index(startIndex_)
+//  }
+//
+//  public var endIndex: Index {
+//    return Index(startIndex_)
+//  }
+//   public subscript(index: Index) -> Element {
+////    return base[index]
+//    fatalError()
+//  }
+//
+//  public func index(after i: Index) -> Index {
+//    return i + 1
+//  }
+//
+//  public func next() -> MIDIPacket? {
+//    return nil
+//  }
+//}
 
 extension MIDIPacketListIterator: IteratorProtocol {
   public typealias Element = MIDIPacket
@@ -50,7 +50,8 @@ extension MIDIPacketListIterator: IteratorProtocol {
   init() {
     startIndex_ = 0
     endIndex_ = 0
-    base = nil
+//    base = nil
+    fatalError()
   }
 
   init(lst: UnsafePointer<MIDIPacketList>) {
@@ -179,7 +180,7 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
 //    return AnyIterator { s.next()?.pointee }
 //  }
   public func makeIterator() -> AnyIterator<Element> {
-//    var iter = MIDIPacketListIterator()
+    var iter = MIDIPacketListIterator()
 //    MIDIPacketListIteratorCreate(&self, &iter);
 
 

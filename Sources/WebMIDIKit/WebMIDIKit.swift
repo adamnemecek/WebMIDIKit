@@ -28,38 +28,33 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  private let client: MIDIClient
-  private let clients: Set<MIDIClient> = []
-
-  private let input: MIDIInput
-  private let output: MIDIOutput
-
-  private var observer: NSObjectProtocol? = nil
-
   public init() {
-    let client = MIDIClient()
+    self._client = MIDIClient()
 
-    self.client = client
-    self.inputs = MIDIInputMap(client: client)
-    self.outputs = MIDIOutputMap(client: client)
+    self.inputs = MIDIInputMap(client: _client)
+    self.outputs = MIDIOutputMap(client: _client)
 
-    self.input = MIDIInput(virtual: client)
-    self.output = MIDIOutput(virtual: client) {
+    self._input = MIDIInput(virtual: _client)
+    self._output = MIDIOutput(virtual: _client) {
       print($0.0)
     }
     //todo
-    self.input.onMIDIMessage = {
+    self._input.onMIDIMessage = {
       //          self.midi(src: 0, lst: $0)
       print($0)
     }
 
-    self.observer = NotificationCenter.default.observeMIDIEndpoints {
-      self.notification(endpoint: $0, change: $1)
+    self._observer = NotificationCenter.default.observeMIDIEndpoints {
+      self.notification(endpoint: $0, type: $1)
     }
   }
 
-  private func notification(endpoint: MIDIEndpoint, change: MIDIEndpointNotificationType) {
-    switch (endpoint.type, change) {
+  deinit {
+    _observer.map(NotificationCenter.default.removeObserver)
+  }
+
+  private func notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) {
+    switch (endpoint.type, type) {
     case (.input, .added):
       inputs.add(endpoint)
 
@@ -95,11 +90,15 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     //    }
   }
 
+  
+  private let _client: MIDIClient
+  private let _clients: Set<MIDIClient> = []
 
+  private let _input: MIDIInput
+  private let _output: MIDIOutput
 
-  deinit {
-    observer.map(NotificationCenter.default.removeObserver)
-  }
+  private var _observer: NSObjectProtocol? = nil
+
 }
 
 protocol NotificationType {

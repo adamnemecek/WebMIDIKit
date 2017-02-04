@@ -12,7 +12,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 typedef struct {
-  const MIDIPacketList* base;
+  const MIDIPacketList* _Nonnull base;
   /// indexes are in bytes
   int startIndex_;
   int endIndex_;
@@ -20,7 +20,7 @@ typedef struct {
 
 
 typedef struct {
-  const MIDIPacketList* base;
+  const MIDIPacketList* _Nonnull base;
 
   /// indexes are in bytes
   int startIndex_;
@@ -32,9 +32,9 @@ typedef struct {
 /// annoying AF. These utility functions let us index directly.
 
 inline Byte MIDIPacketGetValue(const MIDIPacket packet, int index);
-inline void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value);
+inline void MIDIPacketSetValue(MIDIPacket* const _Nonnull packet, int index, Byte value);
 
-inline MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count);
+inline MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* _Nonnull data, int count);
 
 inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list);
 
@@ -43,6 +43,7 @@ MIDINotificationToEndpointNotification(
   const MIDINotification* _Nonnull notification
 );
 
+inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet);
 //inline const MIDIPacket* MIDIPacketListSliceToPacket(const MIDIPacketListSlice* slice);
 
 //inline void MIDIPacketListSliceCreate(const MIDIPacketList lst, MIDIPacketListSlice* slice);
@@ -55,12 +56,12 @@ MIDIPacketListIteratorCreate(
 
 inline const MIDIPacketListIterator* _Nullable
 MIDIPacketListIteratorNext(
-  const MIDIPacketListIterator* _Nullable slice
+  const MIDIPacketListIterator* _Nonnull iter
 );
 
 inline const MIDIPacket* _Nullable
 MIDIPacketListIteratorToPacket(
-  const MIDIPacketListIterator* _Nullable slice
+  const MIDIPacketListIterator* _Nullable iter
 );
 
 

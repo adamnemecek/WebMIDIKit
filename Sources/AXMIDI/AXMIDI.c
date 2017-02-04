@@ -73,6 +73,11 @@ const MIDIPacket* MIDIPacketListIteratorToPacket(const MIDIPacketListIterator* i
   return NULL;
 }
 
+inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet) {
+  
+  return (MIDIPacketList){};
+}
+
 //
 //const MIDIPacket* MIDIPacketListSliceToPacket(const MIDIPacketListSlice* slice) {
 //  return NULL;
