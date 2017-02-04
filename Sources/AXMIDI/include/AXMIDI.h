@@ -14,3 +14,5 @@ inline Byte MIDIPacketGetValue(const MIDIPacket packet, int index);
 inline void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value);
 inline MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count);
 inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list);
+
+inline MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification);

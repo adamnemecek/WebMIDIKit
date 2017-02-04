@@ -10,8 +10,9 @@
 #include "AXMIDI.h"
 
 struct MIDIPacketListSlice {
-  MIDIPacketList *lst;
-  int startIndex; // in bytes
+  const MIDIPacketList* base;
+   // in bytes
+  int startIndex;
   int endIndex;
 };
 
@@ -45,6 +46,17 @@ CF_INLINE MIDIPacket* MIDIPacketNextExt(const MIDIPacket *pkt)
 		return	(MIDIPacket *)&pkt->data[pkt->length];
 //	#endif
 }
+
+MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
+  switch (notification->messageID) {
+    case kMIDIMsgObjectAdded:
+    case kMIDIMsgObjectRemoved:
+      return (MIDIObjectAddRemoveNotification*)notification;
+    default:
+      return NULL;
+  }
+}
+
 
 //
 // creates a

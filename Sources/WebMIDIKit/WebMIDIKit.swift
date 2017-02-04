@@ -58,7 +58,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     }
   }
 
-  private func notification(endpoint: MIDIEndpoint, change: MIDIEndpointChange) {
+  private func notification(endpoint: MIDIEndpoint, change: MIDIEndpointNotificationType) {
     switch (endpoint.type, change) {
     case (.input, .added):
       inputs.add(endpoint)
@@ -102,11 +102,24 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
   }
 }
 
+protocol NotificationType {
+
+}
+
+//extension NotificationCenter {
+//  func observe<T>(_ callback: @escaping (T) -> ()) -> NSObjectProtocol {
+//    return addObserver(forName: NSNotification.Name(rawValue: "\(T.self)"), object: nil, queue: nil) {
+//      _ in
+//    }
+//
+//  }
+//}
+
 fileprivate extension NotificationCenter {
-  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointChange) -> ()) -> NSObjectProtocol {
+  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
     return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
       _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
-        callback($0.endpoint, MIDIEndpointChange($0.messageID))
+        callback($0.endpoint, MIDIEndpointNotificationType($0.messageID))
       }
     }
   }

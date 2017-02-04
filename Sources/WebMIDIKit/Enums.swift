@@ -48,7 +48,7 @@ public enum MIDIPortType : Equatable {
 //  }
 }
 
-internal enum MIDIEndpointChange {
+internal enum MIDIEndpointNotificationType {
   case added, removed
 
   init(_ messageID: MIDINotificationMessageID) {
