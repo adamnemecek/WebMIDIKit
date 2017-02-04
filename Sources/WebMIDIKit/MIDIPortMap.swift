@@ -57,15 +57,17 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     }
   }
 
-  internal func add(_ port: Value) {
+  internal func add(_ port: Value) -> Value? {
       self[port.id] = port
+      return port
   }
 
-   func remove(_ endpoint: MIDIEndpoint) {
+   func remove(_ endpoint: MIDIEndpoint) -> Value? {
     //disconnect?
-    guard let port = self[endpoint] else { assert(false); return }
+    guard let port = self[endpoint] else { assert(false); return nil }
 //    port.disconnect() // put into pending?
     self[port.id] = nil
+    return port
   }
 
   /// Prompts the user to select a MIDIPort
@@ -103,8 +105,8 @@ public class MIDIInputMap : MIDIPortMap<MIDIInput> {
     super.init(client: client, ports: ports)
   }
 
-  func add(_ endpoint: MIDIEndpoint) {
-    add(MIDIInput(client: client, endpoint: endpoint))
+  func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
+    return add(MIDIInput(client: client, endpoint: endpoint))
   }
 }
 
@@ -114,8 +116,8 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     super.init(client: client, ports: ports)
   }
 
-  func add(_ endpoint: MIDIEndpoint) {
-    add(MIDIOutput(client: client, endpoint: endpoint))
+  func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
+    return add(MIDIOutput(client: client, endpoint: endpoint))
   }
 }
 
