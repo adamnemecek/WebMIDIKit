@@ -20,9 +20,7 @@ public final class MIDIInput : MIDIPort {
   }
 }
 
-///
 /// source != input, source is a hw (or virtual) port, input is connected port
-///
 fileprivate class VirtualMIDISource: VirtualMIDIEndpoint {
   init(client: MIDIClient) {
     super.init(ref: MIDISourceCreate(ref: client.ref))

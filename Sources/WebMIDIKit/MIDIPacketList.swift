@@ -31,7 +31,7 @@ struct MIDIPacketListBuilder {
     _currentPacket = MIDIPacketListAdd(&lst, MemoryLayout<MIDIPacketList>.size, _currentPacket, 0, data.count, data)
   }
 
-  private var lst: MIDIPacketList = MIDIPacketList()
+  private(set) var lst: MIDIPacketList = MIDIPacketList()
   private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
 
   func send(to output: MIDIOutput) {
