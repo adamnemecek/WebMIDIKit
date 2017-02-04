@@ -43,6 +43,7 @@ public final class MIDIOutput : MIDIPort {
   public func send(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
     open()
     let p = MIDIPacketListBuilder(data: data)
+    print(p.head)
     p.send(to: self)
 
   }

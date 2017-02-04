@@ -1,4 +1,4 @@
-
+ //
 //  MIDIPacketList.swift
 //  WebMIDIKit
 //
@@ -21,21 +21,77 @@ import AXMIDI
 //
 //}
 
-struct MIDIPacketListBuilder {
+struct MIDIChomper: Sequence {
+  typealias Element = ArraySlice<UInt8>
+  let content: [UInt8]
+
+  init(content: [UInt8]) {
+    self.content = content
+  }
+
+  func makeIterator() -> AnyIterator<Element> {
+    var start = 0
+    var current = 0
+
+    return AnyIterator {
+      while current < self.content.endIndex {
+        current += 1
+      }
+      defer {
+        start = current
+      }
+      return self.content[start..<current]
+    }
+  }
+}
+
+func dump(_ lst: MIDIPacketList) {
+  print("numPackets: \(lst.numPackets) packet: \(lst.packet)")
+}
+
+class MIDIPacketListBuilder {
   init(data: [UInt8]) {
-    _currentPacket = MIDIPacketListInit(&lst)
+    let pkt = UnsafeMutablePointer<UInt8>.allocate(capacity: 1024)
+    head = pkt.withMemoryRebound(to: MIDIPacketList.self, capacity: 1) {
+      $0
+    }
+//    dump(head)
+    _currentPacket = MIDIPacketListInit(head)
+//    dump(head)
+    _first = _currentPacket
+//    size = 0
     add(data: data)
+//    _first = _currentPacket
+//    dump(head)
   }
 
-  mutating func add(data: [UInt8]) {
-    _currentPacket = MIDIPacketListAdd(&lst, MemoryLayout<MIDIPacketList>.size, _currentPacket, 0, data.count, data)
+  func add(data: [UInt8]) {
+    _currentPacket = MIDIPacketListAdd(head, 1024, _currentPacket, 0, data.count, data)
+    print(_currentPacket.pointee)
+//    _currentPacket = MIDIPacketListAdd(&head, size, _currentPacket, 0, data.count, data)
+//    size += data.count
   }
 
-  private(set) var lst: MIDIPacketList = MIDIPacketList()
+//  private var size: Int
+  private(set) var head: UnsafeMutablePointer<MIDIPacketList>
+  var _first: UnsafeMutablePointer<MIDIPacket>
   private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
 
+
+  deinit {
+//    head.d
+  }
   func send(to output: MIDIOutput) {
-      MIDISendExt(output.ref, output.endpoint.ref, lst)
+      
+      MIDISend(output.ref, output.endpoint.ref, head)
+  }
+  typealias Element = MIDIPacket
+
+  public func makeIterator() -> AnyIterator<Element> {
+
+    let s = sequence(first: _first) { MIDIPacketNext($0) }
+      .prefix(Int(head.pointee.numPackets)).makeIterator()
+    return AnyIterator { s.next()?.pointee }
   }
 }
 
@@ -44,6 +100,7 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
   public typealias Timestamp = Element.Timestamp
 
   public func makeIterator() -> AnyIterator<Element> {
+
     var first = packet
     let s = sequence(first: &first) { MIDIPacketNext($0) }
       .prefix(Int(numPackets)).makeIterator()

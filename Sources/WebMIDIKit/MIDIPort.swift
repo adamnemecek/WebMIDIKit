@@ -74,16 +74,33 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
     assert(ref == 0)
-    
+
     switch type {
 
     case .input:
-      let input = self as! MIDIInput
-      ref = MIDIInputPortCreate(ref: client.ref) { (lst, src) in
-        lst.pointee.forEach {
-          input.onMIDIMessage?($0)
-        }
+      let `self` = self as! MIDIInput
+      ref = MIDIInputPortCreateExt(ref: client.ref) {
+        `self`.onMIDIMessage?($0)
       }
+      /*!
+       @function		MIDIPortConnectSource
+
+       @abstract 		Establishes a connection from a source to a client's input port.
+
+       @param			port
+       The port to which to create the connection.  This port's
+       readProc is called with incoming MIDI from the source.
+       @param			source
+       The source from which to create the connection.
+       @param			connRefCon
+       This refCon is passed to the port's MIDIReadProc or MIDIReadBlock, as a way to
+       identify the source.
+       @result			An OSStatus result code.
+       
+       @discussion
+       */
+      //nil is the src above
+      MIDIPortConnectSource(ref, endpoint.ref, nil)
 
     case .output:
       ref = MIDIOutputPortRefCreate(ref: client.ref)
@@ -126,12 +143,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   public var description: String {
     return "type: \(type)\n" +
-          "name: \(name)\n" +
-          "manufacturer: \(manufacturer)\n" +
-          "id: \(id)\n" +
-          "state: \(state)\n" +
-          "connection: \(connection)\n" +
-          "version: \(version)"
+      "name: \(name)\n" +
+      "manufacturer: \(manufacturer)\n" +
+      "id: \(id)\n" +
+      "state: \(state)\n" +
+      "connection: \(connection)\n" +
+    "version: \(version)"
   }
 
   internal private(set) var ref: MIDIPortRef
@@ -155,6 +172,15 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MID
     readmidi(packetlist, srcconref)
   }
   return port
+}
+
+fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
+  return MIDIInputPortCreate(ref: ref) {
+    lst, _ in
+    lst.pointee.forEach {
+      readmidi($0)
+    }
+  }
 }
 
 fileprivate func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {

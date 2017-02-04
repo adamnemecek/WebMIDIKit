@@ -42,15 +42,15 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
     MIDIClientDispose(ref)
   }
 
-  internal var hashValue: Int {
+  var hashValue: Int {
     return ref.hashValue
   }
 
-  internal static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+  static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
     return lhs.ref == rhs.ref
   }
 
-  internal static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+  static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
     return lhs.ref < rhs.ref
   }
 }

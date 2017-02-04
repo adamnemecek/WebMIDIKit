@@ -13,9 +13,9 @@ This project is an implementation of MIDI heavily inspired by the [WebMIDI stand
 
 * 
 # bad code
-
+* https://developer.apple.com/library/content/qa/qa1374/_index.html#//apple_ref/doc/uid/DTS10003394
 * http://stackoverflow.com/questions/4058790/coremidi-framework-sending-midi-commands
-
+* if you manage to find a correct use of MIDIPacketList
 WebMIDI
 
 #Documentation

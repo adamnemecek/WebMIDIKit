@@ -11,6 +11,10 @@ import AXMIDI
 
 @_exported import struct CoreMIDI.MIDIPacket
 
+//enum MIDIMessageType: UInt8 {
+//
+//}
+
 extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
@@ -20,12 +24,15 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public var endIndex: Index {
-    return Index(length)
+    //todo this needs to be fixed and like do the right
+    return 3
   }
 
   public subscript(index: Index) -> Element {
     get {
-      return MIDIPacketGetValue(self, Int32(index))
+      let r = MIDIPacketGetValue(self, Int32(index))
+      print("index \(index), value: \(r), length: \(count)")
+      return r
     }
     set {
       MIDIPacketSetValue(&self, Int32(index), newValue)
@@ -63,11 +70,20 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public var description: String {
-    return "MIDIPacket: timestamp: \(timestamp), data: \(Array(self))"
+    assert(type == 8 || type == 9)
+    return "Note: timestamp: \(timestamp), data: \(Array(self))"
   }
 
   public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {
     fatalError()
+  }
+
+  var type: UInt8 {
+    return UInt8(data.0 >> 4)
+  }
+
+  public var byte: UInt8 {
+    return data.1
   }
 }
 

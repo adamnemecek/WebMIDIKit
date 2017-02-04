@@ -56,11 +56,11 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[int: kMIDIPropertyDriverVersion]
   }
 
-  private subscript(string property: CFString) -> String {
+  final private subscript(string property: CFString) -> String {
     return MIDIObjectGetStringProperty(ref: ref, property: property)
   }
 
-  private subscript(int property: CFString) -> Int {
+  final private subscript(int property: CFString) -> Int {
     return MIDIObjectGetIntProperty(ref: ref, property: property)
   }
 
@@ -77,8 +77,24 @@ class VirtualMIDIEndpoint: MIDIEndpoint {
 }
 
 
+//enum OSResult<T: Equatable, E>: Equatable {
+//  case ok(T), err(OSStatus)
+//
+//  static func ==(lhs: OSResult, rhs: OSResult) -> Bool {
+//    switch (lhs, rhs) {
+//      case let (.ok(l), .ok(r)):
+//        return l == r
+//      case let (.err(l), .err(r)):
+//        return l == r
+//      default:
+//        return false
+//    }
+//  }
+//}
 
-
+//
+// todo: mikmidi strips out control characters (check out their implementation of this)
+//
 fileprivate func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
   var string: Unmanaged<CFString>? = nil
   MIDIObjectGetStringProperty(ref, property, &string)
