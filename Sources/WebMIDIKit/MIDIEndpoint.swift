@@ -7,9 +7,10 @@
 //
 
 import CoreMIDI
+import func AXMIDI.MIDISendExt
 
 //
-// you can think of this as the HW port
+// you can think of this as the HW input/output or virtual endpoint
 //
 
 internal class MIDIEndpoint : Equatable, Comparable, Hashable {
@@ -75,37 +76,8 @@ class VirtualMIDIEndpoint: MIDIEndpoint {
   }
 }
 
-///
-/// source != input, source is a hw (or virtual) port, input is connected port
-///
-final class VirtualMIDISource: VirtualMIDIEndpoint {
-  init(client: MIDIClient) {
-    super.init(ref: MIDISourceCreate(ref: client.ref))
-  }
-}
 
-final class VirtualMIDIDestination: VirtualMIDIEndpoint {
-  init(client: MIDIClient, block: @escaping MIDIReadBlock) {
-    super.init(ref: MIDIDestinationCreate(ref: client.ref, block: block))
-  }
 
-  func send(lst: UnsafePointer<MIDIPacketList>) {
-    MIDIReceived(ref, lst)
-  }
-}
-
-//todo cleanup
-fileprivate func MIDISourceCreate(ref: MIDIClientRef) -> MIDIEndpointRef {
-  var endpoint: MIDIEndpointRef = 0
-  MIDISourceCreate(ref, "Virtual MIDI source endpoint" as CFString, &endpoint)
-  return endpoint
-}
-
-fileprivate func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
-  var endpoint: MIDIEndpointRef = 0
-  MIDIDestinationCreateWithBlock(ref, "Virtual MIDI destination endpoint" as CFString, &endpoint, block)
-  return endpoint
-}
 
 fileprivate func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
   var string: Unmanaged<CFString>? = nil

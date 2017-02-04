@@ -55,6 +55,22 @@ public final class MIDIOutput : MIDIPort {
   }
 }
 
+fileprivate final class VirtualMIDIDestination: VirtualMIDIEndpoint {
+  init(client: MIDIClient, block: @escaping MIDIReadBlock) {
+    super.init(ref: MIDIDestinationCreate(ref: client.ref, block: block))
+  }
 
+  func send(lst: UnsafePointer<MIDIPacketList>) {
+    fatalError()
+//    MIDISend(ref, endpoint.ref, lst)
+  }
+}
+
+
+fileprivate func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
+  var endpoint: MIDIEndpointRef = 0
+  MIDIDestinationCreateWithBlock(ref, "Virtual MIDI destination endpoint" as CFString, &endpoint, block)
+  return endpoint
+}
 
 

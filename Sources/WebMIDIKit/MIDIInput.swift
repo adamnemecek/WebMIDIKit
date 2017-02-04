@@ -8,16 +8,6 @@
 
 import CoreMIDI
 
-
-//protocol EventHandler {
-//  func handleEvent()
-//}
-
-//public protocol MIDIReceiver {
-//  //todo
-//  var onMIDIMessage: EventHandler<UnsafePointer<MIDIPacketList>> { get set }
-//}
-
 public final class MIDIInput : MIDIPort {
   public var onMIDIMessage: EventHandler<MIDIPacket> = nil {
     didSet {
@@ -30,5 +20,17 @@ public final class MIDIInput : MIDIPort {
   }
 }
 
+///
+/// source != input, source is a hw (or virtual) port, input is connected port
+///
+fileprivate class VirtualMIDISource: VirtualMIDIEndpoint {
+  init(client: MIDIClient) {
+    super.init(ref: MIDISourceCreate(ref: client.ref))
+  }
+}
 
-
+fileprivate func MIDISourceCreate(ref: MIDIClientRef) -> MIDIEndpointRef {
+  var endpoint: MIDIEndpointRef = 0
+  MIDISourceCreate(ref, "Virtual MIDI source endpoint" as CFString, &endpoint)
+  return endpoint
+}
