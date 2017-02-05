@@ -12,22 +12,6 @@ import CoreMIDI
 internal extension Notification.Name {
   static let MIDISetupNotification = Notification.Name(rawValue: "\(MIDIObjectAddRemoveNotification.self)")
 }
-
-
-fileprivate func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
-  var ref = MIDIClientRef()
-  MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref, callback)
-  return ref
-}
-
-/// on endpoint add/remove
-fileprivate func MIDIClientCreateExt(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
-  return MIDIClientCreate {
-    _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
-  }
-}
-
-
 /// Kind of like a session, context or handle, it doesn't really do anything
 /// besidesbeing passed around.
 internal final class MIDIClient : Equatable, Comparable, Hashable {
@@ -56,5 +40,15 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   }
 }
 
+fileprivate func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
+  var ref = MIDIClientRef()
+  MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref, callback)
+  return ref
+}
 
-
+/// on endpoint add/remove
+fileprivate func MIDIClientCreateExt(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
+  return MIDIClientCreate {
+    _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
+  }
+}

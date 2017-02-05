@@ -56,6 +56,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   }
 
   internal func add(_ port: Value) -> Value? {
+      assert(self[port.id] == nil)
       self[port.id] = port
       return port
   }

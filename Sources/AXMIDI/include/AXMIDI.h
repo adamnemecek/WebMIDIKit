@@ -11,18 +11,14 @@
 #import <CoreMIDI/CoreMIDI.h>
 #import <CoreFoundation/CoreFoundation.h>
 
-typedef struct {
-  const MIDIPacketList* _Nonnull base;
-  /// indexes are in bytes
-  int startIndex_;
-  int endIndex_;
-} MIDIPacketListSlice;
-
 
 typedef struct {
-  const MIDIPacketList* _Nonnull base;
 
-  /// indexes are in bytes
+  const MIDIPacketList* _Nonnull base;
+  //
+  //  const int count;
+
+  /// offsets are in bytes
   int startIndex_;
   int endIndex_;
 } MIDIPacketListIterator;
@@ -38,31 +34,36 @@ inline MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* _Nonnull
 
 inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list);
 
+
 inline const MIDIObjectAddRemoveNotification* _Nullable
 MIDINotificationToEndpointNotification(
-  const MIDINotification* _Nonnull notification
-);
+                                       const MIDINotification* _Nonnull notification
+                                       );
 
-inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet);
-//inline const MIDIPacket* MIDIPacketListSliceToPacket(const MIDIPacketListSlice* slice);
+//inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet);
 
-//inline void MIDIPacketListSliceCreate(const MIDIPacketList lst, MIDIPacketListSlice* slice);
-//inline const MIDIPacketListSlice* MIDIPacketListSliceNext(const MIDIPacketListSlice* slice);
-
-inline void
+MIDIPacketListIterator
 MIDIPacketListIteratorCreate(
-  const MIDIPacketList* _Nonnull lst, MIDIPacketListIterator* _Nonnull iter
-);
+                             const MIDIPacketList lst
+                             );
 
-inline const MIDIPacketListIterator* _Nullable
+MIDIPacketListIterator
 MIDIPacketListIteratorNext(
-  const MIDIPacketListIterator* _Nonnull iter
-);
+                           MIDIPacketListIterator iter
+                           );
 
 inline const MIDIPacket* _Nullable
 MIDIPacketListIteratorToPacket(
-  const MIDIPacketListIterator* _Nullable iter
-);
+                               MIDIPacketListIterator iter
+                               );
 
 
 
+inline void MIDIPacketListCreate(
+  const Byte* _Nonnull data,
+  const int count,
+  const int packets,
+  const MIDITimeStamp timestamp,
+  MIDIPacketList **out);
+
+void MIDIPacketListFree(MIDIPacketList** lst);

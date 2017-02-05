@@ -55,27 +55,61 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
 //MIDIPacketList* MIDIPacketListCreate(const UInt8* data, int count) {
 //
 //}
-#define __out
-#define __in
+//#define __out
+//#define __in
 
-void MIDIPacketListIteratorCreate(const MIDIPacketList* lst, MIDIPacketListIterator* iter) {
+MIDIPacketListIterator MIDIPacketListIteratorCreate(MIDIPacketList lst) {
 
+  return (MIDIPacketListIterator){};
 }
 
-const MIDIPacketListIterator* MIDIPacketListIteratorNext(const MIDIPacketListIterator* iter) {
+MIDIPacketListIterator MIDIPacketListIteratorNext(MIDIPacketListIterator iter) {
+//  const int offset = iter->endIndex_ + 1;
+//  const MIDIPacket* packet = (const MIDIPacket*)(iter->base->packet + iter->endIndex_ + offset);
+
   if (true) {
     return iter;
   }
-  return NULL;
+  return (MIDIPacketListIterator){};
 }
 
-const MIDIPacket* MIDIPacketListIteratorToPacket(const MIDIPacketListIterator* iter) {
-  return NULL;
+const MIDIPacket * MIDIPacketListIteratorToPacket(MIDIPacketListIterator iter) {
+  //this can return null
+  return (MIDIPacket*)&iter;
 }
 
-inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet) {
-  
-  return (MIDIPacketList){};
+//inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet) {
+//  
+//  return (MIDIPacketList){};
+//}
+
+void MIDIPacketListFree(MIDIPacketList** lst) {
+  if (lst == NULL ) { return; }
+
+  free(*lst);
+  *lst = NULL;
+}
+
+///
+/// This was roughly adated from MIKMIDI. Note the doible pointer out parameter.
+///
+
+void MIDIPacketListCreate(
+  const Byte* data,
+  const int count,
+  const int packets,
+  const MIDITimeStamp timestamp,
+  MIDIPacketList **out) {
+
+  /// this is the
+  const ByteCount hdrSize = offsetof(MIDIPacketList, packet) + offsetof(MIDIPacket, data) * packets;
+  const ByteCount listSize = hdrSize + count;
+
+  MIDIPacketList* lst = calloc(1, listSize);
+  MIDIPacket* curPacket = MIDIPacketListInit(lst);
+  MIDIPacketListAdd(lst, listSize, curPacket, timestamp, count, data);
+
+  *out = lst;
 }
 
 //

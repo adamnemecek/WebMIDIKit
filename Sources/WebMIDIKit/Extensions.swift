@@ -25,6 +25,11 @@ import enum CoreMIDI.MIDIObjectType
 //    }
 //}
 
+extension Sequence {
+  func count(pred: @escaping (Iterator.Element) -> Bool) -> Int {
+    return reduce(0) { $0 + (pred($1) ? 1 : 0) }
+  }
+}
 
 extension Collection where Index == Int {
   public func index(after i: Index) -> Index {

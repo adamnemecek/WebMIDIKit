@@ -9,40 +9,6 @@
 import CoreMIDI
 import AXMIDI
 
-
-
-//@_exported import AXMIDI.MIDIPacketListSlice
-
-//extension MIDIPacketListSlice: Collection, IteratorProtocol {
-//  public typealias Index = Int
-//  public typealias Element = MIDIPacket
-//
-//  init(lst: UnsafePointer<MIDIPacketList>) {
-////    self.init(
-//    fatalError()
-//  }
-//
-//  public var startIndex: Index {
-//    return Index(startIndex_)
-//  }
-//
-//  public var endIndex: Index {
-//    return Index(startIndex_)
-//  }
-//   public subscript(index: Index) -> Element {
-////    return base[index]
-//    fatalError()
-//  }
-//
-//  public func index(after i: Index) -> Index {
-//    return i + 1
-//  }
-//
-//  public func next() -> MIDIPacket? {
-//    return nil
-//  }
-//}
-
 extension MIDIPacketListIterator: IteratorProtocol {
   public typealias Element = MIDIPacket
   public typealias Index = Int
@@ -180,9 +146,7 @@ extension MIDIPacketList : Sequence, Equatable, Comparable, Hashable, Expressibl
 //    return AnyIterator { s.next()?.pointee }
 //  }
   public func makeIterator() -> AnyIterator<Element> {
-    var iter = MIDIPacketListIterator()
-//    MIDIPacketListIteratorCreate(&self, &iter);
-
+    var iter = MIDIPacketListIteratorCreate(self)
 
     return AnyIterator {
       nil
@@ -301,5 +265,25 @@ extension Collection where Iterator.Element == UInt8 {
 
 func describe(_ obj: Any) -> String {
   return Mirror(reflecting: obj).children.map { "\($0.label): \($0.value)" }.joined(separator: "\n")
+}
+
+///
+/// [midipacket] -> [uint8] -> midipacketlist
+/// midipacketlist ptr ->
+///
+
+class MIDIList {
+  var ptr: UnsafeMutablePointer<MIDIPacketList>? = nil
+
+//  init() {
+//    MIDIPacketListCreate1
+//  }
+
+  init(data: [UInt8], packets: Int, timestamp: MIDITimeStamp = 0) {
+    MIDIPacketListCreate(data, Int32(data.count), Int32(packets), timestamp, &ptr)
+  }
+  deinit {
+    MIDIPacketListFree(&ptr)
+  }
 }
 

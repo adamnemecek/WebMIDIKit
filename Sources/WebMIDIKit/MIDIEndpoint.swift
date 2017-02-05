@@ -56,6 +56,10 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[int: kMIDIPropertyDriverVersion]
   }
 
+  final func flush() {
+    MIDIFlushOutput(ref)
+  }
+
   final private subscript(string property: CFString) -> String {
     return MIDIObjectGetStringProperty(ref: ref, property: property)
   }
@@ -63,11 +67,6 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   final private subscript(int property: CFString) -> Int {
     return MIDIObjectGetIntProperty(ref: ref, property: property)
   }
-
-  final func flush() {
-    MIDIFlushOutput(ref)
-  }
-
 }
 
 class VirtualMIDIEndpoint: MIDIEndpoint {

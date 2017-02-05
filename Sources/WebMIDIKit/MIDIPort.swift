@@ -56,11 +56,14 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   //  }
 
   /// The state of the connection to the device.
-  public private(set) var connection: MIDIPortConnectionState = .closed {
-    didSet {
-      guard oldValue != connection else { return }
-      onStateChange?(self)
-    }
+  public var connection: MIDIPortConnectionState {
+//    didSet {
+//      guard oldValue != connection else { return }
+//      onStateChange?(self)
+//    }
+//    get {
+      return ref == 0 ? .closed : .open
+//    }
   }
 
   ///
@@ -73,7 +76,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
-    assert(ref == 0)
+//    assert(ref == 0)
 
     switch type {
 
@@ -105,7 +108,8 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     case .output:
       ref = MIDIOutputPortRefCreate(ref: client.ref)
     }
-    connection = .open
+
+    onStateChange?(self)
     eventHandler?(self)
   }
 
@@ -114,7 +118,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .closed else { return }
-    assert(ref != 0)
+//    assert(ref != 0)
 
     switch type {
     case .input:
@@ -123,8 +127,10 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
       break
     }
 
-    connection = .closed
     ref = 0
+
+    onStateChange?(self)
+
     onStateChange = nil
     eventHandler?(self)
   }
