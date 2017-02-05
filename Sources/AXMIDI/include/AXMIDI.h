@@ -11,17 +11,11 @@
 #import <CoreMIDI/CoreMIDI.h>
 #import <CoreFoundation/CoreFoundation.h>
 
+//-------cleaup
+inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list);
 
-//typedef struct {
-//
-//  const MIDIPacketList* _Nonnull base;
-//  //
-//  //  const int count;
-//
-//  /// offsets are in bytes
-//  int startIndex_;
-//  int endIndex_;
-//} MIDIPacketListIterator;
+
+/// stable
 
 /// MIDIPacket is exposed to Swift as a struct with data being represented
 /// as a tuple which means we cannot index directly into the data which is
@@ -32,9 +26,6 @@ inline void MIDIPacketSetValue(MIDIPacket* const _Nonnull packet, int index, Byt
 
 inline MIDIPacket MIDIPacketCreate(const Byte* _Nonnull data, int dataCount, MIDITimeStamp timestamp);
 
-inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list);
-
-
 inline const MIDIObjectAddRemoveNotification* _Nullable
 MIDINotificationToEndpointNotification(const MIDINotification* _Nonnull notification);
 
@@ -42,11 +33,6 @@ MIDINotificationToEndpointNotification(const MIDINotification* _Nonnull notifica
 /// const MIDIPacket* (_Nullable) = UnsafePointer<MIDIPacket>?
 /// const MIDIPacket* _Nonnull = UnsafePointer<MIDIPacket>
 ///
-
-inline bool MIDIPacketListGetPacket(
-  const MIDIPacketList* _Nonnull lst,
-  MIDIPacket* _Nonnull packet
-);
 
 MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
   const MIDIPacketList* _Nonnull lst

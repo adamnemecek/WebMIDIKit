@@ -8,43 +8,9 @@
 
 import enum CoreMIDI.MIDIObjectType
 
-//fileprivate func generatorForTuple(_ tuple: Any) -> AnyIterator<Any> {
-//  let children = Mirror(reflecting: tuple).children
-//  return AnyIterator(children.makeIterator().lazy.map { $0.value }.makeIterator())
-//}
-//
-//public extension Sequence where Iterator.Element: Hashable {
-//    //
-//    // dbj2
-//    //
-//    public var hashValue: Int {
-//        return reduce(5381) {
-//            (accu, current) in
-//            (accu << 5) &+ accu &+ current.hashValue
-//        }
-//    }
-//}
-
-extension Sequence {
-  func count(pred: @escaping (Iterator.Element) -> Bool) -> Int {
-    return reduce(0) { $0 + (pred($1) ? 1 : 0) }
-  }
-}
-
 extension Collection where Index == Int {
   public func index(after i: Index) -> Index {
     return i + 1
-  }
-}
-
-extension RangeReplaceableCollection where Iterator.Element: Equatable {
-  //
-  // return value indicates whether the element was appended or not
-  //
-  mutating func appendUnique(newElement: Iterator.Element) -> Bool {
-    guard !contains(newElement) else { return false }
-    append(newElement)
-    return true
   }
 }
 

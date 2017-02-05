@@ -40,43 +40,6 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
   }
 }
 
-//MIDIPacketList* MIDIPacketListCreate(const UInt8* data, int count) {
-//
-//}
-//#define __out
-//#define __in
-
-//MIDIPacketListIterator MIDIPacketListIteratorCreate(MIDIPacketList lst) {
-//
-//  return (MIDIPacketListIterator){};
-//}
-//
-//MIDIPacketListIterator MIDIPacketListIteratorNext(MIDIPacketListIterator iter) {
-////  const int offset = iter->endIndex_ + 1;
-////  const MIDIPacket* packet = (const MIDIPacket*)(iter->base->packet + iter->endIndex_ + offset);
-//
-//  if (true) {
-//    return iter;
-//  }
-//  return (MIDIPacketListIterator){};
-//}
-//
-//const MIDIPacket * MIDIPacketListIteratorToPacket(MIDIPacketListIterator iter) {
-//  //this can return null
-//  return (MIDIPacket*)&iter;
-//}
-
-//inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet) {
-//  
-//  return (MIDIPacketList){};
-//}
-
-void dump(const Byte *data, int count) {
-  for (int i = 0; i < count; i++) {
-    printf("data[%d] = %d\n", i, data[i]);
-  }
-}
-
 bool MIDIPacketListGetPacket(
   const MIDIPacketList* _Nonnull lst,
   MIDIPacket* _Nonnull packet
@@ -99,14 +62,9 @@ bool MIDIPacketListGetPacket(
 
 MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
   const MIDIPacketList* _Nonnull lst
-)
-  {
+) {
   return (MIDIPacket*)&lst->packet;
 }
-
-//const MIDIPacket * MIDIPacketNextConst(const MIDIPacket* packet) {
-//  return MIDIPacketNext(packet);
-//}
 
 ///
 /// This was roughly adated from MIKMIDI. Note the double pointer out parameter.
@@ -120,10 +78,9 @@ MIDIPacket* MIDIPacketListCreate(
   MIDIPacketList **out) {
 
   /// this is the
-  const ByteCount hdrSize = offsetof(MIDIPacketList, packet) + offsetof(MIDIPacket, data) * numPackets;
+  const ByteCount hdrSize = offsetof(MIDIPacketList, packet) +
+                            offsetof(MIDIPacket, data) * numPackets;
   const ByteCount lstSize = hdrSize + dataCount;
-
-  dump(data, dataCount);
 
   MIDIPacketList* lst = calloc(1, lstSize);
   MIDIPacket* curPacket = MIDIPacketListInit(lst);
@@ -142,89 +99,4 @@ void MIDIPacketListFree(MIDIPacketList** lst) {
   free(*lst);
   *lst = NULL;
 }
-
-//
-//const MIDIPacket* MIDIPacketListSliceToPacket(const MIDIPacketListSlice* slice) {
-//  return NULL;
-//}
-//
-//void MIDIPacketListSliceCreate(const MIDIPacketList lst, MIDIPacketListSlice* slice) {
-//
-////  MIDIPacket* current = lst->
-//  return NULL;
-//}
-//
-//const MIDIPacketListSlice* MIDIPacketListSliceNext(const MIDIPacketListSlice* slice) {
-//  return NULL;
-//}
-
-//void Add () {
-//  MIDIPacketListAdd(<#MIDIPacketList * _Nonnull pktlist#>, <#ByteCount listSize#>, <#MIDIPacket * _Nonnull curPacket#>, <#MIDITimeStamp time#>, <#ByteCount nData#>, <#const Byte * _Nonnull data#>)
-//
-//}
-//
-// creates a
-//
-//MIDIPacketList* MIDIPacketListCreate(UInt8 bytes, int count) {
-////	if (outPacketList == NULL || commands == nil || [commands count] == 0) {
-////		return NO;
-////	}
-//
-////	ByteCount listSize = MIKMIDIPacketListSizeForCommands(commands);
-//    ByteCount listSize = 3;
-//
-////	if (listSize == 0) {
-////		return NO;
-////	}
-//
-//	MIDIPacketList *packetList = calloc(1, listSize);
-////	if (packetList == NULL) {
-////		return NO;
-////	}
-//
-//	MIDIPacket *currentPacket = MIDIPacketListInit(packetList);
-//
-//	for (NSUInteger i=0; i<[commands count]; i++) {
-//		MIKMIDICommand *command = [commands objectAtIndex:i];
-//		currentPacket = MIDIPacketListAdd(packetList,
-//										  listSize,
-//										  currentPacket,
-//										  command.midiTimestamp,
-//										  [command.data length],
-//										  [command.data bytes]);
-//		if (!currentPacket && (i < [commands count] - 1)) {
-//			free(packetList);
-//			return NO;
-//		}
-//	}
-//
-//	*outPacketList = packetList;
-//	return YES;
-//}
-
-
-
-
-void MIKMIDIDestinationReadProc(const MIDIPacketList* lst, void *readProcRefCon, void *srcConnRefCon)
-{
-	if (!readProcRefCon) return;
-//	@autoreleasepool {
-//		MIKMIDIClientDestinationEndpoint *self = *(__unsafe_unretained MIKMIDIClientDestinationEndpoint **)readProcRefCon;
-
-//		NSMutableArray *receivedCommands = [NSMutableArray array];
-		const MIDIPacket* packet = (MIDIPacket*)lst->packet;
-		for (int i = 0; i < lst->numPackets; i++) {
-			if (packet->length == 0) continue;
-
-//			NSArray *commands = [MIKMIDICommand commandsWithMIDIPacket:packet];
-//			if (commands) [receivedCommands addObjectsFromArray:commands];
-			packet = MIDIPacketNext(packet);
-		}
-		
-//		if ([receivedCommands count] && self.receivedMessagesHandler) {
-//			self.receivedMessagesHandler(self, receivedCommands);
-//		}
-//	}
-}
-
 

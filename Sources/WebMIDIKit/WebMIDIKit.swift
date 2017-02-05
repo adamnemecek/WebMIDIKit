@@ -67,15 +67,6 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     todo("endpoint, timestamp = 0 ?? now, notify all clients?")
   }
 
-  private func midi(src: MIDIEndpointRef, lst: UnsafePointer<MIDIPacketList>) {
-    //    _ = sources.first { $0.source.ref == src }.map {
-    //      _ in
-    //      lst.pointee.forEach {
-    //          packet in
-    //      }
-    //    }
-  }
-
   private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
     switch (endpoint.type, type) {
     case (.input, .added):
@@ -105,19 +96,6 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
   private var _observer: NSObjectProtocol? = nil
 
 }
-
-protocol NotificationType {
-
-}
-
-//extension NotificationCenter {
-//  func observe<T>(_ callback: @escaping (T) -> ()) -> NSObjectProtocol {
-//    return addObserver(forName: NSNotification.Name(rawValue: "\(T.self)"), object: nil, queue: nil) {
-//      _ in
-//    }
-//
-//  }
-//}
 
 fileprivate extension NotificationCenter {
   func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
