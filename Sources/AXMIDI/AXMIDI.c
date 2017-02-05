@@ -16,23 +16,16 @@ Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
   return packet.data[index];
 }
 
-Byte MIDIPacketGetValuePtr(const MIDIPacket* packet, int index) {
-  return packet->data[index];
-}
-
 void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
   packet->data[index] = value;
 }
+
 MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp timestamp) {
   MIDIPacket p = {.timeStamp = timestamp, .length = dataCount};
   for (int i = 0; i < dataCount; i++) {
     p.data[i] = data[i];
   }
   return p;
-}
-
-void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
-  MIDISend(port, dest, &list);
 }
 
 const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {

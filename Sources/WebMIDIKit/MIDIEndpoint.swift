@@ -7,7 +7,6 @@
 //
 
 import CoreMIDI
-import func AXMIDI.MIDISendExt
 
 //
 // you can think of this as the HW input/output or virtual endpoint
