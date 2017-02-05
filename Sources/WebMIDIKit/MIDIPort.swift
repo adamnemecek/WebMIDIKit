@@ -186,7 +186,7 @@ fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping 
     lst, ref in
 
     var ptr = MIDIPacketListGetPacketPtr(lst)
-
+//  let q = ref
     (0..<lst.pointee.numPackets).forEach {
       _ in
       defer {

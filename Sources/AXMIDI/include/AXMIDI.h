@@ -12,16 +12,16 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 
-typedef struct {
-
-  const MIDIPacketList* _Nonnull base;
-  //
-  //  const int count;
-
-  /// offsets are in bytes
-  int startIndex_;
-  int endIndex_;
-} MIDIPacketListIterator;
+//typedef struct {
+//
+//  const MIDIPacketList* _Nonnull base;
+//  //
+//  //  const int count;
+//
+//  /// offsets are in bytes
+//  int startIndex_;
+//  int endIndex_;
+//} MIDIPacketListIterator;
 
 /// MIDIPacket is exposed to Swift as a struct with data being represented
 /// as a tuple which means we cannot index directly into the data which is

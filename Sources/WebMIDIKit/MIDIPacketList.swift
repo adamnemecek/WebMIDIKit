@@ -9,43 +9,43 @@
 import CoreMIDI
 import AXMIDI
 
-extension MIDIPacketListIterator: IteratorProtocol {
-  public typealias Element = MIDIPacket
-  public typealias Index = Int
-
-  init() {
-    startIndex_ = 0
-    endIndex_ = 0
-//    base = nil
-    fatalError()
-  }
-
-  init(lst: UnsafePointer<MIDIPacketList>) {
-    fatalError()
-//    self.init(
-//    self = 
-  }
-
-  public var startIndex: Index {
-    return Index(startIndex_)
-  }
-
-  public var endIndex: Index {
-    return Index(startIndex_)
-  }
-   public subscript(index: Index) -> Element {
-//    return base[index]
-    fatalError()
-  }
-
-  public func index(after i: Index) -> Index {
-    return i + 1
-  }
-
-  public func next() -> MIDIPacket? {
-    return nil
-  }
-}
+//extension MIDIPacketListIterator: IteratorProtocol {
+//  public typealias Element = MIDIPacket
+//  public typealias Index = Int
+//
+//  init() {
+//    startIndex_ = 0
+//    endIndex_ = 0
+////    base = nil
+//    fatalError()
+//  }
+//
+//  init(lst: UnsafePointer<MIDIPacketList>) {
+//    fatalError()
+////    self.init(
+////    self = 
+//  }
+//
+//  public var startIndex: Index {
+//    return Index(startIndex_)
+//  }
+//
+//  public var endIndex: Index {
+//    return Index(startIndex_)
+//  }
+//   public subscript(index: Index) -> Element {
+////    return base[index]
+//    fatalError()
+//  }
+//
+//  public func index(after i: Index) -> Index {
+//    return i + 1
+//  }
+//
+//  public func next() -> MIDIPacket? {
+//    return nil
+//  }
+//}
 
 //protocol Builder: MutableCollection {
 //  func append(element: Iterator.Element)

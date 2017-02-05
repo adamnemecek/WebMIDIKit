@@ -46,8 +46,8 @@ public final class MIDIOutput : MIDIPort {
     let p = MIDIPacketListBuilder(data: data)
     print(p.head)
     p.send(to: self)
-
   }
+
   public func clear() {
     endpoint.flush()
   }
