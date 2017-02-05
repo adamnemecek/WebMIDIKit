@@ -32,6 +32,7 @@ void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
 }
 
 
+
 CF_INLINE MIDIPacket* MIDIPacketNextExt(const MIDIPacket *pkt)
 {
   //	#if TARGET_CPU_ARM || TARGET_CPU_ARM64
@@ -58,58 +59,77 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
 //#define __out
 //#define __in
 
-MIDIPacketListIterator MIDIPacketListIteratorCreate(MIDIPacketList lst) {
-
-  return (MIDIPacketListIterator){};
-}
-
-MIDIPacketListIterator MIDIPacketListIteratorNext(MIDIPacketListIterator iter) {
-//  const int offset = iter->endIndex_ + 1;
-//  const MIDIPacket* packet = (const MIDIPacket*)(iter->base->packet + iter->endIndex_ + offset);
-
-  if (true) {
-    return iter;
-  }
-  return (MIDIPacketListIterator){};
-}
-
-const MIDIPacket * MIDIPacketListIteratorToPacket(MIDIPacketListIterator iter) {
-  //this can return null
-  return (MIDIPacket*)&iter;
-}
+//MIDIPacketListIterator MIDIPacketListIteratorCreate(MIDIPacketList lst) {
+//
+//  return (MIDIPacketListIterator){};
+//}
+//
+//MIDIPacketListIterator MIDIPacketListIteratorNext(MIDIPacketListIterator iter) {
+////  const int offset = iter->endIndex_ + 1;
+////  const MIDIPacket* packet = (const MIDIPacket*)(iter->base->packet + iter->endIndex_ + offset);
+//
+//  if (true) {
+//    return iter;
+//  }
+//  return (MIDIPacketListIterator){};
+//}
+//
+//const MIDIPacket * MIDIPacketListIteratorToPacket(MIDIPacketListIterator iter) {
+//  //this can return null
+//  return (MIDIPacket*)&iter;
+//}
 
 //inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet) {
 //  
 //  return (MIDIPacketList){};
 //}
 
+void dump(const Byte *data, int count) {
+  for (int i = 0; i < count; i++) {
+    printf("data[%d] = %d\n", i, data[i]);
+  }
+}
+
+const MIDIPacket* MIDIPacketListPacket(const MIDIPacketList* lst) {
+  return (MIDIPacket*)lst->packet;
+}
+
+//const MIDIPacket * MIDIPacketNextConst(const MIDIPacket* packet) {
+//  return MIDIPacketNext(packet);
+//}
+
+///
+/// This was roughly adated from MIKMIDI. Note the double pointer out parameter.
+///
+
+MIDIPacket* MIDIPacketListCreate(
+  const Byte* data,
+  const UInt32 dataCount,
+  const UInt32 numPackets,
+  const MIDITimeStamp timestamp,
+  MIDIPacketList **out) {
+
+  /// this is the
+  const ByteCount hdrSize = offsetof(MIDIPacketList, packet) + offsetof(MIDIPacket, data) * numPackets;
+  const ByteCount listSize = hdrSize + dataCount;
+
+  dump(data, dataCount);
+
+  MIDIPacketList* lst = calloc(1, listSize);
+  MIDIPacket* curPacket = MIDIPacketListInit(lst);
+  lst->numPackets = numPackets;
+  MIDIPacket* ret = MIDIPacketListAdd(lst, listSize, curPacket, timestamp, dataCount, data);
+
+  *out = lst;
+  return ret;
+}
+
+
 void MIDIPacketListFree(MIDIPacketList** lst) {
   if (lst == NULL ) { return; }
 
   free(*lst);
   *lst = NULL;
-}
-
-///
-/// This was roughly adated from MIKMIDI. Note the doible pointer out parameter.
-///
-
-void MIDIPacketListCreate(
-  const Byte* data,
-  const int count,
-  const int packets,
-  const MIDITimeStamp timestamp,
-  MIDIPacketList **out) {
-
-  /// this is the
-  const ByteCount hdrSize = offsetof(MIDIPacketList, packet) + offsetof(MIDIPacket, data) * packets;
-  const ByteCount listSize = hdrSize + count;
-
-  MIDIPacketList* lst = calloc(1, listSize);
-  MIDIPacket* curPacket = MIDIPacketListInit(lst);
-  MIDIPacketListAdd(lst, listSize, curPacket, timestamp, count, data);
-
-  *out = lst;
 }
 
 //

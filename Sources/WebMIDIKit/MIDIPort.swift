@@ -7,6 +7,7 @@
 //
 
 import CoreMIDI
+import AXMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
@@ -182,9 +183,12 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MID
 
 fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
   return MIDIInputPortCreate(ref: ref) {
-    lst, _ in
-    lst.pointee.forEach {
-      readmidi($0)
+    lst, ref in
+    guard var f = MIDIPacketListPacket(lst) else { return }
+    readmidi(f.pointee)
+    (1..<lst.pointee.numPackets).forEach {
+      _ in
+//      f?.
     }
   }
 }

@@ -40,29 +40,31 @@ MIDINotificationToEndpointNotification(
                                        const MIDINotification* _Nonnull notification
                                        );
 
+const MIDIPacket* MIDIPacketListPacket(const MIDIPacketList* lst);
+
 //inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet);
 
-MIDIPacketListIterator
-MIDIPacketListIteratorCreate(
-                             const MIDIPacketList lst
-                             );
+//MIDIPacketListIterator
+//MIDIPacketListIteratorCreate(
+//                             const MIDIPacketList lst
+//                             );
+//
+//MIDIPacketListIterator
+//MIDIPacketListIteratorNext(
+//                           MIDIPacketListIterator iter
+//                           );
+//
+//inline const MIDIPacket* _Nullable
+//MIDIPacketListIteratorToPacket(
+//                               MIDIPacketListIterator iter
+//                               );
 
-MIDIPacketListIterator
-MIDIPacketListIteratorNext(
-                           MIDIPacketListIterator iter
-                           );
-
-inline const MIDIPacket* _Nullable
-MIDIPacketListIteratorToPacket(
-                               MIDIPacketListIterator iter
-                               );
 
 
-
-inline void MIDIPacketListCreate(
+inline MIDIPacket* _Nullable MIDIPacketListCreate(
   const Byte* _Nonnull data,
-  const int count,
-  const int packets,
+  const UInt32 byteCount,
+  const UInt32 numPackets,
   const MIDITimeStamp timestamp,
   MIDIPacketList **out);
 
