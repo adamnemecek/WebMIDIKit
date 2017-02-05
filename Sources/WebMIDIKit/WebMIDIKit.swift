@@ -19,7 +19,7 @@ public protocol EventTarget {
 
 ///
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
-public final class MIDIAccess : EventTarget, CustomStringConvertible {
+public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebugStringConvertible {
 
   public typealias Event = MIDIPort
 
@@ -56,7 +56,11 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
   }
 
   public var description: String {
-    return describe(self)
+    return "inputs: \(inputs)\n, output: \(outputs)"
+  }
+
+  public var debugDescription: String {
+    return "\(self.self)(\(description))"
   }
 
   internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {

@@ -77,8 +77,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public var description: String {
-    assert(type == 8 || type == 9)
-    return "Note: timestamp: \(timestamp), data: \(Array(self))"
+    return ""
   }
 
   public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {
@@ -93,17 +92,3 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     return data.1
   }
 }
-
-//protocol Parser: Collection {
-//  associatedtype Raw
-//  init?<S: Sequence>(seq: S) where S.Iterator.Element == Raw
-//}
-
-//extension MIDIPacket : RangeReplaceableCollection {
-//  mutating
-//  public func replaceSubrange<C : Collection>(_ subrange: Range<Index>, with newElements: C) where C.Iterator.Element == Element {
-////    let diff = Int(numericCast(newElements.count)) - Int(numericCast(count))
-//
-//    fatalError()
-//  }
-//}

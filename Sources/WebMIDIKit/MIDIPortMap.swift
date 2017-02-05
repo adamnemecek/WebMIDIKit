@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-public class MIDIPortMap<Value: MIDIPort> : Collection {
+public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible, CustomDebugStringConvertible {
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
 
@@ -44,6 +44,10 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     return dump(_content).description
   }
 
+  public var debugDescription: String {
+    return description
+  }
+
   // todo weak? maybe we don't even need it?
   fileprivate let _client: MIDIClient
 
@@ -71,7 +75,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   }
 
   /// Prompts the user to select a MIDIPort
-  public func prompt() -> Value? {
+  private func prompt() -> Value? {
     var i = 0
     forEach {
       print("\(i) select: \($1)")

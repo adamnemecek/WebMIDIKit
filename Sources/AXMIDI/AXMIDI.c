@@ -10,14 +10,20 @@
 #include "AXMIDI.h"
 
 
+/// we need this because otherwise
+
 Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
   return packet.data[index];
 }
 
+Byte MIDIPacketGetValuePtr(const MIDIPacket* _Nonnull packet, int index) {
+  return packet->data[index];
+}
+
+
 void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
   packet->data[index] = value;
 }
-
 MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp timestamp) {
   MIDIPacket p = {.timeStamp = timestamp, .length = dataCount};
   for (int i = 0; i < dataCount; i++) {
@@ -30,6 +36,10 @@ void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
   MIDISend(port, dest, &list);
 }
 
+const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
+  return MIDIPacketNext(current);
+}
+
 const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
   switch (notification->messageID) {
     case kMIDIMsgObjectAdded:
@@ -38,26 +48,6 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
     default:
       return NULL;
   }
-}
-
-bool MIDIPacketListGetPacket(
-  const MIDIPacketList* _Nonnull lst,
-  MIDIPacket* _Nonnull packet
-) {
-  const UInt32 numPackets = lst->numPackets;
-  if (numPackets < 1) {
-    return false;
-  }
-
-  const MIDIPacket* fst = lst->packet;
-
-  packet->length = fst->length;
-  packet->timeStamp = fst->timeStamp;
-
-  for (int i = 0; i < fst->length; i++) {
-    packet->data[i] = fst->data[i];
-  }
-  return true;
 }
 
 MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
@@ -91,7 +81,6 @@ MIDIPacket* MIDIPacketListCreate(
   *out = lst;
   return ret;
 }
-
 
 void MIDIPacketListFree(MIDIPacketList** lst) {
   if (lst == NULL ) { return; }
