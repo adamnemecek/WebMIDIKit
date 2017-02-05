@@ -30,7 +30,7 @@ typedef struct {
 inline Byte MIDIPacketGetValue(const MIDIPacket packet, int index);
 inline void MIDIPacketSetValue(MIDIPacket* const _Nonnull packet, int index, Byte value);
 
-inline MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* _Nonnull data, int count);
+inline MIDIPacket MIDIPacketCreate(const Byte* _Nonnull data, int dataCount, MIDITimeStamp timestamp);
 
 inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list);
 
@@ -41,25 +41,6 @@ MIDINotificationToEndpointNotification(
                                        );
 
 const MIDIPacket* MIDIPacketListPacket(const MIDIPacketList* lst);
-
-//inline MIDIPacketList MIDIPacketListCreate(MIDIPacket packet);
-
-//MIDIPacketListIterator
-//MIDIPacketListIteratorCreate(
-//                             const MIDIPacketList lst
-//                             );
-//
-//MIDIPacketListIterator
-//MIDIPacketListIteratorNext(
-//                           MIDIPacketListIterator iter
-//                           );
-//
-//inline const MIDIPacket* _Nullable
-//MIDIPacketListIteratorToPacket(
-//                               MIDIPacketListIterator iter
-//                               );
-
-
 
 inline MIDIPacket* _Nullable MIDIPacketListCreate(
   const Byte* _Nonnull data,

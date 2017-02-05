@@ -12,8 +12,9 @@ import CoreMIDI
 internal extension Notification.Name {
   static let MIDISetupNotification = Notification.Name(rawValue: "\(MIDIObjectAddRemoveNotification.self)")
 }
+
 /// Kind of like a session, context or handle, it doesn't really do anything
-/// besidesbeing passed around.
+/// besides being passed around. Also dispatches notifications.
 internal final class MIDIClient : Equatable, Comparable, Hashable {
   let ref: MIDIClientRef
 

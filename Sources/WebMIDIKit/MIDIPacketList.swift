@@ -193,6 +193,12 @@ class MIDIList: Sequence {
     first = f
   }
 
+//  init?(data: [UInt8]) {
+//    while true {
+//      MIDIPacket(data: data)
+//    }
+//  }
+
   init(ptr: UnsafeMutablePointer<MIDIPacketList>) {
     ownsPtr = true
     self.ptr = ptr

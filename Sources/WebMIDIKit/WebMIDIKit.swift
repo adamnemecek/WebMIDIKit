@@ -45,7 +45,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     }
 
     self._observer = NotificationCenter.default.observeMIDIEndpoints {
-      self.notification(endpoint: $0, type: $1).map { port in
+      self._notification(endpoint: $0, type: $1).map { port in
         self.onStateChange?(port)
       }
     }
@@ -53,23 +53,6 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
   deinit {
     _observer.map(NotificationCenter.default.removeObserver)
-  }
-
-  private func notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
-
-    switch (endpoint.type, type) {
-    case (.input, .added):
-      return inputs.add(endpoint)
-
-    case (.input, .removed):
-      return inputs.remove(endpoint)
-
-    case (.output, .added):
-      return outputs.add(endpoint)
-
-    case (.output, .removed):
-      return outputs.remove(endpoint)
-    }
   }
 
   public var description: String {
@@ -93,6 +76,21 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
     //    }
   }
 
+  private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
+    switch (endpoint.type, type) {
+    case (.input, .added):
+      return inputs.add(endpoint)
+
+    case (.input, .removed):
+      return inputs.remove(endpoint)
+
+    case (.output, .added):
+      return outputs.add(endpoint)
+
+    case (.output, .removed):
+      return outputs.remove(endpoint)
+    }
+  }
   
   private let _client: MIDIClient
   private let _clients: Set<MIDIClient> = []

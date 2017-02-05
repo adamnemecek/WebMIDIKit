@@ -27,8 +27,9 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public var endIndex: Index {
     //todo this needs to be fixed and like do the right
-    return 3
+    return Int(length)
   }
+
 
   public subscript(index: Index) -> Element {
     get {
@@ -54,8 +55,12 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     return Int(timeStamp) ^ count
   }
 
+  init(data: [Element]) {
+    self = MIDIPacketCreate(data, Int32(data.count), 0)
+  }
+
   public init(arrayLiteral literal: Element...) {
-    self = MIDIPacketCreate(0, literal, Int32(literal.count))
+    self = MIDIPacketCreate(literal, Int32(literal.count), 0)
     assert(count == literal.count && elementsEqual(literal))
   }
 

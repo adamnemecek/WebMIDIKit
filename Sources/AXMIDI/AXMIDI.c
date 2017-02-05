@@ -19,9 +19,9 @@ void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
   packet->data[index] = value;
 }
 
-MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count) {
-  MIDIPacket p = {.timeStamp = timestamp, .length = count};
-  for (int i = 0; i < count; i++) {
+MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp timestamp) {
+  MIDIPacket p = {.timeStamp = timestamp, .length = dataCount};
+  for (int i = 0; i < dataCount; i++) {
     p.data[i] = data[i];
   }
   return p;
@@ -29,18 +29,6 @@ MIDIPacket MIDIPacketCreate(MIDITimeStamp timestamp, const Byte* data, int count
 
 void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
   MIDISend(port, dest, &list);
-}
-
-
-
-CF_INLINE MIDIPacket* MIDIPacketNextExt(const MIDIPacket *pkt)
-{
-  //	#if TARGET_CPU_ARM || TARGET_CPU_ARM64
-		// MIDIPacket must be 4-byte aligned
-  //		return	(MIDIPacket *)(((uintptr_t)(&pkt->data[pkt->length]) + 3) & ~3);
-  //	#else
-		return	(MIDIPacket *)&pkt->data[pkt->length];
-  //	#endif
 }
 
 const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
@@ -117,8 +105,9 @@ MIDIPacket* MIDIPacketListCreate(
 
   MIDIPacketList* lst = calloc(1, listSize);
   MIDIPacket* curPacket = MIDIPacketListInit(lst);
-  lst->numPackets = numPackets;
   MIDIPacket* ret = MIDIPacketListAdd(lst, listSize, curPacket, timestamp, dataCount, data);
+
+  lst->numPackets = numPackets;
 
   *out = lst;
   return ret;
