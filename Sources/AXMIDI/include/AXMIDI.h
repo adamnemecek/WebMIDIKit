@@ -36,7 +36,7 @@ MIDINotificationToEndpointNotification(const MIDINotification* _Nonnull notifica
 /// const MIDIPacket* _Nonnull = UnsafePointer<MIDIPacket>
 ///
 
-inline const MIDIPacket* _Nonnull MIDIPacketNextConst(const MIDIPacket * _Nonnull current);
+//inline const MIDIPacket* _Nonnull MIDIPacketNextConst(const MIDIPacket * _Nonnull current);
 
 inline MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
   const MIDIPacketList* _Nonnull lst

@@ -58,13 +58,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   /// The state of the connection to the device.
   public var connection: MIDIPortConnectionState {
-//    didSet {
-//      guard oldValue != connection else { return }
-//      onStateChange?(self)
-//    }
-//    get {
-      return ref == 0 ? .closed : .open
-//    }
+    return ref == 0 ? .closed : .open
   }
 
   ///
@@ -172,6 +166,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 }
 
+extension Sequence {
+  func loop(_ fun: () -> ()) {
+    forEach { _ in fun() }
+  }
+}
+
 fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MIDIReadBlock) -> MIDIPortRef {
   var port = MIDIPortRef()
   MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
@@ -184,16 +184,13 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MID
 fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
   return MIDIInputPortCreate(ref: ref) {
     lst, ref in
-
+    //todo ref? mikmidi uses it
     var ptr = MIDIPacketListGetPacketPtr(lst)
-//  let q = ref
-    (0..<lst.pointee.numPackets).forEach {
-      _ in
+
+    (0..<lst.pointee.numPackets).loop {
       defer {
         ptr = MIDIPacketNext(ptr)
       }
-
-//      let q = MIDIPacketCreate(ptr.pointee.data, Int(ptr.pointee!.length), ptr.pointee.timestamp)
 
       readmidi(ptr.pointee)
     }

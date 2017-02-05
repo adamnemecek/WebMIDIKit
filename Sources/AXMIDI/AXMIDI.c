@@ -16,10 +16,9 @@ Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
   return packet.data[index];
 }
 
-Byte MIDIPacketGetValuePtr(const MIDIPacket* _Nonnull packet, int index) {
+Byte MIDIPacketGetValuePtr(const MIDIPacket* packet, int index) {
   return packet->data[index];
 }
-
 
 void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
   packet->data[index] = value;
@@ -50,8 +49,8 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
   }
 }
 
-MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
-  const MIDIPacketList* _Nonnull lst
+MIDIPacket* MIDIPacketListGetPacketPtr(
+  const MIDIPacketList* lst
 ) {
   return (MIDIPacket*)&lst->packet;
 }

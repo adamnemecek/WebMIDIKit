@@ -45,8 +45,8 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
     }
 
     self._observer = NotificationCenter.default.observeMIDIEndpoints {
-      self._notification(endpoint: $0, type: $1).map { port in
-        self.onStateChange?(port)
+      self._notification(endpoint: $0, type: $1).map {
+        self.onStateChange?($0)
       }
     }
   }

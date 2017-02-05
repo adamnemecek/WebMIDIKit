@@ -11,12 +11,6 @@ import AXMIDI
 
 @_exported import struct CoreMIDI.MIDIPacket
 
-//enum MIDIMessageType: UInt8 {
-//
-//}
-
-
-
 extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
@@ -30,7 +24,6 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     assert(length <= 256)
     return Int(length)
   }
-
 
   public subscript(index: Index) -> Element {
     get {
@@ -74,6 +67,10 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     set {
       timeStamp = newValue
     }
+  }
+
+  var isSysEx: Bool {
+     return data.0 >= 240
   }
 
   public var description: String {
