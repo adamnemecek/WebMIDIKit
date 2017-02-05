@@ -101,7 +101,7 @@ MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
   const MIDIPacketList* _Nonnull lst
 )
   {
-  return NULL;
+  return (MIDIPacket*)&lst->packet;
 }
 
 //const MIDIPacket * MIDIPacketNextConst(const MIDIPacket* packet) {

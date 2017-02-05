@@ -75,38 +75,27 @@ class VirtualMIDIEndpoint: MIDIEndpoint {
   }
 }
 
-
-//enum OSResult<T: Equatable, E>: Equatable {
-//  case ok(T), err(OSStatus)
-//
-//  static func ==(lhs: OSResult, rhs: OSResult) -> Bool {
-//    switch (lhs, rhs) {
-//      case let (.ok(l), .ok(r)):
-//        return l == r
-//      case let (.err(l), .err(r)):
-//        return l == r
-//      default:
-//        return false
-//    }
-//  }
-//}
-
 //
 // todo: mikmidi strips out control characters (check out their implementation of this)
 //
-fileprivate func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
+
+@inline(__always) fileprivate
+func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
   var string: Unmanaged<CFString>? = nil
   MIDIObjectGetStringProperty(ref, property, &string)
   return (string?.takeRetainedValue())! as String
 }
 
-fileprivate func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
+
+@inline(__always) fileprivate
+func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
   var val: Int32 = 0
   MIDIObjectGetIntegerProperty(ref, property, &val)
   return Int(val)
 }
 
-fileprivate func MIDIObjectGetType(id: Int) -> MIDIObjectType {
+@inline(__always) fileprivate
+func MIDIObjectGetType(id: Int) -> MIDIObjectType {
   var ref: MIDIObjectRef = 0
   var type: MIDIObjectType = .other
   MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)

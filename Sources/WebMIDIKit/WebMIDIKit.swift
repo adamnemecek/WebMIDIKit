@@ -91,6 +91,10 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
       return outputs.remove(endpoint)
     }
   }
+
+  public func restart() {
+    MIDIRestart()
+  }
   
   private let _client: MIDIClient
   private let _clients: Set<MIDIClient> = []
