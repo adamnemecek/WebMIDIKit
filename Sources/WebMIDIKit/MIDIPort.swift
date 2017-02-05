@@ -48,13 +48,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 
   /// The state of the device.
-  public private(set) var state: MIDIPortDeviceState = .connected
-  //{
-  //    didSet {
-  //      guard oldValue != state else { return }
-  //      onStateChange?(self)
-  //    }
-  //  }
+  public internal(set) var state: MIDIPortDeviceState = .connected
 
   /// The state of the connection to the device.
   public var connection: MIDIPortConnectionState {
@@ -71,7 +65,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
-//    assert(ref == 0)
 
     switch type {
 
@@ -80,24 +73,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
       ref = MIDIInputPortCreateExt(ref: client.ref) {
         `self`.onMIDIMessage?($0)
       }
-      /*!
-       @function		MIDIPortConnectSource
 
-       @abstract 		Establishes a connection from a source to a client's input port.
-
-       @param			port
-       The port to which to create the connection.  This port's
-       readProc is called with incoming MIDI from the source.
-       @param			source
-       The source from which to create the connection.
-       @param			connRefCon
-       This refCon is passed to the port's MIDIReadProc or MIDIReadBlock, as a way to
-       identify the source.
-       @result			An OSStatus result code.
-       
-       @discussion
-       */
-      //nil is the src above
       MIDIPortConnectSource(ref, endpoint.ref, nil)
 
     case .output:
@@ -113,7 +89,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .closed else { return }
-//    assert(ref != 0)
 
     switch type {
     case .input:
@@ -123,9 +98,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     }
 
     ref = 0
-
     onStateChange?(self)
-
     onStateChange = nil
     eventHandler?(self)
   }
@@ -144,31 +117,25 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   public var description: String {
     return "type: \(type)\n" +
-      "name: \(name)\n" +
-      "manufacturer: \(manufacturer)\n" +
-      "id: \(id)\n" +
-      "state: \(state)\n" +
-      "connection: \(connection)\n" +
-    "version: \(version)"
+           "name: \(name)\n" +
+           "manufacturer: \(manufacturer)\n" +
+           "id: \(id)\n" +
+           "state: \(state)\n" +
+           "connection: \(connection)\n" +
+           "version: \(version)"
   }
 
   internal private(set) var ref: MIDIPortRef
 
   //todo: should this be weak?
   //  internal let access: MIDIAccess
-  internal let client: MIDIClient
+  internal private(set) weak var client: MIDIClient!
   internal let endpoint: MIDIEndpoint
 
   internal init(client: MIDIClient, endpoint: MIDIEndpoint) {
     self.client = client
     self.endpoint = endpoint
     self.ref = 0
-  }
-}
-
-extension Sequence {
-  func loop(_ fun: () -> ()) {
-    forEach { _ in fun() }
   }
 }
 
@@ -184,14 +151,12 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MID
 fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
   return MIDIInputPortCreate(ref: ref) {
     lst, ref in
-    //todo ref? mikmidi uses it
-    var ptr = MIDIPacketListGetPacketPtr(lst)
 
-    (0..<lst.pointee.numPackets).loop {
+    var ptr = MIDIPacketListGetPacketPtr(lst)
+    (0..<lst.pointee.numPackets).forEach { _ in
       defer {
         ptr = MIDIPacketNext(ptr)
       }
-
       readmidi(ptr.pointee)
     }
   }

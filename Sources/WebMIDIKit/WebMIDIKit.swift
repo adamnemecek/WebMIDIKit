@@ -34,15 +34,15 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
     self.inputs = MIDIInputMap(client: _client)
     self.outputs = MIDIOutputMap(client: _client)
 
-    self._input = MIDIInput(virtual: _client)
-    self._output = MIDIOutput(virtual: _client) {
-      print($0.0)
-    }
-    //todo
-    self._input.onMIDIMessage = {
-      //          self.midi(src: 0, lst: $0)
-      print($0)
-    }
+//    self._input = MIDIInput(virtual: _client)
+//    self._output = MIDIOutput(virtual: _client) {
+//      print($0.0)
+//    }
+//    //todo
+//    self._input.onMIDIMessage = {
+//      //          self.midi(src: 0, lst: $0)
+//      print($0)
+//    }
 
     self._observer = NotificationCenter.default.observeMIDIEndpoints {
       self._notification(endpoint: $0, type: $1).map {
@@ -61,14 +61,6 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
 
   public var debugDescription: String {
     return "\(self.self)(\(description))"
-  }
-
-  internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
-    //    guard var p = MIDIPacketList(seq: data) else { return }
-    //      timestamp = timestamp == 0 ?
-
-    //    MIDISend(port.ref, 0, &p)
-    todo("endpoint, timestamp = 0 ?? now, notify all clients?")
   }
 
   private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
@@ -92,10 +84,10 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
   }
   
   private let _client: MIDIClient
-  private let _clients: Set<MIDIClient> = []
+//  private let _clients: Set<MIDIClient> = []
 
-  private let _input: MIDIInput
-  private let _output: MIDIOutput
+//  private let _input: MIDIInput
+//  private let _output: MIDIOutput
 
   private var _observer: NSObjectProtocol? = nil
 

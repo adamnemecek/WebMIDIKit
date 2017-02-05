@@ -69,7 +69,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 }
 
-class VirtualMIDIEndpoint: MIDIEndpoint {
+internal class VirtualMIDIEndpoint: MIDIEndpoint {
   deinit {
     MIDIEndpointDispose(ref)
   }
