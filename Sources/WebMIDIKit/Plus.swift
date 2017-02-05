@@ -46,6 +46,8 @@ public extension EventType where Timestamp == MIDITimeStamp {
   }
 }
 
+
+
 //struct TimeSignature: Equatable {
 //	let numerator: Int
 //	let denominator: Int

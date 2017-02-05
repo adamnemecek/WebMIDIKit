@@ -42,15 +42,19 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
   }
 }
 
+
+/// We need this as opposed to getting it in Swift because we need the pointer
+/// which can be safely passed into MIDIPacketNext. This code was written under
+/// assumption that one cannot safely make a copy of the packet and then pass
+/// it to MIDIPacketNext.
+
 MIDIPacket* MIDIPacketListGetPacketPtr(
   const MIDIPacketList* lst
 ) {
   return (MIDIPacket*)&lst->packet;
 }
 
-///
-/// This was roughly adated from MIKMIDI. Note the double pointer out parameter.
-///
+/// This was roughly adapted from MIKMIDI. Note the double pointer out parameter.
 
 MIDIPacket* MIDIPacketListCreate(
   const Byte* data,
@@ -59,7 +63,6 @@ MIDIPacket* MIDIPacketListCreate(
   const MIDITimeStamp timestamp,
   MIDIPacketList **out) {
 
-  /// this is the
   const ByteCount hdrSize = offsetof(MIDIPacketList, packet) +
                             offsetof(MIDIPacket, data) * numPackets;
   const ByteCount lstSize = hdrSize + dataCount;

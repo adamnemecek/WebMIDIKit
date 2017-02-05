@@ -1,6 +1,12 @@
 # WebMIDIKit
 
-This project is an implementation of MIDI heavily inspired by the [WebMIDI standard](https://www.w3.org/TR/webmidi/) standard. Note that there are slight API changes to account.
+WebMIDIKit is a simple MIDI framework, heavily inspired by the WebMIDI API.
+
+# What's WebMIDI
+
+WebMIDI is a 
+
+
 
 * decadent midi framework
 

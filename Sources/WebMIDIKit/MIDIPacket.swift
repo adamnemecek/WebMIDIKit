@@ -11,7 +11,7 @@ import AXMIDI
 
 @_exported import struct CoreMIDI.MIDIPacket
 
-extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {
+extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, CustomDebugStringConvertible, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
 
@@ -21,6 +21,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public var endIndex: Index {
     //todo this needs to be fixed and like do the right
+    // note that I think that technically
     assert(length <= 256)
     return Int(length)
   }
@@ -54,7 +55,9 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public init(arrayLiteral literal: Element...) {
-    self = MIDIPacketCreate(literal, Int32(literal.count), 0)
+    self.init()
+    length = UInt16(literal.count)
+
     assert(count == literal.count && elementsEqual(literal))
   }
 
@@ -74,7 +77,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public var description: String {
-    return ""
+    return "\(Array(self))"
   }
 
   public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {

@@ -59,10 +59,6 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
     return "inputs: \(inputs)\n, output: \(outputs)"
   }
 
-  public var debugDescription: String {
-    return "\(self.self)(\(description))"
-  }
-
   private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
     switch (endpoint.type, type) {
     case (.input, .added):

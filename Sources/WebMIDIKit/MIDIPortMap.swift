@@ -50,10 +50,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     return dump(_content).description
   }
 
-  public var debugDescription: String {
-    return description
-  }
-
   internal init(client: MIDIClient, ports: [Value]) {
     self._client = client
     self._content = [:]
@@ -93,21 +89,11 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
   // todo should this be doing key, value?
   //
   private subscript (endpoint: MIDIEndpoint) -> Value? {
-    //    get {
     return _content.first { $0.value.endpoint == endpoint }?.value
-    //    }
-    //    set {
-    //      _ = (newValue ?? self[endpoint]).map {
-    //        self[$0.id] = newValue
-    //      }
-    //    }
   }
-  //  public init(arrayLiteral literal: Value...) {
-  //
-  //  }
+
   private var _content: [Key: Value]
-    // todo weak? maybe we don't even need it?
-  fileprivate let _client: MIDIClient
+  fileprivate weak var _client: MIDIClient!
 }
 
 public class MIDIInputMap : MIDIPortMap<MIDIInput> {
@@ -131,7 +117,6 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     return add(MIDIOutput(client: _client, endpoint: endpoint))
   }
 }
-
 
 fileprivate func MIDISources() -> [MIDIEndpoint] {
   return (0..<MIDIGetNumberOfSources()).map {

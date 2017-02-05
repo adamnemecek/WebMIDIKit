@@ -29,3 +29,9 @@ extension MIDIObjectType : CustomStringConvertible {
     }
   }
 }
+
+extension CustomStringConvertible {
+  public var debugDescription: String {
+    return "\(self.self)(\(description))"
+  }
+}
