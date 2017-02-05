@@ -12,46 +12,44 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
 
-  private var content: [Key: Value]
-
   public var startIndex: Index {
-    return content.startIndex
+    return _content.startIndex
   }
 
   public var endIndex: Index {
-    return content.endIndex
+    return _content.endIndex
   }
 
   public subscript (key: Key) -> Value? {
     get {
-      return content[key]
+      return _content[key]
     }
     //
     // this is called by the notification handler in midiaccess
     //
     set {
-      content[key] = newValue
+      _content[key] = newValue
     }
   }
 
   public subscript(index: Index) -> (Key, Value) {
-    return content[index]
+    return _content[index]
   }
 
   public func index(after i: Index) -> Index {
-    return content.index(after: i)
+    return _content.index(after: i)
   }
 
   public var description: String {
-    return dump(content).description
+    return dump(_content).description
   }
 
   // todo weak? maybe we don't even need it?
-  fileprivate let client: MIDIClient
+  fileprivate let _client: MIDIClient
 
   internal init(client: MIDIClient, ports: [Value]) {
-    self.client = client
-    self.content = [:]
+    self._client = client
+    self._content = [:]
     ports.forEach {
       self[$0.id] = $0
     }
@@ -86,7 +84,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   //
   private subscript (endpoint: MIDIEndpoint) -> Value? {
 //    get {
-    return content.first { $0.value.endpoint == endpoint }?.value
+    return _content.first { $0.value.endpoint == endpoint }?.value
 //    }
 //    set {
 //      _ = (newValue ?? self[endpoint]).map {
@@ -97,6 +95,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 //  public init(arrayLiteral literal: Value...) {
 //
 //  }
+  private var _content: [Key: Value]
 }
 
 public class MIDIInputMap : MIDIPortMap<MIDIInput> {
@@ -106,7 +105,7 @@ public class MIDIInputMap : MIDIPortMap<MIDIInput> {
   }
 
   func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
-    return add(MIDIInput(client: client, endpoint: endpoint))
+    return add(MIDIInput(client: _client, endpoint: endpoint))
   }
 }
 
@@ -117,7 +116,7 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
   }
 
   func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
-    return add(MIDIOutput(client: client, endpoint: endpoint))
+    return add(MIDIOutput(client: _client, endpoint: endpoint))
   }
 }
 
