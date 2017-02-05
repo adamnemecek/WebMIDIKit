@@ -99,13 +99,13 @@ MIDIPacket* MIDIPacketListCreate(
 
   /// this is the
   const ByteCount hdrSize = offsetof(MIDIPacketList, packet) + offsetof(MIDIPacket, data) * numPackets;
-  const ByteCount listSize = hdrSize + dataCount;
+  const ByteCount lstSize = hdrSize + dataCount;
 
   dump(data, dataCount);
 
-  MIDIPacketList* lst = calloc(1, listSize);
+  MIDIPacketList* lst = calloc(1, lstSize);
   MIDIPacket* curPacket = MIDIPacketListInit(lst);
-  MIDIPacket* ret = MIDIPacketListAdd(lst, listSize, curPacket, timestamp, dataCount, data);
+  MIDIPacket* ret = MIDIPacketListAdd(lst, lstSize, curPacket, timestamp, dataCount, data);
 
   lst->numPackets = numPackets;
 

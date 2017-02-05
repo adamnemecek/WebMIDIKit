@@ -180,7 +180,7 @@ func describe(_ obj: Any) -> String {
 
 class MIDIList: Sequence {
   private(set) var ptr: UnsafeMutablePointer<MIDIPacketList>? = nil
-  private let ownsPtr: Bool
+//  private let ownsPtr: Bool
 
   typealias Index = Int
   typealias Element = MIDIPacket
@@ -188,7 +188,7 @@ class MIDIList: Sequence {
   private(set) var first: UnsafeMutablePointer<Element>?
 
   init?(data: [UInt8], packets: Int, timestamp: MIDITimeStamp = 0) {
-    ownsPtr = true
+//    ownsPtr = true
     guard let f = MIDIPacketListCreate(data, UInt32(data.count), UInt32(packets), timestamp, &ptr) else  { return nil }
     first = f
   }
@@ -200,15 +200,15 @@ class MIDIList: Sequence {
 //  }
 
   init(ptr: UnsafeMutablePointer<MIDIPacketList>) {
-    ownsPtr = true
+//    ownsPtr = true
     self.ptr = ptr
 
   }
 
   deinit {
-    if ownsPtr {
+//    if ownsPtr {
       MIDIPacketListFree(&ptr)
-    }
+//    }
   }
 
   var count: Int {
