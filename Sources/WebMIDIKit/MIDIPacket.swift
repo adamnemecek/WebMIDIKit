@@ -11,6 +11,12 @@ import AXMIDI
 
 @_exported import struct CoreMIDI.MIDIPacket
 
+//enum MIDIMessageType: UInt8 {
+//
+//}
+
+
+
 extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
@@ -20,11 +26,15 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public var endIndex: Index {
-    return Index(length)
+    //todo this needs to be fixed and like do the right
+    assert(length <= 256)
+    return Int(length)
   }
+
 
   public subscript(index: Index) -> Element {
     get {
+      print("index \(index), value: \(MIDIPacketGetValue(self, Int32(index))), length: \(count)")
       return MIDIPacketGetValue(self, Int32(index))
     }
     set {
@@ -46,8 +56,12 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     return Int(timeStamp) ^ count
   }
 
+  init(data: [Element]) {
+    self = MIDIPacketCreate(data, Int32(data.count), 0)
+  }
+
   public init(arrayLiteral literal: Element...) {
-    self = MIDIPacketCreate(0, literal, Int32(literal.count))
+    self = MIDIPacketCreate(literal, Int32(literal.count), 0)
     assert(count == literal.count && elementsEqual(literal))
   }
 
@@ -63,16 +77,18 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   }
 
   public var description: String {
-    return "MIDIPacket: timestamp: \(timestamp), data: \(Array(self))"
+    return ""
   }
 
-}
+  public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {
+    fatalError()
+  }
 
-//extension MIDIPacket : RangeReplaceableCollection {
-//  mutating
-//  public func replaceSubrange<C : Collection>(_ subrange: Range<Index>, with newElements: C) where C.Iterator.Element == Element {
-////    let diff = Int(numericCast(newElements.count)) - Int(numericCast(count))
-//
-//    fatalError()
-//  }
-//}
+  var type: UInt8 {
+    return UInt8(data.0 >> 4)
+  }
+
+  public var byte: UInt8 {
+    return data.1
+  }
+}

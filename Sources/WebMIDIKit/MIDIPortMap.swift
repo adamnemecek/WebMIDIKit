@@ -8,64 +8,81 @@
 
 import CoreMIDI
 
-public class MIDIPortMap<Value: MIDIPort> : Collection {
+public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible, CustomDebugStringConvertible {
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
 
-  private var content: [Key: Value]
-
   public var startIndex: Index {
-    return content.startIndex
+    return _content.startIndex
   }
 
   public var endIndex: Index {
-    return content.endIndex
+    return _content.endIndex
   }
 
   public subscript (key: Key) -> Value? {
     get {
-      return content[key]
+      return _content[key]
     }
     //
     // this is called by the notification handler in midiaccess
     //
     set {
-      content[key] = newValue
+      _content[key] = newValue
     }
   }
 
   public subscript(index: Index) -> (Key, Value) {
-    return content[index]
+    return _content[index]
   }
 
   public func index(after i: Index) -> Index {
-    return content.index(after: i)
+    return _content.index(after: i)
   }
 
   public var description: String {
-    return dump(content).description
+    return dump(_content).description
+  }
+
+  public var debugDescription: String {
+    return description
   }
 
   // todo weak? maybe we don't even need it?
-  fileprivate let client: MIDIClient
+  fileprivate let _client: MIDIClient
 
   internal init(client: MIDIClient, ports: [Value]) {
-    self.client = client
-    self.content = [:]
+    self._client = client
+    self._content = [:]
     ports.forEach {
       self[$0.id] = $0
     }
   }
 
-  internal func add(_ port: Value) {
+  internal func add(_ port: Value) -> Value? {
+      assert(self[port.id] == nil)
       self[port.id] = port
+      return port
   }
 
-  internal func remove(_ endpoint: MIDIEndpoint) {
+   func remove(_ endpoint: MIDIEndpoint) -> Value? {
     //disconnect?
-    guard let port = self[endpoint] else { assert(false); return }
+    guard let port = self[endpoint] else { assert(false); return nil }
+    port.close()
 //    port.disconnect() // put into pending?
     self[port.id] = nil
+    return port
+  }
+
+  /// Prompts the user to select a MIDIPort
+  private func prompt() -> Value? {
+    var i = 0
+    forEach {
+      print("\(i) select: \($1)")
+      i += 1
+    }
+    fatalError()
+    return nil
   }
 
   //
@@ -73,7 +90,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
   //
   private subscript (endpoint: MIDIEndpoint) -> Value? {
 //    get {
-    return content.first { $0.value.endpoint == endpoint }?.value
+    return _content.first { $0.value.endpoint == endpoint }?.value
 //    }
 //    set {
 //      _ = (newValue ?? self[endpoint]).map {
@@ -84,6 +101,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
 //  public init(arrayLiteral literal: Value...) {
 //
 //  }
+  private var _content: [Key: Value]
 }
 
 public class MIDIInputMap : MIDIPortMap<MIDIInput> {
@@ -92,8 +110,8 @@ public class MIDIInputMap : MIDIPortMap<MIDIInput> {
     super.init(client: client, ports: ports)
   }
 
-  func add(_ endpoint: MIDIEndpoint) {
-    add(MIDIInput(client: client, endpoint: endpoint))
+  func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
+    return add(MIDIInput(client: _client, endpoint: endpoint))
   }
 }
 
@@ -103,8 +121,8 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     super.init(client: client, ports: ports)
   }
 
-  func add(_ endpoint: MIDIEndpoint) {
-    add(MIDIOutput(client: client, endpoint: endpoint))
+  func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
+    return add(MIDIOutput(client: _client, endpoint: endpoint))
   }
 }
 

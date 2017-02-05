@@ -19,7 +19,7 @@ public protocol EventTarget {
 
 ///
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
-public final class MIDIAccess : EventTarget, CustomStringConvertible {
+public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebugStringConvertible {
 
   public typealias Event = MIDIPort
 
@@ -28,89 +28,90 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible {
 
   public var onStateChange: EventHandler<Event> = nil
 
-  private let client: MIDIClient
-  private let clients: Set<MIDIClient> = []
-
-  private let input: MIDIInput
-  private let output: MIDIOutput
-
-  private var observer: NSObjectProtocol? = nil
-
   public init() {
-    let client = MIDIClient()
+    self._client = MIDIClient()
 
-    self.client = client
-    self.inputs = MIDIInputMap(client: client)
-    self.outputs = MIDIOutputMap(client: client)
+    self.inputs = MIDIInputMap(client: _client)
+    self.outputs = MIDIOutputMap(client: _client)
 
-    self.input = MIDIInput(virtual: client)
-    self.output = MIDIOutput(virtual: client) {
+    self._input = MIDIInput(virtual: _client)
+    self._output = MIDIOutput(virtual: _client) {
       print($0.0)
     }
     //todo
-    self.input.onMIDIMessage = {
+    self._input.onMIDIMessage = {
       //          self.midi(src: 0, lst: $0)
       print($0)
     }
 
-    self.observer = NotificationCenter.default.observeMIDIEndpoints {
-      self.notification(messageID: $0, endpoint: $1)
+    self._observer = NotificationCenter.default.observeMIDIEndpoints {
+      self._notification(endpoint: $0, type: $1).map { port in
+        self.onStateChange?(port)
+      }
     }
   }
 
-  private func notification(messageID: MIDIEndpointChange, endpoint: MIDIEndpoint) {
-    switch (messageID, endpoint.type) {
-    case (.added, .input):
-      inputs.add(endpoint)
-
-    case (.added, .output):
-      outputs.add(endpoint)
-
-    case (.removed, .input):
-      inputs.remove(endpoint)
-
-    case (.removed, .output):
-      outputs.remove(endpoint)
-    }
+  deinit {
+    _observer.map(NotificationCenter.default.removeObserver)
   }
 
   public var description: String {
-    return describe(self)
+    return "inputs: \(inputs)\n, output: \(outputs)"
+  }
+
+  public var debugDescription: String {
+    return "\(self.self)(\(description))"
   }
 
   internal func send<S: Sequence>(port: MIDIOutput, data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
-    guard var p = MIDIPacketList(seq: data) else { return }
+    //    guard var p = MIDIPacketList(seq: data) else { return }
     //      timestamp = timestamp == 0 ?
 
-    MIDISend(port.ref, 0, &p)
+    //    MIDISend(port.ref, 0, &p)
     todo("endpoint, timestamp = 0 ?? now, notify all clients?")
   }
 
-  private func midi(src: MIDIEndpointRef, lst: UnsafePointer<MIDIPacketList>) {
-    //    _ = sources.first { $0.source.ref == src }.map {
-    //      _ in
-    //      lst.pointee.forEach {
-    //          packet in
-    //      }
-    //    }
+  private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
+    switch (endpoint.type, type) {
+    case (.input, .added):
+      return inputs.add(endpoint)
+
+    case (.input, .removed):
+      return inputs.remove(endpoint)
+
+    case (.output, .added):
+      return outputs.add(endpoint)
+
+    case (.output, .removed):
+      return outputs.remove(endpoint)
+    }
   }
 
+  public func restart() {
+    MIDIRestart()
+  }
+  
+  private let _client: MIDIClient
+  private let _clients: Set<MIDIClient> = []
 
+  private let _input: MIDIInput
+  private let _output: MIDIOutput
 
-  deinit {
-    observer.map(NotificationCenter.default.removeObserver)
+  private var _observer: NSObjectProtocol? = nil
+
+}
+
+fileprivate extension NotificationCenter {
+  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
+    return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
+      _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
+        callback($0.endpoint, MIDIEndpointNotificationType($0.messageID))
+      }
+    }
   }
 }
 
 
-func test() {
-  let access = MIDIAccess()
-  let p: MIDIPacket = [1,2,3]
-  
-  
-  
-  
-}
 
 
 

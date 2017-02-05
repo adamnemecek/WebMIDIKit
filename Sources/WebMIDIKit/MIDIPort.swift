@@ -7,6 +7,7 @@
 //
 
 import CoreMIDI
+import AXMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
@@ -56,11 +57,14 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   //  }
 
   /// The state of the connection to the device.
-  public private(set) var connection: MIDIPortConnectionState = .closed {
-    didSet {
-      guard oldValue != connection else { return }
-      onStateChange?(self)
-    }
+  public var connection: MIDIPortConnectionState {
+//    didSet {
+//      guard oldValue != connection else { return }
+//      onStateChange?(self)
+//    }
+//    get {
+      return ref == 0 ? .closed : .open
+//    }
   }
 
   ///
@@ -73,18 +77,40 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
-    assert(ref == 0)
-    
+//    assert(ref == 0)
+
     switch type {
 
     case .input:
-      let input = self as! MIDIInput
-      ref = MIDIInputPortCreate(ref: client.ref) { input.onMIDIMessage?($0.0) }
+      let `self` = self as! MIDIInput
+      ref = MIDIInputPortCreateExt(ref: client.ref) {
+        `self`.onMIDIMessage?($0)
+      }
+      /*!
+       @function		MIDIPortConnectSource
+
+       @abstract 		Establishes a connection from a source to a client's input port.
+
+       @param			port
+       The port to which to create the connection.  This port's
+       readProc is called with incoming MIDI from the source.
+       @param			source
+       The source from which to create the connection.
+       @param			connRefCon
+       This refCon is passed to the port's MIDIReadProc or MIDIReadBlock, as a way to
+       identify the source.
+       @result			An OSStatus result code.
+       
+       @discussion
+       */
+      //nil is the src above
+      MIDIPortConnectSource(ref, endpoint.ref, nil)
 
     case .output:
       ref = MIDIOutputPortRefCreate(ref: client.ref)
     }
-    connection = .open
+
+    onStateChange?(self)
     eventHandler?(self)
   }
 
@@ -93,7 +119,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .closed else { return }
-    assert(ref != 0)
+//    assert(ref != 0)
 
     switch type {
     case .input:
@@ -102,8 +128,10 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
       break
     }
 
-    connection = .closed
     ref = 0
+
+    onStateChange?(self)
+
     onStateChange = nil
     eventHandler?(self)
   }
@@ -122,12 +150,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   public var description: String {
     return "type: \(type)\n" +
-          "name: \(name)\n" +
-          "manufacturer: \(manufacturer)\n" +
-          "id: \(id)\n" +
-          "state: \(state)\n" +
-          "connection: \(connection)\n" +
-          "version: \(version)"
+      "name: \(name)\n" +
+      "manufacturer: \(manufacturer)\n" +
+      "id: \(id)\n" +
+      "state: \(state)\n" +
+      "connection: \(connection)\n" +
+    "version: \(version)"
   }
 
   internal private(set) var ref: MIDIPortRef
@@ -151,6 +179,25 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MID
     readmidi(packetlist, srcconref)
   }
   return port
+}
+
+fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
+  return MIDIInputPortCreate(ref: ref) {
+    lst, ref in
+
+    var ptr = MIDIPacketListGetPacketPtr(lst)
+//  let q = ref
+    (0..<lst.pointee.numPackets).forEach {
+      _ in
+      defer {
+        ptr = MIDIPacketNext(ptr)
+      }
+
+//      let q = MIDIPacketCreate(ptr.pointee.data, Int(ptr.pointee!.length), ptr.pointee.timestamp)
+
+      readmidi(ptr.pointee)
+    }
+  }
 }
 
 fileprivate func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {

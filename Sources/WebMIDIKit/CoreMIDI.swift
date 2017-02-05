@@ -6,27 +6,24 @@
 //
 //
 import CoreMIDI
+import func AXMIDI.MIDINotificationToEndpointNotification
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
   internal init?(ptr: UnsafePointer<MIDINotification>) {
-    switch ptr.pointee.messageID {
-    case .msgObjectAdded, .msgObjectRemoved:
-      self = ptr.withMemoryRebound(to: MIDIObjectAddRemoveNotification.self, capacity: 1) {
-        $0.pointee
-      }
-    default: return nil
-    }
+    guard let n = MIDINotificationToEndpointNotification(ptr)?.pointee else { return nil }
+    self = n
   }
 
+//  public var msgID: 
+
   public var description: String {
-    return "\(messageID)"
+    return "message\(messageID)"
   }
 
   internal var endpoint: MIDIEndpoint {
     assert(MIDIPortType(childType) == MIDIEndpoint(ref: child).type)
     return MIDIEndpoint(ref: child)
   }
-
 }
 
 
