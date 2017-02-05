@@ -183,12 +183,15 @@ class MIDIList: Sequence {
 //  private let ownsPtr: Bool
 
   typealias Index = Int
-  typealias Element = MIDIPacket
+  typealias Element = UnsafeMutablePointer<MIDIPacket>
 
-  private(set) var first: UnsafeMutablePointer<Element>?
+  private(set) var first: Element?
+
+  let count: Int
 
   init?(data: [UInt8], packets: Int, timestamp: MIDITimeStamp = 0) {
 //    ownsPtr = true
+    self.count = packets
     guard let f = MIDIPacketListCreate(data, UInt32(data.count), UInt32(packets), timestamp, &ptr) else  { return nil }
     first = f
   }
@@ -202,18 +205,15 @@ class MIDIList: Sequence {
   init(ptr: UnsafeMutablePointer<MIDIPacketList>) {
 //    ownsPtr = true
     self.ptr = ptr
-
+    self.count = Int(ptr.pointee.numPackets)
   }
 
   deinit {
 //    if ownsPtr {
-      MIDIPacketListFree(&ptr)
+      MIDIPacketListFree(&ptr!)
 //    }
   }
 
-  var count: Int {
-    return Int(ptr?.pointee.numPackets ?? 0)
-  }
 
   func makeIterator() -> AnyIterator<Element> {
     var cur = first
@@ -225,14 +225,14 @@ class MIDIList: Sequence {
         cur = MIDIPacketNext(cur!)
         current += 1
       }
-      return cur?.pointee
+      return cur
     }
   }
 }
 
 extension MIDIList : Equatable, Comparable, Hashable, CustomStringConvertible {
 //  public typealias Element = MIDIPacket
-  public typealias Timestamp = Element.Timestamp
+  public typealias Timestamp = MIDITimeStamp
 
   public static func ==(lhs: MIDIList, rhs: MIDIList) -> Bool {
     return lhs.count == rhs.count && lhs.elementsEqual(rhs)

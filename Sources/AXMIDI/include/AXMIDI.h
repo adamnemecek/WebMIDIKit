@@ -36,17 +36,28 @@ inline void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList l
 
 
 inline const MIDIObjectAddRemoveNotification* _Nullable
-MIDINotificationToEndpointNotification(
-                                       const MIDINotification* _Nonnull notification
-                                       );
+MIDINotificationToEndpointNotification(const MIDINotification* _Nonnull notification);
 
-const MIDIPacket* MIDIPacketListPacket(const MIDIPacketList* lst);
+///
+/// const MIDIPacket* (_Nullable) = UnsafePointer<MIDIPacket>?
+/// const MIDIPacket* _Nonnull = UnsafePointer<MIDIPacket>
+///
+
+inline bool MIDIPacketListGetPacket(
+  const MIDIPacketList* _Nonnull lst,
+  MIDIPacket* _Nonnull packet
+);
+
+MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
+  const MIDIPacketList* _Nonnull lst
+);
 
 inline MIDIPacket* _Nullable MIDIPacketListCreate(
   const Byte* _Nonnull data,
   const UInt32 byteCount,
   const UInt32 numPackets,
   const MIDITimeStamp timestamp,
-  MIDIPacketList **out);
+  MIDIPacketList *_Nullable* _Nullable lst
+);
 
-void MIDIPacketListFree(MIDIPacketList** lst);
+void MIDIPacketListFree(MIDIPacketList *_Nonnull* _Nonnull lst);

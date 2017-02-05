@@ -10,7 +10,6 @@
 #include "AXMIDI.h"
 
 
-
 Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
   return packet.data[index];
 }
@@ -78,8 +77,31 @@ void dump(const Byte *data, int count) {
   }
 }
 
-const MIDIPacket* MIDIPacketListPacket(const MIDIPacketList* lst) {
-  return (MIDIPacket*)lst->packet;
+bool MIDIPacketListGetPacket(
+  const MIDIPacketList* _Nonnull lst,
+  MIDIPacket* _Nonnull packet
+) {
+  const UInt32 numPackets = lst->numPackets;
+  if (numPackets < 1) {
+    return false;
+  }
+
+  const MIDIPacket* fst = lst->packet;
+
+  packet->length = fst->length;
+  packet->timeStamp = fst->timeStamp;
+
+  for (int i = 0; i < fst->length; i++) {
+    packet->data[i] = fst->data[i];
+  }
+  return true;
+}
+
+MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
+  const MIDIPacketList* _Nonnull lst
+)
+  {
+  return NULL;
 }
 
 //const MIDIPacket * MIDIPacketNextConst(const MIDIPacket* packet) {
@@ -179,3 +201,30 @@ void MIDIPacketListFree(MIDIPacketList** lst) {
 //	*outPacketList = packetList;
 //	return YES;
 //}
+
+
+
+
+void MIKMIDIDestinationReadProc(const MIDIPacketList* lst, void *readProcRefCon, void *srcConnRefCon)
+{
+	if (!readProcRefCon) return;
+//	@autoreleasepool {
+//		MIKMIDIClientDestinationEndpoint *self = *(__unsafe_unretained MIKMIDIClientDestinationEndpoint **)readProcRefCon;
+
+//		NSMutableArray *receivedCommands = [NSMutableArray array];
+		const MIDIPacket* packet = (MIDIPacket*)lst->packet;
+		for (int i = 0; i < lst->numPackets; i++) {
+			if (packet->length == 0) continue;
+
+//			NSArray *commands = [MIKMIDICommand commandsWithMIDIPacket:packet];
+//			if (commands) [receivedCommands addObjectsFromArray:commands];
+			packet = MIDIPacketNext(packet);
+		}
+		
+//		if ([receivedCommands count] && self.receivedMessagesHandler) {
+//			self.receivedMessagesHandler(self, receivedCommands);
+//		}
+//	}
+}
+
+

@@ -9,7 +9,7 @@
 import CoreMIDI
 
 public final class MIDIInput : MIDIPort {
-  public var onMIDIMessage: EventHandler<MIDIPacket> = nil {
+  public final var onMIDIMessage: EventHandler<MIDIPacket> = nil {
     didSet {
       open()
     }
@@ -21,7 +21,7 @@ public final class MIDIInput : MIDIPort {
 }
 
 /// source != input, source is a hw (or virtual) port, input is connected port
-fileprivate class VirtualMIDISource: VirtualMIDIEndpoint {
+fileprivate final class VirtualMIDISource: VirtualMIDIEndpoint {
   init(client: MIDIClient) {
     super.init(ref: MIDISourceCreate(ref: client.ref))
   }

@@ -27,6 +27,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public var endIndex: Index {
     //todo this needs to be fixed and like do the right
+    assert(length <= 256)
     return Int(length)
   }
 

@@ -184,11 +184,18 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MID
 fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
   return MIDIInputPortCreate(ref: ref) {
     lst, ref in
-    guard var f = MIDIPacketListPacket(lst) else { return }
-    readmidi(f.pointee)
-    (1..<lst.pointee.numPackets).forEach {
+
+    var ptr = MIDIPacketListGetPacketPtr(lst)
+
+    (0..<lst.pointee.numPackets).forEach {
       _ in
-//      f?.
+      defer {
+        ptr = MIDIPacketNext(ptr)
+      }
+
+//      let q = MIDIPacketCreate(ptr.pointee.data, Int(ptr.pointee!.length), ptr.pointee.timestamp)
+
+      readmidi(ptr.pointee)
     }
   }
 }

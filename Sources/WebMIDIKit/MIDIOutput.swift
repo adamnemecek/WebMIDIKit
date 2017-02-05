@@ -9,6 +9,7 @@
 import CoreMIDI
 
 public final class MIDIOutput : MIDIPort {
+  public typealias Timestamp = MIDITimeStamp
 //  public func send<S: Sequence>(_ data: S, timestamp: Int = 0) where S.Iterator.Element == UInt8 {
 //    open()
 //    guard var lst = MIDIPacketList(seq: data) else { return }
@@ -34,13 +35,13 @@ public final class MIDIOutput : MIDIPort {
 //    let pktList = UnsafeMutablePointer<MIDIPacketList>.allocate(capacity: 1)
 //    pkt = MIDIPacketListInit(pktList)
 //    pkt = MIDIPacketListAdd(pktList, 1024, pkt, 0, data.count, data)
-//    
+//    it's
 //    MIDISend(ref, endpoint.ref, pktList)
 //
 ////    MIDIReceived(endpoint.ref, pktList)
 //  }
 
-  public func send(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
+  public func send(_ data: [UInt8], timestamp: Timestamp = 0) {
     open()
     let p = MIDIPacketListBuilder(data: data)
     print(p.head)
