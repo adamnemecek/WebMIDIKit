@@ -75,12 +75,12 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
 
   /// Prompts the user to select a MIDIPort
   private func prompt() -> Value? {
-//    let e = map { $0 }
-//    e.enumerated() {
-//      print("(\($0)) = \($1)")
-//    }
-//
-//    guard let choice = (readLine().map { Int($0) }) else { return nil }
+    //    let e = map { $0 }
+    //    e.enumerated() {
+    //      print("(\($0)) = \($1)")
+    //    }
+    //
+    //    guard let choice = (readLine().map { Int($0) }) else { return nil }
 
     return  nil
   }
@@ -115,6 +115,22 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
 
   internal func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
     return add(MIDIOutput(client: _client, endpoint: endpoint))
+  }
+}
+
+extension MIDIPort {
+  /// The state of the device.
+  public var state: MIDIPortDeviceState {
+    let endpoints: [MIDIEndpoint]
+
+    switch type {
+    case .input:
+      endpoints = MIDISources()
+    case .output:
+      endpoints = MIDIDestinations()
+    }
+
+    return endpoints.contains(endpoint) ? .connected : .disconnected
   }
 }
 

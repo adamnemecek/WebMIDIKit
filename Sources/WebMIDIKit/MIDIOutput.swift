@@ -30,7 +30,8 @@ public final class MIDIOutput : MIDIPort {
 //  init(client: MIDIClient, block: @escaping MIDIReadBlock) {
 //    super.init(ref: MIDIDestinationCreate(ref: client.ref, block: block))
 //  }
-//
+////ths needs to use midi received
+// http://stackoverflow.com/questions/10572747/why-doesnt-this-simple-coremidi-program-produce-midi-output
 //  func send(lst: UnsafePointer<MIDIPacketList>) {
 //    fatalError()
 ////    MIDISend(ref, endpoint.ref, lst)

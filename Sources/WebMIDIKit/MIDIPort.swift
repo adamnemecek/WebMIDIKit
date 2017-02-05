@@ -47,9 +47,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     return endpoint.version
   }
 
-  /// The state of the device.
-  public internal(set) var state: MIDIPortDeviceState = .connected
-
   /// The state of the connection to the device.
   public var connection: MIDIPortConnectionState {
     return ref == 0 ? .closed : .open

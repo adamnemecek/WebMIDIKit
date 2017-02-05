@@ -102,10 +102,5 @@ public enum MIDIPortConnectionState : Equatable {
   case pending
 }
 
-func todo(_ msg: String? = nil) -> Never {
-  fatalError(msg ?? "")
-}
-
-
 
 
