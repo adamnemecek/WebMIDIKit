@@ -30,9 +30,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     get {
       return _content[key]
     }
-    //
-    // this is called by the notification handler in midiaccess
-    //
     set {
       _content[key] = newValue
     }
@@ -67,8 +64,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
   internal func remove(_ endpoint: MIDIEndpoint) -> Value? {
     //disconnect?
     guard let port = self[endpoint] else { assert(false); return nil }
-    port.close()
-    //    port.disconnect() // put into pending?
+
     self[port.id] = nil
     return port
   }
