@@ -32,10 +32,6 @@ MIDIPacket MIDIPacketCreate(
   return p;
 }
 
-//const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
-//  return MIDIPacketNext(current);
-//}
-
 const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(
   const MIDINotification* notification) {
   switch (notification->messageID) {

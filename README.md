@@ -4,39 +4,57 @@
 
 ### What's MIDI 
 
-[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices. It's currently implemented in Chrome, Firefox, Opera
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices. 
 
 ### What's WebMIDI
 
-WebMIDI is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes port selection, receiving data from an input port and sending data to an output port (but this should cover ~90% of all use cases).
+WebMIDI is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes port selection, receiving data from an input port and sending data to an output port (but this should cover ~90% of all use cases). [It's currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi).
+
 
 
 ### What's WebMIDIKit
 On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
-CoreMIDI is relatively old, is entirely in C. Using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the API didn't quite survive the transition to Swift and is essentially unusable (MIDIPacketList related APIs, I'm looking at you). 
-WebMIDIKit fixes this by implementing the WebMIDI API in Swift. Using CoreMIDI, selecting a port and receiving data from it is ~60 lines of convoluted Swift code. WebMIDIKit let's you do it in 1.
+CoreMIDI is relatively old and is entirely in C. Using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the API didn't quite survive the transition to Swift and is essentially unusable in Swift (MIDIPacketList related APIs, I'm looking at you). 
+WebMIDIKit fixes this by implementing the WebMIDI API in Swift. Selecting a port and receiving data from it is ~60 lines of convoluted Swift code. WebMIDIKit let's you do it in 1. 
 
 
 Note that WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project.
 
-#Usage
+##Usage
 
 ###MIDIAccess
-
+See [spec](https://www.w3.org/TR/webmidi/#midiaccess-interface).
 ```swift
-class MIDIAccess 
+class MIDIAccess {
+	// port maps are dictionary like collections
+	var inputs: MIDIInputMap { get }
+	var outputs: MIDIOutputMap { get }
+
+	var onStateChange: ((MIDIPort) -> ())? = nil { get set }
+
+	init()
+
+}
 ```
 
-##Iterating over inputs
+```swift
+```
+
+###Iterating over inputs
 
 ```swift
 import WebMIDIKit
 
-
+// represents the MIDI session
 let midi = MIDIAccess()
 
-/// signs up for observation
-MIDIAccess().inputs.prompt().map { $0.onMIDIMessage = { packet in print(packet) } }
+// displays all inputs and asks the user which to select
+let inputPort = midi.inputs.prompt()!
+
+// sets the input port's callback that gets called when MIDI messages are received
+inputPort.onMIDIMessage = { packet in 
+	print(packet) }
+}
 
 /// prompt displays all inputs (in this case) and returns the selected input port
 /// which we then send the data to
@@ -57,7 +75,7 @@ MIDIAccess().inputs.prompt().map {
 
 
 
-# Installation
+## Installation
 
 Use Swift Package Manager. Add 
 ```swift
@@ -93,7 +111,7 @@ class MIDIPort {
 See [spec]().
 ```swift
 class MIDIInput: MIDIPort {
-
+	var onMIDIMessage: ((MIDIPacket) -> ())? = nil
 }
 ```
 
@@ -104,7 +122,8 @@ class MIDIInput: MIDIPort {
 See [spec]().
 ```swift
 class MIDIOutput: MIDIPort {
-
+	func send<S: Sequence>(_ data: S, timestamp: Timestamp = 0) where S.Iterator.Element == UInt8
+	func clear()
 }
 ```
 

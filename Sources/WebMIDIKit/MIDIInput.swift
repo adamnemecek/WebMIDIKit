@@ -14,6 +14,7 @@ public final class MIDIInput : MIDIPort {
       open()
     }
   }
+
 //
 //  convenience internal init(virtual client: MIDIClient) {
 //    self.init(client: client, endpoint: VirtualMIDISource(client: client))

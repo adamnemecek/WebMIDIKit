@@ -79,6 +79,15 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
     }
   }
 
+//  func input(for port: MIDIOutput) -> MIDIInput? {
+//    return nil
+//  }
+//
+//  func output(for port: MIDIInput) -> MIDIOutput? {
+////    return outputs.first(where: { _ in true })
+//  }
+
+
   public func restart() {
     MIDIRestart()
   }

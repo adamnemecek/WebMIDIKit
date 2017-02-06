@@ -9,12 +9,11 @@
 import enum CoreMIDI.MIDIObjectType
 import enum CoreMIDI.MIDINotificationMessageID
 
-///
 /// A descriptor property to distinguish whether the port is an input or an
 /// output port. For MIDIOutput, this must be "output". For MIDIInput, this must
 /// be "input".
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortType)
-///
+
 public enum MIDIPortType : Equatable {
 
   /// If a MIDIPort is an input port, the type member must be this value.
@@ -37,21 +36,6 @@ public enum MIDIPortType : Equatable {
   }
 }
 
-internal enum MIDIEndpointNotificationType {
-  case added, removed
-
-  init(_ messageID: MIDINotificationMessageID) {
-    switch messageID {
-    case .msgObjectAdded:
-      self = .added
-    case .msgObjectRemoved:
-      self = .removed
-    default:
-      fatalError("unpexpected")
-    }
-  }
-}
-
 /// The state of the device.
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortDeviceState)
 public enum MIDIPortDeviceState : Equatable {
@@ -65,7 +49,6 @@ public enum MIDIPortDeviceState : Equatable {
   /// map of input and output ports.
   case connected
 }
-
 
 /// The state of the connection to the device.
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortConnectionState)
@@ -91,5 +74,17 @@ public enum MIDIPortConnectionState : Equatable {
   case pending
 }
 
+internal enum MIDIEndpointNotificationType {
+  case added, removed
 
-
+  init(_ messageID: MIDINotificationMessageID) {
+    switch messageID {
+    case .msgObjectAdded:
+      self = .added
+    case .msgObjectRemoved:
+      self = .removed
+    default:
+      fatalError("unpexpected")
+    }
+  }
+}
