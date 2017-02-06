@@ -28,7 +28,6 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public subscript(index: Index) -> Element {
     get {
-      print("index \(index), value: \(MIDIPacketGetValue(self, Int32(index))), length: \(count)")
       return MIDIPacketGetValue(self, Int32(index))
     }
     set {
@@ -50,15 +49,13 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     return Int(timeStamp) ^ count
   }
 
-  init(data: [Element]) {
-    self = MIDIPacketCreate(data, Int32(data.count), 0)
+  init(data: [Element], timestamp: Double = 0) {
+    self = MIDIPacketCreate(data, Int32(data.count), MIDITimeStamp(timestamp))
+    assert(count == data.count && elementsEqual(data))
   }
 
   public init(arrayLiteral literal: Element...) {
-    self.init()
-    length = UInt16(literal.count)
-
-    assert(count == literal.count && elementsEqual(literal))
+    self.init(data: Array(literal))
   }
 
   public typealias Timestamp = MIDITimeStamp
