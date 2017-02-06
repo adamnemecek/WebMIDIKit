@@ -47,9 +47,6 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[string: kMIDIPropertyDisplayName]
   }
 
-  /// For our purposes, enpoint can only be an input, output or other (if it's
-  /// virtual). If it's virtual, we cannot determine whether it's an input 
-  /// or output based on the
   final var type: MIDIPortType {
     return MIDIPortType(MIDIObjectGetType(id: id))
   }

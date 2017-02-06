@@ -78,13 +78,14 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
 
   /// Prompts the user to select a MIDIPort
   public func prompt() -> Value? {
-    print("Select \(first?.1.type) by typing the associated number:\n")
+    print("Select \(first?.1.type) by typing the associated number")
     let ports = map { $0.1 }
 
     for (i, port) in ports.enumerated() {
-      print("\t\(i + 1) to select \(port)")
+      print("  \(i + 1) to select \(port)")
     }
 
+    print("Select: ")
     guard let choice = (readLine().flatMap { Int($0) }) else { return nil }
     return ports[safe: choice]
   }

@@ -121,8 +121,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
   internal private(set) final var ref: MIDIPortRef
 
-  //todo: should this be weak?
-  //  internal let access: MIDIAccess
   internal private(set) final weak var client: MIDIClient!
   internal final let endpoint: MIDIEndpoint
 

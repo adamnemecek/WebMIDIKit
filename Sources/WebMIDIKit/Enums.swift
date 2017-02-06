@@ -35,18 +35,6 @@ public enum MIDIPortType : Equatable {
       fatalError("Unexpected port type \(type)")
     }
   }
-
-  internal init(port: MIDIPort) {
-    switch port {
-    case is MIDIInput:
-      self = .input
-    case is MIDIOutput:
-      self = .output
-    default:
-      fatalError("Unexpected port type \(port.self)")
-    }
-  }
-
 }
 
 internal enum MIDIEndpointNotificationType {
