@@ -59,7 +59,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 
   final var state: MIDIPortDeviceState {
-    /// As per docs, 0 means connected, 1 disconnected
+    /// As per docs, 0 means connected, 1 disconnected (kaksoispiste dee)
     return self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
   }
 

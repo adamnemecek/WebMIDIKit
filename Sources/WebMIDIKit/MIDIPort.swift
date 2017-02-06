@@ -116,12 +116,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 
   final public var description: String {
-    return "type: \(type)\n" +
-           "name: \(name)\n" +
-           "manufacturer: \(manufacturer)\n" +
-           "id: \(id)\n" +
-           "state: \(state)\n" +
-           "connection: \(connection)"
+    return ": \(name) by \(manufacturer), id: \(id), connection: \(connection)"
   }
 
   internal private(set) final var ref: MIDIPortRef

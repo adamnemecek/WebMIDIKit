@@ -14,6 +14,13 @@ extension String {
   }
 }
 
+extension Collection {
+  subscript (safe index: Index) -> Iterator.Element? {
+    guard (startIndex..<endIndex).contains(index) else { return nil }
+    return self[index]
+  }
+}
+
 public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible, CustomDebugStringConvertible {
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
@@ -64,21 +71,22 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
   internal func remove(_ endpoint: MIDIEndpoint) -> Value? {
     //disconnect?
     guard let port = self[endpoint] else { assert(false); return nil }
-
+    assert(port.state == .connected)
     self[port.id] = nil
     return port
   }
 
   /// Prompts the user to select a MIDIPort
-  private func prompt() -> Value? {
-    //    let e = map { $0 }
-    //    e.enumerated() {
-    //      print("(\($0)) = \($1)")
-    //    }
-    //
-    //    guard let choice = (readLine().map { Int($0) }) else { return nil }
+  public func prompt() -> Value? {
+    print("Select \(first?.1.type) by typing the associated number:\n")
+    let ports = map { $0.1 }
 
-    return  nil
+    for (i, port) in ports.enumerated() {
+      print("\t\(i + 1) to select \(port)")
+    }
+
+    guard let choice = (readLine().flatMap { Int($0) }) else { return nil }
+    return ports[safe: choice]
   }
 
   //
@@ -113,22 +121,6 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     return add(MIDIOutput(client: _client, endpoint: endpoint))
   }
 }
-
-//extension MIDIPort {
-//  /// The state of the device.
-//  public var state: MIDIPortDeviceState {
-//    let endpoints: [MIDIEndpoint]
-//
-//    switch type {
-//    case .input:
-//      endpoints = MIDISources()
-//    case .output:
-//      endpoints = MIDIDestinations()
-//    }
-//
-//    return endpoints.contains(endpoint) ? .connected : .disconnected
-//  }
-//}
 
 fileprivate func MIDISources() -> [MIDIEndpoint] {
   return (0..<MIDIGetNumberOfSources()).map {

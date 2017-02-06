@@ -60,16 +60,17 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
 
   private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
     switch (endpoint.type, type) {
+
     case (.input, .added):
       return inputs.add(endpoint)
+
+    case (.output, .added):
+      return outputs.add(endpoint)
 
     case (.input, .removed):
       return inputs.remove(endpoint).map {
         $0.close(); return $0
       }
-
-    case (.output, .added):
-      return outputs.add(endpoint)
 
     case (.output, .removed):
       return outputs.remove(endpoint).map {
@@ -101,11 +102,3 @@ fileprivate extension NotificationCenter {
     }
   }
 }
-
-
-
-
-
-
-
-
