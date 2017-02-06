@@ -14,6 +14,41 @@ extension Collection where Index == Int {
   }
 }
 
+extension Collection {
+  subscript (safe index: Index) -> Iterator.Element? {
+    guard (startIndex..<endIndex).contains(index) else { return nil }
+    return self[index]
+  }
+}
+
+//extension Sequence {
+//  public func prompt() -> Iterator.Element? {
+//    let a = Array(self)
+//
+//    guard a.count > 1 else {
+//      print("Automatically selected \(a.first) because there are \(a.count) elements")
+//      return a.first
+//    }
+//
+//    print("Select \(Iterator.Element.self) from \(type(of:self)) by typing element's number")
+//
+//
+//    for (i, e) in a.enumerated() {
+//      print("  #\(i) = \(e)")
+//    }
+//
+//    print("Select: ", terminator: "")
+//    guard let choice = (readLine().flatMap { Int($0) }) else { return nil }
+//    return a[safe: choice]
+//  }
+//}
+
+extension String {
+  func trim() -> String? {
+    return trimmingCharacters(in: .whitespacesAndNewlines)
+  }
+}
+
 extension MIDIObjectType : CustomStringConvertible {
   public var description: String {
     switch self {

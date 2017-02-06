@@ -20,6 +20,7 @@ internal final class MIDIList {
     add(data: Array(data))
   }
 
+
   func add(data: [UInt8]) {
     _currentPacket = MIDIPacketListAdd(head, 1024, _currentPacket, 0, data.count, data)
     print(_currentPacket.pointee)

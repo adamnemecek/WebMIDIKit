@@ -22,6 +22,12 @@ public protocol MutableEventType : EventType {
   var timestamp: Timestamp { get set }
 }
 
+protocol Timeranged {
+  associatedtype Timestamp: Comparable
+  var timerange: ClosedRange<Timestamp> { get }
+}
+
+
 //public protocol TimeSeries: Sequence {
 //  associatedtype Timestamp: Comparable
 //  subscript (timerange range: ClosedRange<Timestamp>) -> SubSequence { get }

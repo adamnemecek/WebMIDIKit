@@ -8,19 +8,6 @@
 
 import CoreMIDI
 
-extension String {
-  func trim() -> String? {
-    return trimmingCharacters(in: .whitespacesAndNewlines)
-  }
-}
-
-extension Collection {
-  subscript (safe index: Index) -> Iterator.Element? {
-    guard (startIndex..<endIndex).contains(index) else { return nil }
-    return self[index]
-  }
-}
-
 public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible, CustomDebugStringConvertible {
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
@@ -76,16 +63,17 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     return port
   }
 
-  /// Prompts the user to select a MIDIPort
+  /// Prompts the user to select a MIDIPort (non-standard)
   public final func prompt() -> Value? {
     print("Select \(first?.1.type) by typing the associated number")
     let ports = map { $0.1 }
 
     for (i, port) in ports.enumerated() {
-      print("  \(i + 1) to select \(port)")
+      print("  #\(i) = \(port)")
     }
 
-    print("Select: ")
+
+    print("Select: ", terminator: "")
     guard let choice = (readLine().flatMap { Int($0) }) else { return nil }
     return ports[safe: choice]
   }
