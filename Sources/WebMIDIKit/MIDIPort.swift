@@ -21,48 +21,48 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// device is removed from the system. Applications may want to cache these
   /// ids locally to re-create a MIDI setup. Applications may use the comparison
   /// of id of MIDIPorts to test for equality.
-  final public var id: Int {
+  public final var id: Int {
     return endpoint.id
   }
 
   /// The manufacturer of the port.
-  final public var manufacturer: String {
+  public final var manufacturer: String {
     return endpoint.manufacturer
   }
 
   /// The system name of the port.
-  final public var name: String {
+  public final var name: String {
     return endpoint.name
   }
 
   /// A descriptor property to distinguish whether the port is an input or an
   /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
   /// must be "input".
-  final public var type: MIDIPortType {
+  public final var type: MIDIPortType {
     return endpoint.type
   }
 
   /// The version of the port.
-  final public var version: Int {
+  public final var version: Int {
     return endpoint.version
   }
 
   /// The state of the connection to the device.
-  final public var connection: MIDIPortConnectionState {
+  public final var connection: MIDIPortConnectionState {
     return ref == 0 ? .closed : .open
   }
 
-  final public var state: MIDIPortDeviceState {
+  public final var state: MIDIPortDeviceState {
     return endpoint.state
   }
 
   /// gets called when the port state changes (open/closed are called,
   /// or the device endpoint gets disconnected.
-  final public var onStateChange: ((MIDIPort) -> ())? = nil
+  public final var onStateChange: ((MIDIPort) -> ())? = nil
 
 
   /// establishes a connection
-  final public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  public final func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
 
     switch type {
@@ -85,7 +85,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
 
   /// Closes the port.
-  final public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  public final func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .closed else { return }
 
     switch type {
@@ -101,7 +101,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     eventHandler?(self)
   }
 
-  final public var hashValue: Int {
+  public final var hashValue: Int {
     return endpoint.hashValue
   }
 
@@ -113,7 +113,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     return lhs.endpoint < rhs.endpoint
   }
 
-  final public var description: String {
+  public final var description: String {
     let t = self is MIDIInput ? "MIDIInput" : "MIDIOutput"
     return "\(t): \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
   }
