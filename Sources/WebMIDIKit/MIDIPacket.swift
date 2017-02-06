@@ -69,7 +69,7 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     }
   }
 
-  var isSysEx: Bool {
+  public var isSysEx: Bool {
      return data.0 >= 240
   }
 

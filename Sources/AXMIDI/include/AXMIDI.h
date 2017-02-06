@@ -15,13 +15,26 @@
 /// as a tuple which means we cannot index directly into the data which is
 /// annoying AF. These utility functions let us index directly.
 
-inline Byte MIDIPacketGetValue(const MIDIPacket packet, int index);
-inline void MIDIPacketSetValue(MIDIPacket* const _Nonnull packet, int index, Byte value);
+inline Byte MIDIPacketGetValue(
+  const MIDIPacket packet, int index
+);
 
-inline MIDIPacket MIDIPacketCreate(const Byte* _Nonnull data, int dataCount, MIDITimeStamp timestamp);
+inline void MIDIPacketSetValue(
+  MIDIPacket* const _Nonnull packet,
+  int index,
+  Byte value
+);
+
+inline MIDIPacket MIDIPacketCreate(
+  const Byte* _Nonnull data,
+  int dataCount,
+  MIDITimeStamp timestamp
+);
 
 inline const MIDIObjectAddRemoveNotification* _Nullable
-MIDINotificationToEndpointNotification(const MIDINotification* _Nonnull notification);
+MIDINotificationToEndpointNotification(
+  const MIDINotification* _Nonnull notification
+);
 
 ///
 /// const MIDIPacket* (_Nullable) = UnsafePointer<MIDIPacket>?
@@ -37,7 +50,9 @@ inline MIDIPacket* _Nullable MIDIPacketListCreate(
   const UInt32 byteCount,
   const UInt32 numPackets,
   const MIDITimeStamp timestamp,
-  MIDIPacketList *_Nullable* _Nullable lst
+  MIDIPacketList*_Nullable*_Nullable lst
 );
 
-void MIDIPacketListFree(MIDIPacketList *_Nonnull* _Nonnull lst);
+void MIDIPacketListFree(
+  MIDIPacketList*_Nonnull*_Nonnull lst
+);
