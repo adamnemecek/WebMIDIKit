@@ -6,11 +6,7 @@
 //
 //
 
-
 #include "AXMIDI.h"
-
-
-/// we need this because otherwise
 
 Byte MIDIPacketGetValue(
   const MIDIPacket packet,
