@@ -7,7 +7,6 @@
 //
 
 import CoreMIDI
-import func AXMIDI.MIDISendExt
 
 //
 // you can think of this as the HW input/output or virtual endpoint
@@ -41,8 +40,11 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 
   final var name: String {
-    //todo fullanme
     return self[string: kMIDIPropertyName]
+  }
+
+  final var displayName: String {
+    return self[string: kMIDIPropertyDisplayName]
   }
 
   /// For our purposes, enpoint can only be an input, output or other (if it's
@@ -54,6 +56,11 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
 
   final var version: Int {
     return self[int: kMIDIPropertyDriverVersion]
+  }
+
+  final var state: MIDIPortDeviceState {
+    /// As per docs, 0 means connected, 1 disconnected
+    return self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
   }
 
   final func flush() {
@@ -69,7 +76,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 }
 
-class VirtualMIDIEndpoint: MIDIEndpoint {
+internal class VirtualMIDIEndpoint: MIDIEndpoint {
   deinit {
     MIDIEndpointDispose(ref)
   }

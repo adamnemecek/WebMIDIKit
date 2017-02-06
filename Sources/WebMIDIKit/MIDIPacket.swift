@@ -11,13 +11,7 @@ import AXMIDI
 
 @_exported import struct CoreMIDI.MIDIPacket
 
-//enum MIDIMessageType: UInt8 {
-//
-//}
-
-
-
-extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, MutableEventType {
+extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, CustomDebugStringConvertible, MutableEventType {
   public typealias Element = UInt8
   public typealias Index = Int
 
@@ -27,14 +21,13 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public var endIndex: Index {
     //todo this needs to be fixed and like do the right
+    // note that I think that technically
     assert(length <= 256)
     return Int(length)
   }
 
-
   public subscript(index: Index) -> Element {
     get {
-      print("index \(index), value: \(MIDIPacketGetValue(self, Int32(index))), length: \(count)")
       return MIDIPacketGetValue(self, Int32(index))
     }
     set {
@@ -56,13 +49,13 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     return Int(timeStamp) ^ count
   }
 
-  init(data: [Element]) {
-    self = MIDIPacketCreate(data, Int32(data.count), 0)
+  init(data: [Element], timestamp: Double = 0) {
+    self = MIDIPacketCreate(data, Int32(data.count), MIDITimeStamp(timestamp))
+    assert(count == data.count && elementsEqual(data))
   }
 
   public init(arrayLiteral literal: Element...) {
-    self = MIDIPacketCreate(literal, Int32(literal.count), 0)
-    assert(count == literal.count && elementsEqual(literal))
+    self.init(data: Array(literal))
   }
 
   public typealias Timestamp = MIDITimeStamp
@@ -76,8 +69,12 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
     }
   }
 
+  var isSysEx: Bool {
+     return data.0 >= 240
+  }
+
   public var description: String {
-    return ""
+    return "\(Array(self))"
   }
 
   public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {

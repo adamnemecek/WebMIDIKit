@@ -21,63 +21,50 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// device is removed from the system. Applications may want to cache these
   /// ids locally to re-create a MIDI setup. Applications may use the comparison
   /// of id of MIDIPorts to test for equality.
-  public var id: Int {
+  final public var id: Int {
     return endpoint.id
   }
 
   /// The manufacturer of the port.
-  public var manufacturer: String {
+  final public var manufacturer: String {
     return endpoint.manufacturer
   }
 
   /// The system name of the port.
-  public var name: String {
+  final public var name: String {
     return endpoint.name
   }
 
   /// A descriptor property to distinguish whether the port is an input or an
   /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
   /// must be "input".
-  public var type: MIDIPortType {
+  final public var type: MIDIPortType {
     return endpoint.type
   }
 
   /// The version of the port.
-  public var version: Int {
+  final public var version: Int {
     return endpoint.version
   }
 
-  /// The state of the device.
-  public private(set) var state: MIDIPortDeviceState = .connected
-  //{
-  //    didSet {
-  //      guard oldValue != state else { return }
-  //      onStateChange?(self)
-  //    }
-  //  }
-
   /// The state of the connection to the device.
-  public var connection: MIDIPortConnectionState {
-//    didSet {
-//      guard oldValue != connection else { return }
-//      onStateChange?(self)
-//    }
-//    get {
-      return ref == 0 ? .closed : .open
-//    }
+  final public var connection: MIDIPortConnectionState {
+    return ref == 0 ? .closed : .open
   }
 
+  final public var state: MIDIPortDeviceState {
+    return endpoint.state
+  }
   ///
   ///
   ///
-  public var onStateChange: ((MIDIPort) -> ())? = nil
+  final public var onStateChange: ((MIDIPort) -> ())? = nil
 
   ///
   ///
   ///
-  public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  final public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
-//    assert(ref == 0)
 
     switch type {
 
@@ -86,24 +73,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
       ref = MIDIInputPortCreateExt(ref: client.ref) {
         `self`.onMIDIMessage?($0)
       }
-      /*!
-       @function		MIDIPortConnectSource
 
-       @abstract 		Establishes a connection from a source to a client's input port.
-
-       @param			port
-       The port to which to create the connection.  This port's
-       readProc is called with incoming MIDI from the source.
-       @param			source
-       The source from which to create the connection.
-       @param			connRefCon
-       This refCon is passed to the port's MIDIReadProc or MIDIReadBlock, as a way to
-       identify the source.
-       @result			An OSStatus result code.
-       
-       @discussion
-       */
-      //nil is the src above
       MIDIPortConnectSource(ref, endpoint.ref, nil)
 
     case .output:
@@ -117,9 +87,8 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   ///
   ///
   ///
-  public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  final public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .closed else { return }
-//    assert(ref != 0)
 
     switch type {
     case .input:
@@ -129,14 +98,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     }
 
     ref = 0
-
     onStateChange?(self)
-
     onStateChange = nil
     eventHandler?(self)
   }
 
-  public var hashValue: Int {
+  final public var hashValue: Int {
     return endpoint.hashValue
   }
 
@@ -148,22 +115,21 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     return lhs.endpoint < rhs.endpoint
   }
 
-  public var description: String {
+  final public var description: String {
     return "type: \(type)\n" +
-      "name: \(name)\n" +
-      "manufacturer: \(manufacturer)\n" +
-      "id: \(id)\n" +
-      "state: \(state)\n" +
-      "connection: \(connection)\n" +
-    "version: \(version)"
+           "name: \(name)\n" +
+           "manufacturer: \(manufacturer)\n" +
+           "id: \(id)\n" +
+           "state: \(state)\n" +
+           "connection: \(connection)"
   }
 
-  internal private(set) var ref: MIDIPortRef
+  internal private(set) final var ref: MIDIPortRef
 
   //todo: should this be weak?
   //  internal let access: MIDIAccess
-  internal let client: MIDIClient
-  internal let endpoint: MIDIEndpoint
+  internal private(set) final weak var client: MIDIClient!
+  internal final let endpoint: MIDIEndpoint
 
   internal init(client: MIDIClient, endpoint: MIDIEndpoint) {
     self.client = client
@@ -186,15 +152,10 @@ fileprivate func MIDIInputPortCreateExt(ref: MIDIClientRef, readmidi: @escaping 
     lst, ref in
 
     var ptr = MIDIPacketListGetPacketPtr(lst)
-//  let q = ref
-    (0..<lst.pointee.numPackets).forEach {
-      _ in
+    (0..<lst.pointee.numPackets).forEach { _ in
       defer {
         ptr = MIDIPacketNext(ptr)
       }
-
-//      let q = MIDIPacketCreate(ptr.pointee.data, Int(ptr.pointee!.length), ptr.pointee.timestamp)
-
       readmidi(ptr.pointee)
     }
   }

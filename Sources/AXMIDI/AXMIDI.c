@@ -16,14 +16,10 @@ Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
   return packet.data[index];
 }
 
-Byte MIDIPacketGetValuePtr(const MIDIPacket* _Nonnull packet, int index) {
-  return packet->data[index];
-}
-
-
 void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
   packet->data[index] = value;
 }
+
 MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp timestamp) {
   MIDIPacket p = {.timeStamp = timestamp, .length = dataCount};
   for (int i = 0; i < dataCount; i++) {
@@ -32,13 +28,9 @@ MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp times
   return p;
 }
 
-void MIDISendExt(MIDIPortRef port, MIDIEndpointRef dest, MIDIPacketList list) {
-  MIDISend(port, dest, &list);
-}
-
-const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
-  return MIDIPacketNext(current);
-}
+//const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
+//  return MIDIPacketNext(current);
+//}
 
 const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
   switch (notification->messageID) {
@@ -50,15 +42,19 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
   }
 }
 
-MIDIPacket* _Nonnull MIDIPacketListGetPacketPtr(
-  const MIDIPacketList* _Nonnull lst
+
+/// We need this as opposed to getting it in Swift because we need the pointer
+/// which can be safely passed into MIDIPacketNext. This code was written under
+/// assumption that one cannot safely make a copy of the packet and then pass
+/// it to MIDIPacketNext.
+
+MIDIPacket* MIDIPacketListGetPacketPtr(
+  const MIDIPacketList* lst
 ) {
   return (MIDIPacket*)&lst->packet;
 }
 
-///
-/// This was roughly adated from MIKMIDI. Note the double pointer out parameter.
-///
+/// This was roughly adapted from MIKMIDI. Note the double pointer out parameter.
 
 MIDIPacket* MIDIPacketListCreate(
   const Byte* data,
@@ -67,7 +63,6 @@ MIDIPacket* MIDIPacketListCreate(
   const MIDITimeStamp timestamp,
   MIDIPacketList **out) {
 
-  /// this is the
   const ByteCount hdrSize = offsetof(MIDIPacketList, packet) +
                             offsetof(MIDIPacket, data) * numPackets;
   const ByteCount lstSize = hdrSize + dataCount;
