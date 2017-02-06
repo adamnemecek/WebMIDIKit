@@ -115,4 +115,3 @@ extension Collection where Iterator.Element == UInt8 {
 //extension MIDIPacketList: TimeSeries {
 //
 //}
-

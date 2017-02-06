@@ -73,8 +73,11 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 }
 
+
 internal class VirtualMIDIEndpoint: MIDIEndpoint {
   deinit {
+    /// note that only virtual endpoints (created with MIDISourceCreate 
+    /// or MIDIDestinationCreate need to be disposed
     MIDIEndpointDispose(ref)
   }
 }

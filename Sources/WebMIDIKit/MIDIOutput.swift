@@ -44,4 +44,3 @@ public final class MIDIOutput : MIDIPort {
 //  return endpoint
 //}
 //
-

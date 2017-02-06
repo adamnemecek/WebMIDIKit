@@ -36,5 +36,3 @@ public enum MIDIStatus: Int {
       self.init(rawValue: Int(packet.data.0 >> 4))
     }
 }
-
-

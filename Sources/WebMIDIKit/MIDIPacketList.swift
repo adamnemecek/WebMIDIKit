@@ -32,8 +32,10 @@ internal final class MIDIList {
 
   func send(to output: MIDIOutput) {
     MIDISend(output.ref, output.endpoint.ref, head)
-    /// this let's is propagate the events to everyone subscribed to this endpoint
-    /// not just this port, i'm not sure if we actually want this
+    /// this let's us propagate the events to everyone subscribed to this
+    /// endpoint not just this port, i'm not sure if we actually want this
+    /// but for now, it let's us create multiple ports from different MIDIAccess
+    /// objects and have them all receive the same messages
     MIDIReceived(output.endpoint.ref, head)
   }
 

@@ -158,8 +158,3 @@ fileprivate func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
   MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
   return port
 }
-
-
-
-
-
