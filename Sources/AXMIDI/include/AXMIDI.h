@@ -30,7 +30,7 @@ inline MIDIPacket MIDIPacketCreate(
   MIDITimeStamp timestamp
 );
 
-inline const MIDIObjectAddRemoveNotification* _Nullable
+inline const MIDIObjectAddRemoveNotification* _Nonnull
 MIDINotificationToEndpointNotification(
   const MIDINotification* _Nonnull notification
 );
