@@ -12,15 +12,23 @@
 
 /// we need this because otherwise
 
-Byte MIDIPacketGetValue(const MIDIPacket packet, int index) {
+Byte MIDIPacketGetValue(
+  const MIDIPacket packet,
+  int index) {
   return packet.data[index];
 }
 
-void MIDIPacketSetValue(MIDIPacket* const packet, int index, Byte value) {
+void MIDIPacketSetValue(
+  MIDIPacket* const packet,
+  int index,
+  Byte value) {
   packet->data[index] = value;
 }
 
-MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp timestamp) {
+MIDIPacket MIDIPacketCreate(
+  const Byte* data,
+  int dataCount,
+  MIDITimeStamp timestamp) {
   MIDIPacket p = {.timeStamp = timestamp, .length = dataCount};
   for (int i = 0; i < dataCount; i++) {
     p.data[i] = data[i];
@@ -32,7 +40,8 @@ MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp times
 //  return MIDIPacketNext(current);
 //}
 
-const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
+const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(
+  const MIDINotification* notification) {
   switch (notification->messageID) {
     case kMIDIMsgObjectAdded:
     case kMIDIMsgObjectRemoved:
@@ -49,8 +58,7 @@ const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(co
 /// it to MIDIPacketNext.
 
 MIDIPacket* MIDIPacketListGetPacketPtr(
-  const MIDIPacketList* lst
-) {
+  const MIDIPacketList* lst) {
   return (MIDIPacket*)&lst->packet;
 }
 
@@ -61,7 +69,7 @@ MIDIPacket* MIDIPacketListCreate(
   const UInt32 dataCount,
   const UInt32 numPackets,
   const MIDITimeStamp timestamp,
-  MIDIPacketList **out) {
+  MIDIPacketList** out) {
 
   const ByteCount hdrSize = offsetof(MIDIPacketList, packet) +
                             offsetof(MIDIPacket, data) * numPackets;
@@ -77,7 +85,8 @@ MIDIPacket* MIDIPacketListCreate(
   return ret;
 }
 
-void MIDIPacketListFree(MIDIPacketList** lst) {
+void MIDIPacketListFree(
+  MIDIPacketList** lst) {
   if (lst == NULL ) { return; }
 
   free(*lst);
