@@ -25,15 +25,15 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
   public typealias Key = Int
   public typealias Index = Dictionary<Key, Value>.Index
 
-  public var startIndex: Index {
+  public final var startIndex: Index {
     return _content.startIndex
   }
 
-  public var endIndex: Index {
+  public final var endIndex: Index {
     return _content.endIndex
   }
 
-  public subscript (key: Key) -> Value? {
+  public final subscript (key: Key) -> Value? {
     get {
       return _content[key]
     }
@@ -42,15 +42,15 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     }
   }
 
-  public subscript(index: Index) -> (Key, Value) {
+  public final subscript(index: Index) -> (Key, Value) {
     return _content[index]
   }
 
-  public func index(after i: Index) -> Index {
+  public final func index(after i: Index) -> Index {
     return _content.index(after: i)
   }
 
-  public var description: String {
+  public final var description: String {
     return dump(_content).description
   }
 
@@ -62,13 +62,13 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     }
   }
 
-  internal func add(_ port: Value) -> Value? {
+  internal final func add(_ port: Value) -> Value? {
     assert(self[port.id] == nil)
     self[port.id] = port
     return port
   }
 
-  internal func remove(_ endpoint: MIDIEndpoint) -> Value? {
+  internal final func remove(_ endpoint: MIDIEndpoint) -> Value? {
     //disconnect?
     guard let port = self[endpoint] else { assert(false); return nil }
     assert(port.state == .connected)
@@ -77,7 +77,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
   }
 
   /// Prompts the user to select a MIDIPort
-  public func prompt() -> Value? {
+  public final func prompt() -> Value? {
     print("Select \(first?.1.type) by typing the associated number")
     let ports = map { $0.1 }
 
@@ -93,32 +93,32 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
   //
   // todo should this be doing key, value?
   //
-  private subscript (endpoint: MIDIEndpoint) -> Value? {
+  private final subscript (endpoint: MIDIEndpoint) -> Value? {
     return _content.first { $0.value.endpoint == endpoint }?.value
   }
 
-  private var _content: [Key: Value]
-  fileprivate weak var _client: MIDIClient!
+  private final var _content: [Key: Value]
+  fileprivate final weak var _client: MIDIClient!
 }
 
-public class MIDIInputMap : MIDIPortMap<MIDIInput> {
+public final class MIDIInputMap : MIDIPortMap<MIDIInput> {
   internal init(client: MIDIClient) {
     let ports = MIDISources().map { MIDIInput(client: client, endpoint: $0) }
     super.init(client: client, ports: ports)
   }
 
-  internal func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
+  internal final func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
     return add(MIDIInput(client: _client, endpoint: endpoint))
   }
 }
 
-public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
+public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
   internal init(client: MIDIClient) {
     let ports = MIDIDestinations().map { MIDIOutput(client: client, endpoint: $0) }
     super.init(client: client, ports: ports)
   }
 
-  internal func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
+  internal final func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
     return add(MIDIOutput(client: _client, endpoint: endpoint))
   }
 }
