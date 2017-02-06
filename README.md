@@ -1,21 +1,20 @@
 # WebMIDIKit: Simple MIDI Swift framework
 
-WebMIDIKit is the easiest Swift framework for working with MIDI
-
-## Info
+## About
 
 ### What's MIDI 
 
-[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. 
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices.
 
 ### What's WebMIDI
 
-WebMIDI is an Web API standard that brings the MIDI technology to the browser. This is straightforward, fundamentally it governs selecting a port, sending data to an output port and receiving data from an input port (this should cover maybe like ~90% of all uses cases).
+WebMIDI is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes port selection, receiving data from an input port and sending data to an output port (but this should cover ~90% of all use cases).
 
 
-### Where does WebMIDIKit come in?
+### What's WebMIDIKit
 On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
-This framework is relatively old and involves a lot of void pointer casting and other unspeakable things. Furthermore, some of this API further deteriorated during the transition to Swift. WebMIDIKit tries to fix that by implementing the webMIDI API in Swift. 
+This framework is relatively old, entirely in C and using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the API didn't quite make the jump to Swift and is essentially unusable  
+WebMIDIKit fixes this by implementing the webMIDI API in Swift. 
 
 
 CoreMIDI is an extremely unwieldy API, 
