@@ -1,23 +1,23 @@
-# WebMIDIKit: Simple Swift MIDI library
+# WebMIDIKit: Decadent Swift MIDI library
 
-###___[Want to learn audio synthesis, sound design and making cool sounds in like an afternoon? Check out Syntorial!]()___
+###__[Want to learn audio synthesis, sound design and making cool sounds in like an afternoon? Check out Syntorial!](http://www.syntorial.com/#a_aid=AudioKit)__
 
 ## About
 
 ### What's MIDI 
 
-[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices. 
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices. HOW DECADENT!
 
 ### What's WebMIDI
 
-WebMIDI is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes MIDI port selection, receiving data from input ports and sending data to output ports. However, this should cover ~90% of all use cases. [WebMIDI is currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi).
+[WebMIDI](https://webaudio.github.io/web-midi-api/) is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes MIDI port selection, receiving data from input ports and sending data to output ports. However, this should cover ~95% of all use cases. [WebMIDI is currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi). DECADENCE BE THY NAME!
 
 
 ### What's WebMIDIKit
 On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
 CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you). WebMIDIKit fixes this by implementing the WebMIDI API in Swift.
 
-Furthermore, CoreMIDI is extremely verbose. Selecting an input port and receiving data from it is ___~60 lines___ of convoluted Swift code. ___WebMIDIKit let's you do it in 1.___
+Furthermore, CoreMIDI is extremely verbose. Selecting an input port and receiving data from it is __~60 lines__ of convoluted Swift code. __WebMIDIKit let's you do it in 1.__ MOST DECADENT!!
 
 Note that despite this, WebMIDIKit is relatively low-level, as for example you are still dealing with arrays of UInt8's (as per the WebMIDI standard). However a higher level library is on the road map, check back right here in a bit.
 
