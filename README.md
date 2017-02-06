@@ -8,25 +8,26 @@
 
 ### What's WebMIDI
 
-WebMIDI is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes port selection, receiving data from an input port and sending data to an output port (but this should cover ~90% of all use cases). [It's currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi).
+WebMIDI is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes port selection, receiving data from input ports and sending data to output ports. However, this should cover ~90% of all use cases. [WebMIDI is currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi).
 
 
 
 ### What's WebMIDIKit
 On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
 CoreMIDI is relatively old and is entirely in C. Using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the API didn't quite survive the transition to Swift and is essentially unusable in Swift (MIDIPacketList related APIs, I'm looking at you). 
-WebMIDIKit fixes this by implementing the WebMIDI API in Swift. Selecting a port and receiving data from it is ~60 lines of convoluted Swift code. WebMIDIKit let's you do it in 1. 
+WebMIDIKit fixes this by implementing the WebMIDI API in Swift. Selecting a port and receiving data from it is ~60 lines of convoluted Swift code with CoreMIDI. WebMIDIKit let's you do it in 1. 
 
 
-Note that WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project.
+WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
 
 ##Usage
 
 ###MIDIAccess
-See [spec](https://www.w3.org/TR/webmidi/#midiaccess-interface).
+Represents the MIDI session. See [spec](https://www.w3.org/TR/webmidi/#midiaccess-interface).
+
 ```swift
 class MIDIAccess {
-	// port maps are dictionary like collections
+	// port maps are dictionary like collections of MIDIInputs or MIDIOutputs that are indexed with the port's id
 	var inputs: MIDIInputMap { get }
 	var outputs: MIDIOutputMap { get }
 
@@ -48,24 +49,22 @@ import WebMIDIKit
 // represents the MIDI session
 let midi = MIDIAccess()
 
-// displays all inputs and asks the user which to select
-let inputPort = midi.inputs.prompt()!
+// prompt displays all ports in the map and asks the user which port to select
+let inputPort = midi.inputs.prompt()
 
-// sets the input port's callback that gets called when MIDI messages are received
-inputPort.onMIDIMessage = { packet in 
-	print(packet) }
+// sets the input port's onMIDIMessage callback which gets called when the port receives any MIDI messages
+inputPort?.onMIDIMessage = { packet in 
+	print(packet)
 }
 
-/// prompt displays all inputs (in this case) and returns the selected input port
-/// which we then send the data to
+// prompt the user to pick an output port and send a note to it
+MIDIAccess().outputs.prompt().map { 
 
-MIDIAccess().inputs.prompt().map { 
-
-	/// note on
+	/// send note on
 	$0.send([0x90, 0x60, 0x7f])
 
-	/// note off
-	$0.send([0x80, 0x60, 0x7f], 1000)
+	/// send note off
+	$0.send([0x80, 0x60, 0x7f], duration: 1000)
 }
 ```
 
