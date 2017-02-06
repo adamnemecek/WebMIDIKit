@@ -69,12 +69,14 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
 
     case (.input, .removed):
       return inputs.remove(endpoint).map {
-        $0.close(); return $0
+        $0.close()
+        return $0
       }
 
     case (.output, .removed):
       return outputs.remove(endpoint).map {
-        $0.close(); return $0
+        $0.close()
+        return $0
       }
     }
   }
@@ -103,7 +105,7 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
 }
 
 fileprivate extension NotificationCenter {
-  func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
+  final func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
     return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
       _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
         callback($0.endpoint, MIDIEndpointNotificationType($0.messageID))

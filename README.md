@@ -1,6 +1,6 @@
 # WebMIDIKit: Simple Swift MIDI library
 
-###__[Want to learn audio synthesis, sound design and making cool sounds in like an afternoon? Check out Syntorial!](http://www.syntorial.com/#a_aid=AudioKit)__
+###__[Want to learn audio synthesis, sound design and making cool sounds in an afternoon? Check out Syntorial!](http://www.syntorial.com/#a_aid=AudioKit)__
 
 ## About
 
@@ -26,10 +26,7 @@ WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) pro
 
 ##Usage
 
-```swift
-```
-
-###Iterating over inputs
+###Selecting an input port
 
 ```swift
 import WebMIDIKit
@@ -39,11 +36,20 @@ let midi = MIDIAccess()
 
 // displays all ports in the map and asks the user which port to select
 let inputPort = midi.inputs.prompt()
+```
 
+###Receiving MIDI events
+```swift
 // sets the input port's onMIDIMessage callback which gets called when the port receives any MIDI messages
 inputPort?.onMIDIMessage = { packet in 
 	print(packet)
 }
+
+```
+
+
+###Selecting an output port and sending MIDI packets to it
+```swift
 
 // prompt the user to pick an output port and send a MIDI message to it
 midi.outputs.prompt().map {
@@ -53,6 +59,14 @@ midi.outputs.prompt().map {
 
 	/// send note off
 	$0.send([0x80, 0x60, 0x7f], duration: 1000)
+}
+```
+
+###Looping over inputs
+
+```swift
+for (id, port) in midi.inputs {
+	print(id, port)
 }
 ```
 
@@ -152,18 +166,6 @@ class MIDIOutput: MIDIPort {
 	func clear()
 }
 ```
-
-
-# Alternatives
-
-* Mikmidi
-* lumi
-* gene de lisa
-* chromium 
-
-https://cs.chromium.org/chromium/src/media/midi/midi_manager_mac.cc?dr=CSs&sq=package:chromium
-
-https://cs.chromium.org/chromium/src/third_party/WebKit/Source/modules/webmidi/?type=cs
 
 
 
