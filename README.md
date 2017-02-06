@@ -1,23 +1,63 @@
-# WebMIDIKit
+# WebMIDIKit: Simple MIDI Swift framework
 
-WebMIDIKit is a simple MIDI framework, heavily inspired by the WebMIDI API.
+WebMIDIKit is the easiest Swift framework for working with MIDI
 
-# What's WebMIDI
+## Info
 
-WebMIDI is a 
+### What's MIDI 
+
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. 
+
+### What's WebMIDI
+
+WebMIDI is an Web API standard that brings the MIDI technology to the browser. This is straightforward, fundamentally it governs selecting a port, sending data to an output port and receiving data from an input port (this should cover maybe like ~90% of all uses cases).
+
+
+### Where does WebMIDIKit come in?
+On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
+This framework is relatively old and involves a lot of void pointer casting and other unspeakable things. Furthermore, some of this API further deteriorated during the transition to Swift. WebMIDIKit tries to fix that by implementing the webMIDI API in Swift. 
+
+
+CoreMIDI is an extremely unwieldy API, 
+WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit)  
+
+#Usage
+
+##Iterating over inputs
+
+```swift
+import WebMIDIKit
+
+let midi = MIDIAccess()
+for input in midi.inputs {
+	print(input)
+}
+
+```
+
+```swift
+
+```
 
 
 
-* decadent midi framework
 
 
-* adapted meaning that some liberty was taken . WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit)  
+# Installation
 
- original MIDI standard is extremely unwieldy, it's over 900 pages and I'm not sure it's ever been implemented in it's entirety.'  
+Use Swift Package Manager. Add 
+```swift
+import PackageDescription
 
-* one of the main issues of the coremidi api is the confusion of reference types and value types
+let packet = Package(
+	name: "<PROJECTNAME>",
+	target: [],
+	dependencies: [
+		.Package(url:"")
+	]
+)
+```
 
-* 
 # bad code
 * https://developer.apple.com/library/content/qa/qa1374/_index.html#//apple_ref/doc/uid/DTS10003394
 * http://stackoverflow.com/questions/4058790/coremidi-framework-sending-midi-commands
@@ -62,66 +102,4 @@ https://cs.chromium.org/chromium/src/media/midi/midi_manager_mac.cc?dr=CSs&sq=pa
 
 
 
-<!--  -->
-<!--void MidiManagerMac::ReceiveMidiNotify(const MIDINotification* message) {-->
-<!--  DCHECK(client_thread_.task_runner()->BelongsToCurrentThread());-->
-<!---->
-<!--  if (kMIDIMsgObjectAdded == message->messageID) {-->
-<!--    // New device is going to be attached.-->
-<!--    const MIDIObjectAddRemoveNotification* notification =-->
-<!--        reinterpret_cast<const MIDIObjectAddRemoveNotification*>(message);-->
-<!--    MIDIEndpointRef endpoint =-->
-<!--        static_cast<MIDIEndpointRef>(notification->child);-->
-<!--    if (notification->childType == kMIDIObjectType_Source) {-->
-<!--      // Attaching device is an input device.-->
-<!--      auto it = source_map_.find(endpoint);-->
-<!--      if (it == source_map_.end()) {-->
-<!--        MidiPortInfo info = GetPortInfoFromEndpoint(endpoint);-->
-<!--        // If the device disappears before finishing queries, MidiPortInfo-->
-<!--        // becomes incomplete. Skip and do not cache such information here.-->
-<!--        // On kMIDIMsgObjectRemoved, the entry will be ignored because it-->
-<!--        // will not be found in the pool.-->
-<!--        if (!info.id.empty()) {-->
-<!--          uint32_t index = source_map_.size();-->
-<!--          source_map_[endpoint] = index;-->
-<!--          AddInputPort(info);-->
-<!--          MIDIPortConnectSource(-->
-<!--              coremidi_input_, endpoint, reinterpret_cast<void*>(endpoint));-->
-<!--        }-->
-<!--      } else {-->
-<!--        SetInputPortState(it->second, PortState::OPENED);-->
-<!--      }-->
-<!--    } else if (notification->childType == kMIDIObjectType_Destination) {-->
-<!--      // Attaching device is an output device.-->
-<!--      auto it = std::find(destinations_.begin(), destinations_.end(), endpoint);-->
-<!--      if (it == destinations_.end()) {-->
-<!--        MidiPortInfo info = GetPortInfoFromEndpoint(endpoint);-->
-<!--        // Skip cases that queries are not finished correctly.-->
-<!--        if (!info.id.empty()) {-->
-<!--          destinations_.push_back(endpoint);-->
-<!--          AddOutputPort(info);-->
-<!--        }-->
-<!--      } else {-->
-<!--        SetOutputPortState(it - destinations_.begin(), PortState::OPENED);-->
-<!--      }-->
-<!--    }-->
-<!--  } else if (kMIDIMsgObjectRemoved == message->messageID) {-->
-<!--    // Existing device is going to be detached.-->
-<!--    const MIDIObjectAddRemoveNotification* notification =-->
-<!--        reinterpret_cast<const MIDIObjectAddRemoveNotification*>(message);-->
-<!--    MIDIEndpointRef endpoint =-->
-<!--        static_cast<MIDIEndpointRef>(notification->child);-->
-<!--    if (notification->childType == kMIDIObjectType_Source) {-->
-<!--      // Detaching device is an input device.-->
-<!--      auto it = source_map_.find(endpoint);-->
-<!--      if (it != source_map_.end())-->
-<!--        SetInputPortState(it->second, PortState::DISCONNECTED);-->
-<!--    } else if (notification->childType == kMIDIObjectType_Destination) {-->
-<!--      // Detaching device is an output device.-->
-<!--      auto it = std::find(destinations_.begin(), destinations_.end(), endpoint);-->
-<!--      if (it != destinations_.end())-->
-<!--        SetOutputPortState(it - destinations_.begin(), PortState::DISCONNECTED);-->
-<!--    }-->
-<!--  }-->
-<!--}-->
 
