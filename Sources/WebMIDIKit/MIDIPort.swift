@@ -116,7 +116,8 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 
   final public var description: String {
-    return ": \(name) by \(manufacturer), id: \(id), connection: \(connection)"
+    let t = self is MIDIInput ? "MIDIInput" : "MIDIOutput"
+    return "\(t) \(name) by \(manufacturer), id: \(id), connection: \(connection)"
   }
 
   internal private(set) final var ref: MIDIPortRef
