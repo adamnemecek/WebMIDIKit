@@ -8,11 +8,6 @@
 
 import CoreMIDI
 
-//public struct Event {
-//  let timestamp: MIDITimeStamp
-//  let status, data1, data2: UInt8
-//}
-
 public protocol EventType {
   associatedtype Timestamp: Comparable
   var timestamp: Timestamp { get }
@@ -22,10 +17,10 @@ public protocol MutableEventType : EventType {
   var timestamp: Timestamp { get set }
 }
 
-protocol Timeranged {
-  associatedtype Timestamp: Comparable
-  var timerange: ClosedRange<Timestamp> { get }
-}
+//protocol Timeranged {
+//  associatedtype Timestamp: Comparable
+//  var timerange: ClosedRange<Timestamp> { get }
+//}
 
 
 //public protocol TimeSeries: Sequence {

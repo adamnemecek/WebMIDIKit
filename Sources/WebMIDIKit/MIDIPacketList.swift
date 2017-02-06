@@ -32,6 +32,9 @@ internal final class MIDIList {
 
   func send(to output: MIDIOutput) {
     MIDISend(output.ref, output.endpoint.ref, head)
+    /// this let's is propagate the events to everyone subscribed to this endpoint
+    /// not just this port, i'm not sure if we actually want this
+    MIDIReceived(output.endpoint.ref, head)
   }
 
   deinit {

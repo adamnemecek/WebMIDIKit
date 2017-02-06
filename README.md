@@ -34,7 +34,7 @@ Also note that WebMIDIKit adds some APIs which aren't a part of the standard. Th
 ```swift
 import WebMIDIKit
 
-/// represents the MIDI session
+/// represents the MIDI session, it is possible to create multiple of these, for example if you want to receive 
 let midi = MIDIAccess()
 
 /// prints all MIDI inputs to the console and asks the user which port they want to select

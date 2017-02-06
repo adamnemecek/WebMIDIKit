@@ -11,7 +11,7 @@ import AXMIDI
 
 @_exported import struct CoreMIDI.MIDIPacket
 
-extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, CustomDebugStringConvertible, MutableEventType {
+extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, ExpressibleByArrayLiteral, CustomStringConvertible, CustomDebugStringConvertible {
   public typealias Element = UInt8
   public typealias Index = Int
 
@@ -37,12 +37,12 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public static func ==(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
     return
-      (lhs.timestamp, lhs.count) == (rhs.timestamp, rhs.count) &&
+      (lhs.timeStamp, lhs.count) == (rhs.timeStamp, rhs.count) &&
       lhs.elementsEqual(rhs)
   }
 
   public static func <(lhs: MIDIPacket, rhs: MIDIPacket) -> Bool {
-    return lhs.timestamp < rhs.timestamp
+    return lhs.timeStamp < rhs.timeStamp
   }
 
   public var hashValue: Int {
@@ -56,17 +56,6 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
 
   public init(arrayLiteral literal: Element...) {
     self.init(data: Array(literal))
-  }
-
-  public typealias Timestamp = MIDITimeStamp
-
-  public var timestamp: Timestamp {
-    get {
-      return timeStamp
-    }
-    set {
-      timeStamp = newValue
-    }
   }
 
   public var isSysEx: Bool {
