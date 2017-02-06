@@ -15,7 +15,8 @@
 /// annoying AF. These utility functions let us index directly.
 
 inline Byte MIDIPacketGetValue(
-  const MIDIPacket packet, int index
+  const MIDIPacket packet,
+  int index
 );
 
 inline void MIDIPacketSetValue(
@@ -30,7 +31,7 @@ inline MIDIPacket MIDIPacketCreate(
   MIDITimeStamp timestamp
 );
 
-inline const MIDIObjectAddRemoveNotification* _Nonnull
+inline const MIDIObjectAddRemoveNotification* _Nullable
 MIDINotificationToEndpointNotification(
   const MIDINotification* _Nonnull notification
 );

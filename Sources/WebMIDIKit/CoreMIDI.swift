@@ -10,10 +10,9 @@ import func AXMIDI.MIDINotificationToEndpointNotification
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
   internal init?(ptr: UnsafePointer<MIDINotification>) {
-    self = MIDINotificationToEndpointNotification(ptr).pointee
+    guard let n = MIDINotificationToEndpointNotification(ptr)?.pointee else { return nil }
+    self = n
   }
-
-//  public var msgID: 
 
   public var description: String {
     return "message\(messageID)"

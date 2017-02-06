@@ -91,7 +91,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     case .input:
       MIDIPortDisconnectSource(ref, endpoint.ref)
     case .output:
-      break
+      endpoint.flush()
     }
 
     ref = 0
