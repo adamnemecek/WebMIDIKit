@@ -55,6 +55,10 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     return self[int: kMIDIPropertyDriverVersion]
   }
 
+  final var state: MIDIPortDeviceState {
+    return self[int: kMIDIPropertyOffline] == 0 ? .disconnected : .connected
+  }
+
   final func flush() {
     MIDIFlushOutput(ref)
   }

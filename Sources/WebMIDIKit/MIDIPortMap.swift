@@ -114,21 +114,21 @@ public class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
   }
 }
 
-extension MIDIPort {
-  /// The state of the device.
-  public var state: MIDIPortDeviceState {
-    let endpoints: [MIDIEndpoint]
-
-    switch type {
-    case .input:
-      endpoints = MIDISources()
-    case .output:
-      endpoints = MIDIDestinations()
-    }
-
-    return endpoints.contains(endpoint) ? .connected : .disconnected
-  }
-}
+//extension MIDIPort {
+//  /// The state of the device.
+//  public var state: MIDIPortDeviceState {
+//    let endpoints: [MIDIEndpoint]
+//
+//    switch type {
+//    case .input:
+//      endpoints = MIDISources()
+//    case .output:
+//      endpoints = MIDIDestinations()
+//    }
+//
+//    return endpoints.contains(endpoint) ? .connected : .disconnected
+//  }
+//}
 
 fileprivate func MIDISources() -> [MIDIEndpoint] {
   return (0..<MIDIGetNumberOfSources()).map {
