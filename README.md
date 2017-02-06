@@ -4,7 +4,7 @@
 
 ### What's MIDI 
 
-[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices.
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices. It's currently implemented in Chrome, Firefox, Opera
 
 ### What's WebMIDI
 
@@ -13,32 +13,47 @@ WebMIDI is a browser API standard that brings the MIDI technology to the web. W
 
 ### What's WebMIDIKit
 On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
-This framework is relatively old, entirely in C and using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the API didn't quite make the jump to Swift and is essentially unusable  
-WebMIDIKit fixes this by implementing the webMIDI API in Swift. 
+CoreMIDI is relatively old, is entirely in C. Using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the API didn't quite survive the transition to Swift and is essentially unusable (MIDIPacketList related APIs, I'm looking at you). 
+WebMIDIKit fixes this by implementing the WebMIDI API in Swift. Using CoreMIDI, selecting a port and receiving data from it is ~60 lines of convoluted Swift code. WebMIDIKit let's you do it in 1.
 
 
-CoreMIDI is an extremely unwieldy API, 
-WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit)  
+Note that WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project.
 
 #Usage
+
+###MIDIAccess
+
+```swift
+class MIDIAccess 
+```
 
 ##Iterating over inputs
 
 ```swift
 import WebMIDIKit
 
-let midi = MIDIAccess()
-for input in midi.inputs {
-	print(input)
-}
 
+let midi = MIDIAccess()
+
+/// signs up for observation
+MIDIAccess().inputs.prompt().map { $0.onMIDIMessage = { packet in print(packet) } }
+
+/// prompt displays all inputs (in this case) and returns the selected input port
+/// which we then send the data to
+
+MIDIAccess().inputs.prompt().map { 
+
+	/// note on
+	$0.send([0x90, 0x60, 0x7f])
+
+	/// note off
+	$0.send([0x80, 0x60, 0x7f], 1000)
+}
 ```
 
 ```swift
 
 ```
-
-
 
 
 
@@ -49,43 +64,49 @@ Use Swift Package Manager. Add
 import PackageDescription
 
 let packet = Package(
-	name: "<PROJECTNAME>",
+	name: "...",
 	target: [],
 	dependencies: [
-		.Package(url:"")
+		.Package(url:"https://github.com/adamnemecek/webmidikit", version: 1)
 	]
 )
 ```
 
-# bad code
-* https://developer.apple.com/library/content/qa/qa1374/_index.html#//apple_ref/doc/uid/DTS10003394
-* http://stackoverflow.com/questions/4058790/coremidi-framework-sending-midi-commands
-* if you manage to find a correct use of MIDIPacketList
-WebMIDI
+## Documentation
 
-#Documentation
+### MIDIPort
 
-https://github.com/cwilso/WebMIDIAPIShim/blob/gh-pages/src/midi_output.js
+See [spec](). Note that you don't construct MIDIPorts and it's subclasses yourself, you only get them from the MIDIAccess object.
+```
+class MIDIPort {
+    var id: String { get }
+    var manufacturer: String { get }
+    var name: String { get }
+    var type: MIDIPortType { get }
+    var version: String { get }
+    var connection: MIDIPortConnectionState { get }
+}
+```
 
-## MIDIPort
-<!--``` -->
-<!--class MIDIPort {-->
-<!--      let id: String-->
-<!--      let manufacturer: String-->
-<!--      let name: String-->
-<!--      let type: MIDIPortType-->
-<!--      let version: String //?-->
-<!--      let connection: MIDIPortConnectionState-->
-<!--```-->
+### MIDIInput
 
-# Extensions
+See [spec]().
+```swift
+class MIDIInput: MIDIPort {
 
-### MIDIInput: MIDIPort
-MIDIInputPort {
-  
-} 
+}
+```
+
 
 ### MIDIOutputPort
+
+
+See [spec]().
+```swift
+class MIDIOutput: MIDIPort {
+
+}
+```
 
 
 # Alternatives
