@@ -9,15 +9,15 @@
 import CoreMIDI
 import AXMIDI
 
-class MIDIList {
-  init(data: [UInt8]) {
+internal class MIDIList {
+  init<S: Sequence>(data: S) where S.Iterator.Element == UInt8 {
     let pkt = UnsafeMutablePointer<UInt8>.allocate(capacity: 1024)
     head = pkt.withMemoryRebound(to: MIDIPacketList.self, capacity: 1) {
       $0
     }
     _currentPacket = MIDIPacketListInit(head)
     _first = _currentPacket
-    add(data: data)
+    add(data: Array(data))
   }
 
   func add(data: [UInt8]) {
@@ -26,7 +26,7 @@ class MIDIList {
   }
 
   private(set) var head: UnsafeMutablePointer<MIDIPacketList>
-  var _first: UnsafeMutablePointer<MIDIPacket>
+  private var _first: UnsafeMutablePointer<MIDIPacket>
   private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
 
   func send(to output: MIDIOutput) {

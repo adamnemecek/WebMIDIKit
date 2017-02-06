@@ -6,11 +6,7 @@
 //
 //
 
-
 #include "AXMIDI.h"
-
-
-/// we need this because otherwise
 
 Byte MIDIPacketGetValue(
   const MIDIPacket packet,
@@ -35,10 +31,6 @@ MIDIPacket MIDIPacketCreate(
   }
   return p;
 }
-
-//const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
-//  return MIDIPacketNext(current);
-//}
 
 const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(
   const MIDINotification* notification) {

@@ -9,7 +9,6 @@
 #pragma once
 
 #import <CoreMIDI/CoreMIDI.h>
-#import <CoreFoundation/CoreFoundation.h>
 
 /// MIDIPacket is exposed to Swift as a struct with data being represented
 /// as a tuple which means we cannot index directly into the data which is
@@ -53,6 +52,6 @@ inline MIDIPacket* _Nullable MIDIPacketListCreate(
   MIDIPacketList*_Nullable*_Nullable lst
 );
 
-void MIDIPacketListFree(
+inline void MIDIPacketListFree(
   MIDIPacketList*_Nonnull*_Nonnull lst
 );

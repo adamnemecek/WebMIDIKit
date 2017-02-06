@@ -13,8 +13,7 @@ public final class MIDIOutput : MIDIPort {
 
   public func send<S: Sequence>(_ data: S, timestamp: Timestamp = 0) where S.Iterator.Element == UInt8 {
     open()
-    let p = MIDIList(data: Array(data))
-    p.send(to: self)
+    MIDIList(data: data).send(to: self)
   }
 
   public func clear() {
