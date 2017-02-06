@@ -60,7 +60,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// or the device endpoint gets disconnected.
   public final var onStateChange: ((MIDIPort) -> ())? = nil
 
-
   /// establishes a connection
   public final func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
@@ -92,7 +91,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     case .input:
       MIDIPortDisconnectSource(ref, endpoint.ref)
     case .output:
-      break
+      endpoint.flush()
     }
 
     ref = 0

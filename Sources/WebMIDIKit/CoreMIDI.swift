@@ -14,8 +14,6 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
     self = n
   }
 
-//  public var msgID: 
-
   public var description: String {
     return "message\(messageID)"
   }

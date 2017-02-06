@@ -15,7 +15,8 @@
 /// annoying AF. These utility functions let us index directly.
 
 inline Byte MIDIPacketGetValue(
-  const MIDIPacket packet, int index
+  const MIDIPacket packet,
+  int index
 );
 
 inline void MIDIPacketSetValue(
