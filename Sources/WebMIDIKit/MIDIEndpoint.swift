@@ -40,8 +40,11 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 
   final var name: String {
-    //todo fullanme
     return self[string: kMIDIPropertyName]
+  }
+
+  final var displayName: String {
+    return self[string: kMIDIPropertyDisplayName]
   }
 
   /// For our purposes, enpoint can only be an input, output or other (if it's
@@ -56,7 +59,8 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
   }
 
   final var state: MIDIPortDeviceState {
-    return self[int: kMIDIPropertyOffline] == 0 ? .disconnected : .connected
+    /// As per docs, 0 means connected, 1 disconnected
+    return self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
   }
 
   final func flush() {

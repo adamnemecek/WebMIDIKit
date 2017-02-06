@@ -121,8 +121,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
            "manufacturer: \(manufacturer)\n" +
            "id: \(id)\n" +
            "state: \(state)\n" +
-           "connection: \(connection)\n" +
-           "version: \(version)"
+           "connection: \(connection)"
   }
 
   internal private(set) final var ref: MIDIPortRef

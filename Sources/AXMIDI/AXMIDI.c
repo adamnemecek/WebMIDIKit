@@ -28,9 +28,9 @@ MIDIPacket MIDIPacketCreate(const Byte* data, int dataCount, MIDITimeStamp times
   return p;
 }
 
-const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
-  return MIDIPacketNext(current);
-}
+//const MIDIPacket* MIDIPacketNextConst(const MIDIPacket * current) {
+//  return MIDIPacketNext(current);
+//}
 
 const MIDIObjectAddRemoveNotification* MIDINotificationToEndpointNotification(const MIDINotification* notification) {
   switch (notification->messageID) {
