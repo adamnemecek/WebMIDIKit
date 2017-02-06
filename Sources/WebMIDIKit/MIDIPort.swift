@@ -55,14 +55,13 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   final public var state: MIDIPortDeviceState {
     return endpoint.state
   }
-  ///
-  ///
-  ///
+
+  /// gets called when the port state changes (open/closed are called,
+  /// or the device endpoint gets disconnected.
   final public var onStateChange: ((MIDIPort) -> ())? = nil
 
-  ///
-  ///
-  ///
+
+  /// establishes a connection
   final public func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .open else { return }
 
@@ -84,9 +83,8 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     eventHandler?(self)
   }
 
-  ///
-  ///
-  ///
+
+  /// Closes the port.
   final public func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
     guard connection != .closed else { return }
 

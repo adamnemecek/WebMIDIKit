@@ -9,7 +9,7 @@
 import CoreMIDI
 import AXMIDI
 
-internal class MIDIList {
+internal final class MIDIList {
   init<S: Sequence>(data: S) where S.Iterator.Element == UInt8 {
     let pkt = UnsafeMutablePointer<UInt8>.allocate(capacity: 1024)
     head = pkt.withMemoryRebound(to: MIDIPacketList.self, capacity: 1) {
