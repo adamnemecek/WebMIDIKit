@@ -54,8 +54,8 @@ let outputPort: MIDIOutput? = midi.outputs.prompt()
 /// send messages to it
 outputPort.map {
 
-	/// send note on message
-	/// the bytes are  MIDI message format (https://www.midi.org/specifications/item/table-1-summary-of-midi-message)
+	/// send a note on message
+	/// the bytes are in the normal MIDI message format (https://www.midi.org/specifications/item/table-1-summary-of-midi-message)
 	/// i.e. you have to send two events, a note on event and a note off event to play a single note
 	/// the format is as follows:
 	/// byte0 = message type (0x90 = note on, 0x80 = note off)
@@ -63,7 +63,7 @@ outputPort.map {
 	/// byte2 = velocity (how loud the note should be 127 (=0x7f) is max, 0 is min)
 	$0.send([0x90, 0x60, 0x7f])
 
-	/// send note off message 1000 ms (1 second) later
+	/// send a note off message 1000 ms (1 second) later
 	$0.send([0x80, 0x60, 0x7f], offset: 1000)
 
 	/// in WebMIDIKit, you can also chain these
@@ -80,12 +80,12 @@ let outputPort: MIDIOutput? = midi.output(for: inputPort)
 
 
 ```swift
-let inputPort2?: MIDIOutput? = midi.input(for: outputPort)
+let inputPort2: MIDIInput? = midi.input(for: outputPort)
 ```
 
 ###Looping over ports
 
-Port maps are dictionary like collections of MIDIInputs or MIDIOutputs that are indexed with the port's id. As a result, you cannot index into them like you would into an array (the reason for this being that the endpoints can be added and removed so you cannot reference them by their index).
+Port maps are dictionary like collections of `MIDIInputs` or `MIDIOutputs` that are indexed with the port's id. As a result, you cannot index into them like you would into an array (the reason for this being that the endpoints can be added and removed so you cannot reference them by their index).
 ```swift
 for (id, port) in midi.inputs {
 	print(id, port)
@@ -121,7 +121,7 @@ class MIDIAccess {
 	var inputs: MIDIInputMap { get }
 	var outputs: MIDIOutputMap { get }
 
-	// will be called if a port changes either connection state or 
+	// will be called if a port changes either connection state or port state
 	var onStateChange: ((MIDIPort) -> ())? = nil { get set }
 
 	init()
@@ -136,20 +136,20 @@ class MIDIAccess {
 
 ### MIDIPort
 
-See [spec](https://www.w3.org/TR/webmidi/#midiport-interface). Represents the base class of MIDIInput and MIDIOutput.
+See [spec](https://www.w3.org/TR/webmidi/#midiport-interface). Represents the base class of `MIDIInput` and `MIDIOutput`.
 
-Note that you don't construct MIDIPorts and it's subclasses yourself, you only get them from the MIDIAccess object. Also note that you are only ever dealt with subclasses (MIDIInput or MIDIOutput) never MIDIPort itself directly.
+Note that you don't construct MIDIPorts nor it's subclasses yourself, you only get them from the `MIDIAccess` object. Also note that you only ever deal with subclasses or `MIDIPort` (`MIDIInput` or `MIDIOutput`) never `MIDIPort` itself directly.
 
 ```
 class MIDIPort {
 
-    var id: Int { get }
-    var manufacturer: String { get }
+	var id: Int { get }
+	var manufacturer: String { get }
 
-    var name: String { get }
+	var name: String { get }
 
 	/// .input (for MIDIInput) or .output (for MIDIOutput)
-    var type: MIDIPortType { get }
+	var type: MIDIPortType { get }
 
 	var version: Int { get }
 
@@ -158,7 +158,7 @@ class MIDIPort {
 	var state: MIDIPortDeviceState { get }
 
 	/// .open, .closed (or pending but that's not used in WebMIDIKit)
-    var connection: MIDIPortConnectionState { get }
+	var connection: MIDIPortConnectionState { get }
 
 	/// open the port, is called implicitly when MIDIInput's onMIDIMessage is set or MIDIOutputs' send is called
 	func open()
@@ -174,7 +174,7 @@ See [spec](https://www.w3.org/TR/webmidi/#midiinput-interface).
 
 ```swift
 class MIDIInput: MIDIPort {
-	///  will get called when the port receives any messages.
+	/// set this and it will get called when the port receives messages.
 	var onMIDIMessage: ((MIDIPacket) -> ())? = nil
 }
 ```
@@ -187,7 +187,8 @@ See [spec](https://www.w3.org/TR/webmidi/#midioutput-interface).
 ```swift
 class MIDIOutput: MIDIPort {
 
-	/// send data to port, note that unline the WebMIDI API, the last parameter specifies offset from now, when the event should be scheduled
+	/// send data to port, note that unlike the WebMIDI API, 
+	/// the last parameter specifies offset from now, when the event should be scheduled (as opposed to timestamp)
 	/// the unit remains milliseconds though.
 	func send<S: Sequence>(_ data: S, offset: Timestamp = 0) -> MIDIOutput where S.Iterator.Element == UInt8
 	
