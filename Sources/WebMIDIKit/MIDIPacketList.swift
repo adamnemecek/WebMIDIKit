@@ -30,15 +30,13 @@ internal final class MIDIList {
   private var _first: UnsafeMutablePointer<MIDIPacket>
   private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
 
-  func send(to output: MIDIOutput, timestamp: Double? = nil) {
-    //timestamp = ms
-    // schedule for mach_time( )= timestamp to hosttime
-    _ = timestamp.map {
+  func send(to output: MIDIOutput, offset: Double? = nil) {
+    _ = offset.map {
       let current = AudioGetCurrentHostTime()
-      let offset = AudioConvertNanosToHostTime(UInt64($0 * 1000000))
+      let _offset = AudioConvertNanosToHostTime(UInt64($0 * 1000000))
 
-      let ts = current + offset
-      print(current, ts, offset)
+      let ts = current + _offset
+      print(current, ts, _offset)
       _first.pointee.timeStamp = ts
 
       assert(head.pointee.packet.timeStamp == ts)
