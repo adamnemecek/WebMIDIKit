@@ -14,7 +14,7 @@
 
 ### What's WebMIDIKit
 WebMIDIKit is an implementation of the WebMIDI API for macOS/iOS. On these OS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
-CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting (💩^9.329 ), and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you).
+CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting (💩^9.329), and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you).
 
 CoreMIDI is also extremely verbose and error prone. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you do it in 1.__ 
 
@@ -61,18 +61,23 @@ outputPort.map {
 	/// byte0 = message type (0x90 = note on, 0x80 = note off)
 	/// byte1 = the note played (0x60 = C8, see http://www.midimountain.com/midi/midi_note_numbers.html)
 	/// byte2 = velocity (how loud the note should be 127 (=0x7f) is max, 0 is min)
-	$0.send([0x90, 0x60, 0x7f])
+
+	let noteOn: [UInt8] = [0x90, 0x60, 0x7f]
+	let noteOff: [UInt8] = [0x80, 0x60, 0]
+
+	/// send the note on event
+	$0.send(noteOn)
 
 	/// send a note off message 1000 ms (1 second) later
-	$0.send([0x80, 0x60, 0x7f], offset: 1000)
+	$0.send(noteOff, offset: 1000)
 
 	/// in WebMIDIKit, you can also chain these
-	$0.send([0x90, 0x60, 0x7f])
-	  .send([0x80, 0x60, 0x7f], offset: 1000)
+	$0.send(noteOn)
+	  .send(NoteOff, offset: 1000)
 }
 ```
 
-If the port you want to select has a corresponding input port you can also do
+If the output port you want to select has a corresponding input port you can also do
 
 ```swift
 let outputPort: MIDIOutput? = midi.output(for: inputPort)
@@ -97,6 +102,7 @@ for (id, port) in midi.inputs {
 ## Installation
 
 Use Swift Package Manager. The corresponding .Package into your dependencies.
+
 ```swift
 import PackageDescription
 
@@ -109,6 +115,8 @@ let packet = Package(
 	]
 )
 ```
+
+ If you are having some build issues look at the sample project [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
 
 ## Documentation
 
@@ -188,7 +196,7 @@ See [spec](https://www.w3.org/TR/webmidi/#midioutput-interface).
 class MIDIOutput: MIDIPort {
 
 	/// send data to port, note that unlike the WebMIDI API, 
-	/// the last parameter specifies offset from now, when the event should be scheduled (as opposed to timestamp)
+	/// the last parameter specifies offset from now, when the event should be scheduled (as opposed to absolute timestamp)
 	/// the unit remains milliseconds though.
 	func send<S: Sequence>(_ data: S, offset: Timestamp = 0) -> MIDIOutput where S.Iterator.Element == UInt8
 	
