@@ -6,7 +6,7 @@
 //
 //
 
-import CoreMIDI
+import AVFoundation
 import AXMIDI
 
 internal final class MIDIList {
@@ -30,7 +30,20 @@ internal final class MIDIList {
   private var _first: UnsafeMutablePointer<MIDIPacket>
   private var _currentPacket: UnsafeMutablePointer<MIDIPacket>
 
-  func send(to output: MIDIOutput) {
+  func send(to output: MIDIOutput, timestamp: Double? = nil) {
+    //timestamp = ms
+    // schedule for mach_time( )= timestamp to hosttime
+    _ = timestamp.map {
+      let current = AudioGetCurrentHostTime()
+      let offset = AudioConvertNanosToHostTime(UInt64($0 * 1000000))
+
+      let ts = current + offset
+      print(current, ts, offset)
+      _first.pointee.timeStamp = ts
+
+      assert(head.pointee.packet.timeStamp == ts)
+    }
+
     MIDISend(output.ref, output.endpoint.ref, head)
     /// this let's us propagate the events to everyone subscribed to this
     /// endpoint not just this port, i'm not sure if we actually want this
