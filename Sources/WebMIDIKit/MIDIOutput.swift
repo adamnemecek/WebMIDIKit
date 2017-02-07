@@ -11,10 +11,11 @@ import AVFoundation
 
 public final class MIDIOutput : MIDIPort {
 
-
-  public func send<S: Sequence>(_ data: S, timestamp: Double? = nil) where S.Iterator.Element == UInt8 {
+  @discardableResult
+  public func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
     open()
-    MIDIList(data: data).send(to: self, timestamp: timestamp)
+    MIDIList(data: data).send(to: self, offset: offset)
+    return self
   }
 
   public func clear() {
