@@ -7,6 +7,8 @@
 //
 
 #include "AXMIDI.h"
+//#include <AudioToolbox/AudioToolbox.h> //for AUGraph
+
 
 Byte MIDIPacketGetValue(
   const MIDIPacket packet,
@@ -84,4 +86,42 @@ void MIDIPacketListFree(
   free(*lst);
   *lst = NULL;
 }
+
+//
+//OSStatus CreateAUGraph(AUGraph outGraph, AudioUnit outSynth) {
+//	OSStatus result;
+//	//create the nodes of the graph
+//	AUNode synthNode, limiterNode, outNode;
+//	
+//	AudioComponentDescription cd = {};
+//	cd.componentManufacturer = kAudioUnitManufacturer_Apple;
+//
+//	require_noerr(result = NewAUGraph(&outGraph), exit);
+//
+//	cd.componentType = kAudioUnitType_MusicDevice;
+//	cd.componentSubType = kAudioUnitSubType_DLSSynth;
+//
+//	require_noerr(result = AUGraphAddNode(outGraph, &cd, &synthNode), exit);
+//
+//	cd.componentType = kAudioUnitType_Effect;
+//	cd.componentSubType = kAudioUnitSubType_PeakLimiter;  
+//
+//	require_noerr(result = AUGraphAddNode(outGraph, &cd, &limiterNode), exit);
+//
+//	cd.componentType = kAudioUnitType_Output;
+//	cd.componentSubType = kAudioUnitSubType_DefaultOutput;  
+//	require_noerr(result = AUGraphAddNode(outGraph, &cd, &outNode), exit);
+//
+//	require_noerr(result = AUGraphOpen(outGraph), exit);
+//	
+//	require_noerr(result = AUGraphConnectNodeInput(outGraph, synthNode, 0, limiterNode, 0), exit);
+//	require_noerr(result = AUGraphConnectNodeInput(outGraph, limiterNode, 0, outNode, 0), exit);
+//	
+//	// ok we're good to go - get the Synth Unit...
+//	require_noerr (result = AUGraphNodeInfo(outGraph, synthNode, 0, &outSynth), exit);
+//
+//exit:
+//	return result;
+//}
+
 
