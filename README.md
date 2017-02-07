@@ -188,7 +188,7 @@ See [spec](https://www.w3.org/TR/webmidi/#midiinput-interface).
 ```swift
 class MIDIInput: MIDIPort {
 	/// set this and it will get called when the port receives messages.
-	var onMIDIMessage: ((MIDIPacket) -> ())? = nil
+	var onMIDIMessage: ((MIDIPacket) -> ())? = nil { get set }
 }
 ```
 
