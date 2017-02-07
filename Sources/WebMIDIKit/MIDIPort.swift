@@ -11,9 +11,7 @@ import AXMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
-public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible, EventTarget {
-
-  public typealias Event = MIDIPort
+public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible {
 
   /// A unique ID of the port. This can be used by developers to remember ports
   /// the user has chosen for their application. This is maintained across
@@ -33,6 +31,11 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   /// The system name of the port.
   public final var name: String {
     return endpoint.name
+  }
+
+  /// The full name of the port.
+  public final var displayName: String {
+    return endpoint.displayName
   }
 
   /// A descriptor property to distinguish whether the port is an input or an
@@ -61,7 +64,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   public final var onStateChange: ((MIDIPort) -> ())? = nil
 
   /// establishes a connection
-  public final func open(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  public final func open() {
     guard connection != .open else { return }
 
     switch type {
@@ -79,12 +82,11 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     }
 
     onStateChange?(self)
-    eventHandler?(self)
   }
 
 
   /// Closes the port.
-  public final func close(_ eventHandler: ((MIDIPort) -> ())? = nil) {
+  public final func close() {
     guard connection != .closed else { return }
 
     switch type {
@@ -97,7 +99,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     ref = 0
     onStateChange?(self)
     onStateChange = nil
-    eventHandler?(self)
   }
 
   public final var hashValue: Int {
@@ -129,7 +130,10 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
   }
 }
 
+
 fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping MIDIReadBlock) -> MIDIPortRef {
+//  guard #available(macOS 10.11, *) else { fatalError("supported only on macos 10.11+") }
+
   var port = MIDIPortRef()
   MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
     packetlist, srcconref in
@@ -157,8 +161,3 @@ fileprivate func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
   MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
   return port
 }
-
-
-
-
-

@@ -42,6 +42,7 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
 }
 
 fileprivate func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
+//  guard #available(macOS 10.11, *) else { fatalError("supported only on macos 10.11+") }
   var ref = MIDIClientRef()
   MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref, callback)
   return ref

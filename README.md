@@ -6,42 +6,43 @@
 
 ### What's MIDI 
 
-[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data to applications and devices.
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending and receiving data from and to applications and devices.
 
 ### What's WebMIDI
 
-[WebMIDI](https://webaudio.github.io/web-midi-api/) is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes MIDI port selection, receiving data from input ports and sending data to output ports. However, this should cover ~95% of all use cases. [WebMIDI is currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi). 
+[WebMIDI](https://webaudio.github.io/web-midi-api/) is a browser API standard that brings the MIDI technology to the web. WebMIDI is minimal, it only describes MIDI port selection, receiving data from input ports and sending data to output ports. However, this should cover ~95% of all use cases. [WebMIDI is currently implemented in Chrome & Opera](http://caniuse.com/#feat=midi). Note that WebMIDI is relatively low level as you are still dealing with sequences of UInt8s (bytes/octets).
 
 
 ### What's WebMIDIKit
 On macOS/iOS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
-CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you). WebMIDIKit fixes this by implementing the WebMIDI API in Swift.
+CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting (💩^9.329 ), and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you). WebMIDIKit simplifies this by implementing the WebMIDI API in Swift.
 
-Furthermore, CoreMIDI is extremely verbose. Selecting an input port and receiving data from it is __~60 lines__ of convoluted Swift code. __WebMIDIKit let's you do it in 1.__ 
+CoreMIDI is also extremely verbose. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you do it in 1.__ 
 
-Note that despite this, WebMIDIKit is relatively low-level, as for example you are still dealing with arrays of UInt8's (as per the WebMIDI standard). However a higher level library is on the road map, check back right here in a bit.
+
+Note that despite this, WebMIDIKit is relatively low-level, as for example you are still dealing with arrays of UInt8's (as per the WebMIDI standard). However a higher level library is planned, check back right here in a bit.
 
 WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
+
+Also note that WebMIDIKit adds some APIs which aren't a part of the standard. These are marked as non-standard in the code base.
 
 
 ##Usage
 
-###Selecting an input port
+###Selecting an input port and receiving MIDI messages
 
 ```swift
 import WebMIDIKit
 
-// represents the MIDI session
-let midi = MIDIAccess()
+/// represents the MIDI session
+let midi: MIDIAccess = MIDIAccess()
 
-// displays all ports in the map and asks the user which port to select
-let inputPort = midi.inputs.prompt()
-```
+/// prints all MIDI inputs available to the console and asks the user which port they want to select
+let inputPort: MIDIInput? = midi.inputs.prompt()
 
-###Receiving MIDI events
-```swift
-// sets the input port's onMIDIMessage callback which gets called when the port receives any MIDI messages
-inputPort?.onMIDIMessage = { packet in 
+/// Receiving MIDI events 
+/// set the input port's onMIDIMessage callback which gets called when the port receives MIDI packets
+inputPort?.onMIDIMessage = { packet: MIDIPacket) in 
 	print(packet)
 }
 
@@ -50,20 +51,30 @@ inputPort?.onMIDIMessage = { packet in
 
 ###Selecting an output port and sending MIDI packets to it
 ```swift
+let outputPort: MIDIOutput? = midi.outputs.prompt()
 
-// prompt the user to pick an output port and send a MIDI message to it
-midi.outputs.prompt().map {
+/// send messages to it
+outputPort.map {
 
-	/// send note on
+	/// send note on message
 	$0.send([0x90, 0x60, 0x7f])
 
-	/// send note off
+	/// send note off message
 	$0.send([0x80, 0x60, 0x7f], duration: 1000)
 }
 ```
 
-###Looping over inputs
+If the port you want to select has a corresponding input port you can also do
 
+```swift
+let outputPort: MIDIOutput? = midi.output(for: inputPort)
+
+let inputPort2?: MIDIOutput? = midi.input(for: outputPort)
+```
+
+###Looping over ports
+
+Port maps are dictionary like collections of MIDIInputs or MIDIOutputs that are indexed with the port's id so you cannot index into them like you would with an array.
 ```swift
 for (id, port) in midi.inputs {
 	print(id, port)
@@ -95,15 +106,20 @@ Represents the MIDI session. See [spec](https://www.w3.org/TR/webmidi/#midiacces
 
 ```swift
 class MIDIAccess {
-	// port maps are dictionary like collections of MIDIInputs or MIDIOutputs that are indexed with the port's id
+
 	var inputs: MIDIInputMap { get }
 	var outputs: MIDIOutputMap { get }
 
-	// will be called if the device associated with a port gets connected or disconnected
+	// will be called if a port changes either connection state or 
 	var onStateChange: ((MIDIPort) -> ())? = nil { get set }
 
 	init()
-
+	
+	/// given an output, tries to find the corresponding input port
+	func input(for port: MIDIOutput) -> MIDIInput?
+	
+	/// given an input, tries to find the corresponding output port
+	func output(for port: MIDIInput) -> MIDIOutput?
 }
 ```
 

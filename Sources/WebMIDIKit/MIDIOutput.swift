@@ -7,13 +7,14 @@
 //
 
 import CoreMIDI
+import AVFoundation
 
 public final class MIDIOutput : MIDIPort {
-  public typealias Timestamp = MIDITimeStamp
 
-  public func send<S: Sequence>(_ data: S, timestamp: Timestamp = 0) where S.Iterator.Element == UInt8 {
+
+  public func send<S: Sequence>(_ data: S, timestamp: Double? = nil) where S.Iterator.Element == UInt8 {
     open()
-    MIDIList(data: data).send(to: self)
+    MIDIList(data: data).send(to: self, timestamp: timestamp)
   }
 
   public func clear() {
@@ -44,4 +45,3 @@ public final class MIDIOutput : MIDIPort {
 //  return endpoint
 //}
 //
-

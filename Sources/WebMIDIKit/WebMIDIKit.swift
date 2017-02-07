@@ -9,23 +9,13 @@
 import CoreMIDI
 import Foundation
 
-public typealias EventHandler<T> = ((T) -> ())?
-
-public protocol EventTarget {
-  associatedtype Event
-  var onStateChange: EventHandler<Event> { get set }
-}
-
-///
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
-public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebugStringConvertible {
-
-  public typealias Event = MIDIPort
+public final class MIDIAccess : CustomStringConvertible, CustomDebugStringConvertible {
 
   public let inputs: MIDIInputMap
   public let outputs: MIDIOutputMap
 
-  public var onStateChange: EventHandler<Event> = nil
+  public var onStateChange: ((MIDIPort) -> ())? = nil
 
   public init() {
     self._client = MIDIClient()
@@ -81,15 +71,17 @@ public final class MIDIAccess : EventTarget, CustomStringConvertible, CustomDebu
     }
   }
 
-//  func input(for port: MIDIOutput) -> MIDIInput? {
-//    return nil
-//  }
-//
-//  func output(for port: MIDIInput) -> MIDIOutput? {
-////    return outputs.first(where: { _ in true })
-//  }
+  /// given an output, tries to find the corresponding input port (non-standard)
+  public func input(for port: MIDIOutput) -> MIDIInput? {
+    return inputs.first { $1.displayName == port.displayName }?.1
+  }
 
+  /// given an input, tries to find the corresponding output port (non-standard)
+  public func output(for port: MIDIInput) -> MIDIOutput? {
+    return outputs.first { $1.displayName == port.displayName }?.1
+  }
 
+  /// Stops and restarts MIDI I/O (non-standard)
   public func restart() {
     MIDIRestart()
   }

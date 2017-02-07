@@ -23,7 +23,3 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
     return MIDIEndpoint(ref: child)
   }
 }
-
-
-
-

@@ -9,7 +9,7 @@
 import CoreMIDI
 
 public final class MIDIInput : MIDIPort {
-  public var onMIDIMessage: EventHandler<MIDIPacket> = nil {
+  public var onMIDIMessage: ((MIDIPacket) -> ())? = nil {
     didSet {
       open()
     }
