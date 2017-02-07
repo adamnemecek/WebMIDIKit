@@ -1,6 +1,6 @@
 # WebMIDIKit: Simplest Swift MIDI library
 
-###__[Want to learn audio synthesis, sound design and making cool sounds in an afternoon? Check out Syntorial!](http://www.syntorial.com/#a_aid=AudioKit)__
+###__[Want to learn audio synthesis, sound design and how to make cool sounds in an afternoon? Check out Syntorial!](http://www.syntorial.com/#a_aid=AudioKit)__
 
 ## About
 
@@ -102,7 +102,7 @@ for (id, port) in midi.inputs {
 
 ## Installation
 
-Use Swift Package Manager. The corresponding .Package into your dependencies.
+Use Swift Package Manager. Add the following `.Package` entry into your dependencies.
 
 ```swift
 import PackageDescription
@@ -126,11 +126,11 @@ Represents the MIDI session. See [spec](https://www.w3.org/TR/webmidi/#midiacces
 
 ```swift
 class MIDIAccess {
-
+	/// collections of MIDIInputs and MIDIOutputs currently connected to the computer
 	var inputs: MIDIInputMap { get }
 	var outputs: MIDIOutputMap { get }
 
-	// will be called if a port changes either connection state or port state
+	/// will be called if a port changes either connection state or port state
 	var onStateChange: ((MIDIPort) -> ())? = nil { get set }
 
 	init()
