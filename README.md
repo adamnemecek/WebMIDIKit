@@ -20,7 +20,7 @@ CoreMIDI is also extremely verbose and error prone. Selecting an input port and 
 
 WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
 
-Also note that WebMIDIKit adds some APIs which aren't a part of the standard. These are marked as non-standard in the code base.
+Also note that WebMIDIKit adds some APIs which aren't a part of the WebMIDI standard. These are marked as non-standard in the code base.
 
 ## Usage
 
@@ -117,7 +117,7 @@ let packet = Package(
 )
 ```
 
- If you are having some build issues look at the sample project [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
+ If you are having any build issues, look at the sample project [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
 
 ## Documentation
 
@@ -139,6 +139,8 @@ class MIDIAccess {
 	func input(for port: MIDIOutput) -> MIDIInput?
 	
 	/// given an input, tries to find the corresponding output port
+	/// if you send data to the output port returned, the corresponding input port
+	/// will receive it (assuming the `onMIDIMessage` is set)
 	func output(for port: MIDIInput) -> MIDIOutput?
 }
 ```
@@ -147,7 +149,7 @@ class MIDIAccess {
 
 See [spec](https://www.w3.org/TR/webmidi/#midiport-interface). Represents the base class of `MIDIInput` and `MIDIOutput`.
 
-Note that you don't construct MIDIPorts nor it's subclasses yourself, you only get them from the `MIDIAccess` object. Also note that you only ever deal with subclasses or `MIDIPort` (`MIDIInput` or `MIDIOutput`) never `MIDIPort` itself directly.
+Note that you don't construct MIDIPorts nor it's subclasses yourself, you only get them from the `MIDIAccess` object. Also note that you only ever deal with subclasses or `MIDIPort` (`MIDIInput` or `MIDIOutput`) never `MIDIPort` itself.
 
 ```swift
 class MIDIPort {
@@ -178,6 +180,8 @@ class MIDIPort {
 ```
 
 ### MIDIInput
+
+Allows for receiving data send to the port.
 
 See [spec](https://www.w3.org/TR/webmidi/#midiinput-interface).
 
