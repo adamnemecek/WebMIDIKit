@@ -65,16 +65,4 @@ extension MIDIPacket : MutableCollection, Equatable, Comparable, Hashable, Expre
   public var description: String {
     return "\(Array(self))"
   }
-
-  public init?<S: Sequence>(seq: S) where S.Iterator.Element == Element {
-    fatalError()
-  }
-
-  var type: UInt8 {
-    return UInt8(data.0 >> 4)
-  }
-
-  public var byte: UInt8 {
-    return data.1
-  }
 }
