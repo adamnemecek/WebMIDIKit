@@ -6,7 +6,7 @@
 
 ### What's MIDI 
 
-[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending and receiving between applications and devices.
+[MIDI](https://en.wikipedia.org/wiki/MIDI) is a standard governing music software and music device interconnectivity. It lets you make music by sending data between applications and devices.
 
 ### What's WebMIDI
 
@@ -16,17 +16,17 @@
 WebMIDIKit is an implementation of the WebMIDI API for macOS/iOS. On these OS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
 CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting (💩^9.329), and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you).
 
-CoreMIDI is also extremely verbose and error prone. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you do it in 1.__ 
+CoreMIDI is also extremely verbose and error prone. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you the same thing in 1.__
 
 WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
 
 Also note that WebMIDIKit adds some APIs which aren't a part of the standard. These are marked as non-standard in the code base.
 
-##Usage
+## Usage
 
-###Check out the [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
+### Check out the [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
 
-###Selecting an input port and receiving MIDI messages
+### Selecting an input port and receiving MIDI messages from it
 
 ```swift
 import WebMIDIKit
@@ -46,7 +46,7 @@ inputPort?.onMIDIMessage = { packet: MIDIPacket) in
 ```
 
 
-###Selecting an output port and sending MIDI packets to it
+### Selecting an output port and sending MIDI packets to it
 ```swift
 /// select an output port
 let outputPort: MIDIOutput? = midi.outputs.prompt()
@@ -83,12 +83,13 @@ If the output port you want to select has a corresponding input port you can als
 let outputPort: MIDIOutput? = midi.output(for: inputPort)
 ```
 
+Similarly, you can find an input port for the output port.
 
 ```swift
 let inputPort2: MIDIInput? = midi.input(for: outputPort)
 ```
 
-###Looping over ports
+### Looping over ports
 
 Port maps are dictionary like collections of `MIDIInputs` or `MIDIOutputs` that are indexed with the port's id. As a result, you cannot index into them like you would into an array (the reason for this being that the endpoints can be added and removed so you cannot reference them by their index).
 ```swift
@@ -120,7 +121,7 @@ let packet = Package(
 
 ## Documentation
 
-###MIDIAccess
+### MIDIAccess
 Represents the MIDI session. See [spec](https://www.w3.org/TR/webmidi/#midiaccess-interface).
 
 ```swift
@@ -148,7 +149,7 @@ See [spec](https://www.w3.org/TR/webmidi/#midiport-interface). Represents the ba
 
 Note that you don't construct MIDIPorts nor it's subclasses yourself, you only get them from the `MIDIAccess` object. Also note that you only ever deal with subclasses or `MIDIPort` (`MIDIInput` or `MIDIOutput`) never `MIDIPort` itself directly.
 
-```
+```swift
 class MIDIPort {
 
 	var id: Int { get }
@@ -198,6 +199,7 @@ class MIDIOutput: MIDIPort {
 	/// send data to port, note that unlike the WebMIDI API, 
 	/// the last parameter specifies offset from now, when the event should be scheduled (as opposed to absolute timestamp)
 	/// the unit remains milliseconds though.
+	/// note that right now, WebMIDIKit doesn't support sending multiple packets in the same call, to send multiple packets, you need on call per packet
 	func send<S: Sequence>(_ data: S, offset: Timestamp = 0) -> MIDIOutput where S.Iterator.Element == UInt8
 	
 	// clear all scheduled but yet undelivered midi events
