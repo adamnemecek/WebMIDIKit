@@ -16,7 +16,7 @@
 WebMIDIKit is an implementation of the WebMIDI API for macOS/iOS. On these OS, the native framework for working with MIDI is [CoreMIDI](https://developer.apple.com/reference/coremidi).
 CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of void pointer casting (💩^9.329), and other unspeakable things. Furthermore, some of the APIs didn't quite survive the transition to Swift and are essentially unusable in Swift (`MIDIPacketList` APIs, I'm looking at you).
 
-CoreMIDI is also extremely verbose and error prone. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you the same thing in 1.__
+CoreMIDI is also extremely verbose and error prone. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you do the same thing in 1.__
 
 WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
 
