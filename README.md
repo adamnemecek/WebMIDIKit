@@ -18,7 +18,7 @@ CoreMIDI is old and the API is entirely in C (💩). Using it involves a lot of 
 
 CoreMIDI is also extremely verbose and error prone. Selecting an input port and receiving data from it is __~80 lines__ of [convoluted Swift code](http://mattg411.com/coremidi-swift-programming/). __WebMIDIKit let's you do the same thing in 1.__
 
-WebMIDIKit is a part of the [AudioKit](https://githib.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
+WebMIDIKit is a part of the [AudioKit](https://github.com/audiokit/audiokit) project and will eventually replace [AudioKit's MIDI implementation](https://github.com/audiokit/AudioKit/tree/master/AudioKit/Common/MIDI).
 
 Also note that WebMIDIKit adds some APIs which aren't a part of the WebMIDI standard. These are marked as non-standard in the code base.
 
