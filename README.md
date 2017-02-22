@@ -39,7 +39,7 @@ let inputPort: MIDIInput? = midi.inputs.prompt()
 
 /// Receiving MIDI events 
 /// set the input port's onMIDIMessage callback which gets called when the port receives MIDI packets
-inputPort?.onMIDIMessage = { packet: MIDIPacket) in 
+inputPort?.onMIDIMessage = { (packet: MIDIPacket) in 
 	print("received \(packet)")
 }
 
