@@ -63,6 +63,10 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
         return port
     }
     
+    public func port(with name: String) -> Value? {
+        return _content.index { $1.displayName == name }.map { self[$0] }?.1
+    }
+    
     /// Prompts the user to select a MIDIPort (non-standard)
     public final func prompt() -> Value? {
         print("Select \(first?.1.type) by typing the associated number")

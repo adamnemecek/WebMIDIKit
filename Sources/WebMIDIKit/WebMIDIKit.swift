@@ -73,12 +73,12 @@ public final class MIDIAccess : CustomStringConvertible, CustomDebugStringConver
 
   /// given an output, tries to find the corresponding input port (non-standard)
   public func input(for port: MIDIOutput) -> MIDIInput? {
-    return inputs.first { $1.displayName == port.displayName }?.1
+    return inputs.port(with: port.displayName)
   }
 
   /// given an input, tries to find the corresponding output port (non-standard)
   public func output(for port: MIDIInput) -> MIDIOutput? {
-    return outputs.first { $1.displayName == port.displayName }?.1
+    return outputs.port(with: port.displayName)
   }
 
   /// Stops and restarts MIDI I/O (non-standard)
