@@ -14,8 +14,10 @@ public final class MIDIOutput : MIDIPort {
   @discardableResult
   public func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
     open()
-    MIDIList(data: data).send(to: self, offset: offset)
-    return self
+    var lst = MIDIPacketList(data)
+    lst.send(to: self, offset: offset)
+
+    return self 
   }
 
   public func clear() {

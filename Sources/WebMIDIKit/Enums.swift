@@ -14,7 +14,7 @@ import enum CoreMIDI.MIDINotificationMessageID
 /// be "input".
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortType)
 
-public enum MIDIPortType : Equatable {
+public enum MIDIPortType : Equatable, CustomStringConvertible {
 
   /// If a MIDIPort is an input port, the type member must be this value.
   case input
@@ -34,6 +34,13 @@ public enum MIDIPortType : Equatable {
       fatalError("Unexpected port type \(type)")
     }
   }
+    
+    public var description: String {
+        switch self {
+        case .input: return "input"
+        case .output: return "output"
+        }
+    }
 }
 
 /// The state of the device.

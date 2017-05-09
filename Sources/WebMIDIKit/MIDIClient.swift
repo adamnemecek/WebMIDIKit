@@ -19,7 +19,17 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   let ref: MIDIClientRef
 
   internal init() {
-    ref = MIDIClientCreateExt {
+    
+    /// on endpoint add/remove
+    func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
+        var ref = MIDIClientRef()
+        MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
+            _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
+        }
+        return ref
+    }
+    
+    ref = MIDIClientCreate {
       NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
     }
   }
@@ -41,16 +51,3 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
   }
 }
 
-fileprivate func MIDIClientCreate(callback: @escaping (UnsafePointer<MIDINotification>) -> ()) -> MIDIClientRef {
-//  guard #available(macOS 10.11, *) else { fatalError("supported only on macos 10.11+") }
-  var ref = MIDIClientRef()
-  MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref, callback)
-  return ref
-}
-
-/// on endpoint add/remove
-fileprivate func MIDIClientCreateExt(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
-  return MIDIClientCreate {
-    _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
-  }
-}

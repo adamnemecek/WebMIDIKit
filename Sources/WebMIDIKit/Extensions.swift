@@ -7,6 +7,7 @@
 //
 
 import enum CoreMIDI.MIDIObjectType
+import Foundation
 
 extension Collection where Index == Int {
   public func index(after i: Index) -> Index {
@@ -41,4 +42,15 @@ extension CustomStringConvertible {
   public var debugDescription: String {
     return "\(self.self)(\(description))"
   }
+}
+
+extension Data {
+    init<T>(encode: T) {
+        var cpy = encode
+        self.init(bytes: &cpy, count: MemoryLayout<T>.size)
+    }
+    
+    func decode<T>() -> T {
+        return withUnsafeBytes { $0.pointee }
+    }
 }
