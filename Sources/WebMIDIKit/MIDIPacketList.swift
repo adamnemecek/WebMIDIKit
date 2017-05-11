@@ -28,4 +28,23 @@
         /// objects and have them all receive the same messages
         MIDIReceived(output.endpoint.ref, &self)
     }
+
+    init<S: Sequence>(_ data: S) where S.Iterator.Element == UInt8 {
+        self.init(packet: MIDIPacket(Array(data)))
+    }
+
+    init(packet: MIDIPacket) {
+        self.init(numPackets: 1, packet: packet)
+    }
+ }
+
+ extension MIDIPacket {
+    init(_ data: [UInt8]) {
+        self.init()
+        self.timeStamp = 0
+        self.length = UInt16(data.count)
+        _ = withUnsafeMutableBytes(of: &self.data) {
+            memcpy($0.baseAddress, data, data.count)
+        }
+    }
  }

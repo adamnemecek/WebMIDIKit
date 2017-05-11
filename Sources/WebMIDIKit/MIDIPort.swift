@@ -82,7 +82,6 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
         onStateChange?(self)
     }
 
-
     /// Closes the port.
     public final func close() {
         guard connection != .closed else { return }
