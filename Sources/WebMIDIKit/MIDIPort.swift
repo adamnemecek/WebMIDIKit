@@ -76,7 +76,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
             MIDIPortConnectSource(ref, endpoint.ref, nil)
 
         case .output:
-            ref = MIDIOutputPortRefCreate(ref: client.ref)
+            ref = MIDIOutputPortCreate(ref: client.ref)
         }
 
         onStateChange?(self)
@@ -146,7 +146,7 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MI
     return port
 }
 
-fileprivate func MIDIOutputPortRefCreate(ref: MIDIClientRef) -> MIDIPortRef {
+fileprivate func MIDIOutputPortCreate(ref: MIDIClientRef) -> MIDIPortRef {
     var port = MIDIPortRef()
     MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
     return port

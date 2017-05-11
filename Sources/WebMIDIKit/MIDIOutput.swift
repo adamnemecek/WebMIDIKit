@@ -7,7 +7,6 @@
 //
 
 import CoreMIDI
-import AVFoundation
 
 public final class MIDIOutput : MIDIPort {
 
