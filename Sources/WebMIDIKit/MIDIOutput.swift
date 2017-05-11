@@ -11,22 +11,22 @@ import AVFoundation
 
 public final class MIDIOutput : MIDIPort {
 
-  @discardableResult
-  public func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
-    open()
-    var lst = MIDIPacketList(data)
-    lst.send(to: self, offset: offset)
+    @discardableResult
+    public func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
+        open()
+        var lst = MIDIPacketList(data)
+        lst.send(to: self, offset: offset)
 
-    return self 
-  }
+        return self
+    }
 
-  public func clear() {
-    endpoint.flush()
-  }
+    public func clear() {
+        endpoint.flush()
+    }
 
-//  internal convenience init(virtual client: MIDIClient, block: @escaping MIDIReadBlock) {
-//    self.init(client: client, endpoint: VirtualMIDIDestination(client: client, block: block))
-//  }
+    //  internal convenience init(virtual client: MIDIClient, block: @escaping MIDIReadBlock) {
+    //    self.init(client: client, endpoint: VirtualMIDIDestination(client: client, block: block))
+    //  }
 }
 //
 //fileprivate final class VirtualMIDIDestination: VirtualMIDIEndpoint {

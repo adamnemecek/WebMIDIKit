@@ -49,7 +49,7 @@ extension Data {
         var cpy = encode
         self.init(bytes: &cpy, count: MemoryLayout<T>.size)
     }
-    
+
     func decode<T>() -> T {
         return withUnsafeBytes { $0.pointee }
     }

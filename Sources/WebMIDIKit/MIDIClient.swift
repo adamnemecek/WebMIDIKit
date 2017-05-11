@@ -17,9 +17,9 @@ internal extension Notification.Name {
 /// besides being passed around. Also dispatches notifications.
 internal final class MIDIClient : Equatable, Comparable, Hashable {
     let ref: MIDIClientRef
-    
+
     internal init() {
-        
+
         /// on endpoint add/remove
         func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
             var ref = MIDIClientRef()
@@ -28,24 +28,24 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
             }
             return ref
         }
-        
+
         ref = MIDIClientCreate {
             NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
         }
     }
-    
+
     deinit {
         MIDIClientDispose(ref)
     }
-    
+
     var hashValue: Int {
         return ref.hashValue
     }
-    
+
     static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref == rhs.ref
     }
-    
+
     static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref < rhs.ref
     }

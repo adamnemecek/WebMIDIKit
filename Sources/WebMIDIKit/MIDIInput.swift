@@ -9,16 +9,16 @@
 import CoreMIDI
 
 public final class MIDIInput : MIDIPort {
-  public var onMIDIMessage: ((MIDIPacket) -> ())? = nil {
-    didSet {
-      open()
+    public var onMIDIMessage: ((MIDIPacket) -> ())? = nil {
+        didSet {
+            open()
+        }
     }
-  }
 
-//
-//  convenience internal init(virtual client: MIDIClient) {
-//    self.init(client: client, endpoint: VirtualMIDISource(client: client))
-//  }
+    //
+    //  convenience internal init(virtual client: MIDIClient) {
+    //    self.init(client: client, endpoint: VirtualMIDISource(client: client))
+    //  }
 }
 
 ///// source != input, source is a hw (or virtual) port, input is connected port

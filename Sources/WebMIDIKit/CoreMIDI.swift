@@ -18,11 +18,11 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
             return nil
         }
     }
-    
+
     public var description: String {
         return "message\(messageID)"
     }
-    
+
     internal var endpoint: MIDIEndpoint {
         assert(MIDIPortType(childType) == MIDIEndpoint(ref: child).type)
         return MIDIEndpoint(ref: child)
@@ -53,12 +53,12 @@ extension MIDIPacketList {
 extension UnsafeMutablePointer where Pointee == MIDIPacketList {
     init(packets: [MIDIPacket]) {
         let capacity = 1024
-        
+
         let _self = malloc(capacity)!.assumingMemoryBound(to: MIDIPacketList.self)
         self = _self
-        
+
         var current = MIDIPacketListInit(self)
-        
+
         for var p in packets {
             withUnsafeBytes(of: &p.data) {
                 current = MIDIPacketListAdd(_self,
@@ -71,7 +71,7 @@ extension UnsafeMutablePointer where Pointee == MIDIPacketList {
         }
         assert(Int(pointee.numPackets) == packets.count)
     }
-    
+
     //    func send(to output: MIDIOutput, offset: MIDITimeStamp? = nil) -> UnsafeMutablePointer<MIDIPacketList> {
     //        _ = offset.map {
     //            pointee.packet.timeStamp = AudioGetCurrentMIDITimeStamp(offset: $0)
@@ -125,12 +125,12 @@ extension MIDIPacket {
     //
     //        var lst = MIDIPacketList(capacity: capacity)
     //        let head = MIDIPacketListInit(&lst)
-    //        
+    //
     //        var d = data
     //        self = d.withUnsafeMutableBytes {
     //            MIDIPacketListAdd(&lst, capacity, head, timestamp, data.count, $0).pointee
     //        }
-    //        
+    //
     //        timeStamp = timestamp
     //        length = UInt16(capacity)
     //    }
