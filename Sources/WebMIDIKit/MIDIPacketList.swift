@@ -1,14 +1,14 @@
- //
- //  MIDIPacketList.swift
- //  WebMIDIKit
- //
- //  Created by Adam Nemecek on 2/3/17.
- //
- //
+//
+//  MIDIPacketList.swift
+//  WebMIDIKit
+//
+//  Created by Adam Nemecek on 2/3/17.
+//
+//
 
- import AVFoundation
+import AVFoundation
 
- extension MIDIPacketList {
+extension MIDIPacketList {
     /// this needs to be mutating since we are potentionally changint the timestamp
     /// we cannot make a copy since that woulnd't copy the whole list
     mutating
@@ -36,9 +36,9 @@
     init(packet: MIDIPacket) {
         self.init(numPackets: 1, packet: packet)
     }
- }
+}
 
- extension MIDIPacket {
+extension MIDIPacket {
     init(_ data: [UInt8]) {
         self.init()
         self.timeStamp = 0
@@ -47,5 +47,4 @@
             memcpy($0.baseAddress, data, data.count)
         }
     }
-
- }
+}

@@ -84,7 +84,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
 func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
     var string: Unmanaged<CFString>? = nil
     MIDIObjectGetStringProperty(ref, property, &string)
-    return (string?.takeRetainedValue())! as String
+    return (string?.takeRetainedValue()) as String? ?? "<virtual>"
 }
 
 
