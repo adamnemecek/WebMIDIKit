@@ -55,7 +55,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     }
 
     final var type: MIDIPortType {
-        return MIDIPortType(_objectType)
+        return MIDIPortType(MIDIObjectGetType(id: id))
     }
 
     final var version: Int {
@@ -72,24 +72,36 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     }
 
     final private subscript(string property: CFString) -> String {
-        @inline(__always)
-        get {
-            var string: Unmanaged<CFString>? = nil
-            MIDIObjectGetStringProperty(ref, property, &string)
-            return (string?.takeRetainedValue())! as String
-        }
+        return MIDIObjectGetStringProperty(ref: ref, property: property)
     }
 
     final private subscript(int property: CFString) -> Int {
-        @inline(__always)
-        get {
-            var val: Int32 = 0
-            MIDIObjectGetIntegerProperty(ref, property, &val)
-            return Int(val)
-        }
+        return MIDIObjectGetIntProperty(ref: ref, property: property)
     }
 }
 
+@inline(__always) fileprivate
+func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
+    var string: Unmanaged<CFString>? = nil
+    MIDIObjectGetStringProperty(ref, property, &string)
+    return (string?.takeRetainedValue())! as String
+}
+
+
+@inline(__always) fileprivate
+func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
+    var val: Int32 = 0
+    MIDIObjectGetIntegerProperty(ref, property, &val)
+    return Int(val)
+}
+
+@inline(__always) fileprivate
+func MIDIObjectGetType(id: Int) -> MIDIObjectType {
+    var ref: MIDIObjectRef = 0
+    var type: MIDIObjectType = .other
+    MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)
+    return type
+}
 
 internal class VirtualMIDIEndpoint: MIDIEndpoint {
     deinit {
