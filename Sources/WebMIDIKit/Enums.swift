@@ -72,13 +72,6 @@ public enum MIDIPortConnectionState : Equatable {
     /// default state of the device.
     case closed
 
-    /// The device that MIDIPort represents has been opened (either implicitly or
-    /// explicitly), but the device has subsequently been disconnected and is
-    /// unavailable for use. If the device is reconnected, prior to sending a
-    /// statechange event, the system should attempt to reopen the device
-    /// (following the algorithm to open a MIDIPort); this will result in either
-    /// the connection state transitioning to "open" or to "closed".
-    case pending
 }
 
 internal enum MIDIEndpointNotificationType {

@@ -47,13 +47,6 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
         return self[string: kMIDIPropertyDisplayName]
     }
 
-    private var _objectType : MIDIObjectType {
-        var ref: MIDIObjectRef = 0
-        var type: MIDIObjectType = .other
-        MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)
-        return type
-    }
-
     final var type: MIDIPortType {
         return MIDIPortType(MIDIObjectGetType(id: id))
     }
@@ -84,7 +77,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
 func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
     var string: Unmanaged<CFString>? = nil
     MIDIObjectGetStringProperty(ref, property, &string)
-    return (string?.takeRetainedValue()) as String? ?? "<virtual>"
+    return (string?.takeRetainedValue()) as String? ?? ""
 }
 
 

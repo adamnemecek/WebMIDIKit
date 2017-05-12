@@ -69,7 +69,8 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
 
     /// Prompts the user to select a MIDIPort (non-standard)
     public final func prompt() -> Value? {
-        print("Select \(first?.1.type) by typing the associated number")
+        guard let type = first?.1.type else { print("No ports found"); return nil }
+        print("Select \(type) by typing the associated number")
         let ports = map { $0.1 }
 
         for (i, port) in ports.enumerated() {

@@ -128,20 +128,12 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
 
 fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIPacket) -> ()) -> MIDIPortRef {
-    //  guard #available(macOS 10.11, *) else { fatalError("supported only on macos 10.11+") }
     var port = MIDIPortRef()
     MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
 
         assert(lst.pointee.numPackets == 1)
         readmidi(lst.pointee.packet)
-        //        var fst = UnsafeRawPointer(lst).advanced(by: MemoryLayout<UInt32>.size)
-        //                                       .assumingMemoryBound(to: MIDIPacket.self)
-        //
-        //        for _ in 0..<lst.pointee.numPackets {
-        //            readmidi(fst.pointee)
-        //            fst = UnsafePointer(MIDIPacketNext(fst))
-        //        }
     }
     return port
 }

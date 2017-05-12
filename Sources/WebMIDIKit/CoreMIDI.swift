@@ -34,16 +34,3 @@ func AudioGetCurrentMIDITimeStamp(offset: Double = 0) -> MIDITimeStamp {
     let _offset = AudioConvertNanosToHostTime(UInt64(offset * 1000000))
     return AudioGetCurrentHostTime() + _offset
 }
-
-extension MIDIPacket : CustomStringConvertible {
-    var _data : Data {
-        var cpy = self
-        return withUnsafeBytes(of: &cpy.data) {
-            Data(bytes: $0.baseAddress!, count: Int(cpy.length))
-        }
-    }
-
-    public var description : String {
-        return "MIDIPacket(timestamp: \(timeStamp), \(_data))"
-    }
-}
