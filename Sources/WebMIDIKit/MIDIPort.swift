@@ -131,9 +131,8 @@ fileprivate func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MI
     var port = MIDIPortRef()
     MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
-
-        assert(lst.pointee.numPackets == 1)
-        readmidi(lst.pointee.packet)
+        let count = Int(lst.pointee.numPackets)
+        _ = sequence(first: lst) { UnsafePointer($0) }.prefix(count).map { readmidi($0.pointee.packet) }
     }
     return port
 }
