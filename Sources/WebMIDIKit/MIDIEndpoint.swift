@@ -104,8 +104,3 @@ internal class VirtualMIDIEndpoint: MIDIEndpoint {
     }
 }
 
-//
-// todo: mikmidi strips out control characters (check out their implementation of this)
-//
-
-
