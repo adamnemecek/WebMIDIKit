@@ -41,7 +41,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
         return dump(_content).description
     }
 
-
     public func port(with name: String) -> Value? {
         return _content.index { $1.displayName == name }.map { self[$0] }?.1
     }
@@ -61,15 +60,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
         return ports[safe: choice]
     }
 
-    //
-    internal init(client: MIDIClient, ports: [Value]) {
-        self._client = client
-        self._content = [:]
-        ports.forEach {
-            self[$0.id] = $0
-        }
-    }
-
     internal final func add(_ port: Value) -> Value? {
         assert(self[port.id] == nil)
         self[port.id] = port
@@ -82,6 +72,15 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
         assert(port.state == .connected)
         self[port.id] = nil
         return port
+    }
+
+    //
+    fileprivate init(client: MIDIClient, ports: [Value]) {
+        self._client = client
+        self._content = [:]
+        ports.forEach {
+            self[$0.id] = $0
+        }
     }
 
     //
