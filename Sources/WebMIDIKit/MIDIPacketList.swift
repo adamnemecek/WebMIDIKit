@@ -14,6 +14,7 @@ extension MIDIPacketList {
     internal mutating func send(to output: MIDIOutput, offset: Double? = nil) {
 
         _ = offset.map {
+
             let current = AudioGetCurrentHostTime()
             let _offset = AudioConvertNanosToHostTime(UInt64($0 * 1000000))
 
@@ -38,6 +39,29 @@ extension MIDIPacketList {
     }
 }
 
+extension UnsafeMutableRawBufferPointer {
+    mutating
+    func copyBytes<S: Sequence>(from data: S) -> Int where S.Iterator.Element == UInt8 {
+        var copied = 0
+        for (i, byte) in data.enumerated() {
+            storeBytes(of: byte, toByteOffset: i, as: UInt8.self)
+            copied += 1
+        }
+        return copied
+    }
+}
+
+extension UnsafeMutableBufferPointer where Element == UInt8 {
+    init(packet : UnsafeMutablePointer<MIDIPacket>) {
+//        self  = withUnsafeMutableBytes(of: &packet.pointee.data) {
+//            Unsafe
+//            UnsafeMutableBufferPointer(start: $0, count: Int(packet.pointee.length))
+//        }
+        fatalError()
+    }
+}
+
+// packet == UnsafeMutableBufferPointer<UInt8>
 extension MIDIPacket  {
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {
         self.init()
