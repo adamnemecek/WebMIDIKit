@@ -22,12 +22,12 @@ extension MIDIPacketList {
             packet.timeStamp = ts
         }
 
-        MIDISend(output.ref, output.endpoint.ref, &self)
+        OSAssert(MIDISend(output.ref, output.endpoint.ref, &self))
         /// this let's us propagate the events to everyone subscribed to this
         /// endpoint not just this port, i'm not sure if we actually want this
         /// but for now, it let's us create multiple ports from different MIDIAccess
         /// objects and have them all receive the same messages
-        MIDIReceived(output.endpoint.ref, &self)
+        OSAssert(MIDIReceived(output.endpoint.ref, &self))
     }
 
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {

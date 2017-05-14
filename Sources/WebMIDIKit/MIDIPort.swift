@@ -73,7 +73,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
                 `self`.onMIDIMessage?($0)
             }
 
-            MIDIPortConnectSource(ref, endpoint.ref, nil)
+            OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
 
         case .output:
             ref = MIDIOutputPortCreate(ref: client.ref)
@@ -88,7 +88,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
 
         switch type {
         case .input:
-            MIDIPortDisconnectSource(ref, endpoint.ref)
+            OSAssert(MIDIPortDisconnectSource(ref, endpoint.ref))
         case .output:
             endpoint.flush()
         }
@@ -126,24 +126,28 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     }
 }
 
+func sequence(first: UnsafePointer<MIDIPacketList>) -> AnySequence<MIDIEvent> {
+    let count = Int(first.pointee.numPackets)
+    fatalError()
+//    return sequence(first: first) { _ in
+////        UnsafePointer($0)
+//        fatalError()
+//    }.prefix(count)
+}
 
 @inline(__always) fileprivate
 func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
     var port = MIDIPortRef()
-    MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
-        let count = Int(lst.pointee.numPackets)
-        
-        _ = sequence(first: lst) { UnsafePointer($0) }.prefix(count).map {
-            readmidi($0.pointee.packet)
-        }
-    }
+        sequence(first: lst).forEach(readmidi)
+    })
     return port
 }
 
 @inline(__always) fileprivate
 func MIDIOutputPortCreate(ref: MIDIClientRef) -> MIDIPortRef {
     var port = MIDIPortRef()
-    MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
+    OSAssert(MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port))
     return port
 }

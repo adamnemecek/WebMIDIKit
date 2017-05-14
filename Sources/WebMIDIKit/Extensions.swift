@@ -39,25 +39,3 @@ extension CustomStringConvertible {
     }
 }
 
-extension Data {
-    init<T>(encode: T) {
-        var cpy = encode
-        self.init(bytes: &cpy, count: MemoryLayout<T>.size)
-    }
-
-    func decode<T>() -> T {
-        return withUnsafeBytes { $0.pointee }
-    }
-}
-
-//extension UnsafeMutableRawBufferPointer {
-//    mutating
-//    func copyBytes<S: Sequence>(from data: S) -> Int where S.Iterator.Element == UInt8 {
-//        var copied = 0
-//        for (i, byte) in data.enumerated() {
-//            storeBytes(of: byte, toByteOffset: i, as: UInt8.self)
-//            copied += 1
-//        }
-//        return copied
-//    }
-//}

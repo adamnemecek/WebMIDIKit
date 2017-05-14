@@ -25,7 +25,7 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
     }
 
     deinit {
-        MIDIClientDispose(ref)
+        OSAssert(MIDIClientDispose(ref))
     }
 
     var hashValue: Int {
@@ -41,12 +41,12 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
     }
 }
 
-/// on endpoint add/remove
+/// called when an endpoint is added or remove
 @inline(__always) fileprivate
 func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
     var ref = MIDIClientRef()
-    MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
+    OSAssert(MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
         _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
-    }
+    })
     return ref
 }

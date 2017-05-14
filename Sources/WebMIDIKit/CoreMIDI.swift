@@ -30,8 +30,13 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
     }
 }
 
-@inline(__always)
+@inline(__always) internal
 func AudioGetCurrentMIDITimeStamp(offset: Double = 0) -> MIDITimeStamp {
     let _offset = AudioConvertNanosToHostTime(UInt64(offset * 1000000))
     return AudioGetCurrentHostTime() + _offset
+}
+
+@inline(__always) internal
+func OSAssert(_ err: OSStatus, function: String = #function) {
+    assert(err == noErr, "Error (osstatus: \(err)) in \(function)")
 }

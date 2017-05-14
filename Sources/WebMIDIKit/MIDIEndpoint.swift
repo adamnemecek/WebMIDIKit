@@ -61,7 +61,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     }
 
     final func flush() {
-        MIDIFlushOutput(ref)
+        OSAssert(MIDIFlushOutput(ref))
     }
 
     final private subscript(string property: CFString) -> String {
@@ -76,7 +76,7 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
 @inline(__always) fileprivate
 func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
     var string: Unmanaged<CFString>? = nil
-    MIDIObjectGetStringProperty(ref, property, &string)
+    OSAssert(MIDIObjectGetStringProperty(ref, property, &string))
     return (string?.takeRetainedValue()) as String? ?? ""
 }
 
@@ -84,7 +84,7 @@ func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> Stri
 @inline(__always) fileprivate
 func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
     var val: Int32 = 0
-    MIDIObjectGetIntegerProperty(ref, property, &val)
+    OSAssert(MIDIObjectGetIntegerProperty(ref, property, &val))
     return Int(val)
 }
 
@@ -92,7 +92,7 @@ func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
 func MIDIObjectGetType(id: Int) -> MIDIObjectType {
     var ref: MIDIObjectRef = 0
     var type: MIDIObjectType = .other
-    MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type)
+    OSAssert(MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type))
     return type
 }
 
@@ -100,7 +100,7 @@ internal class VirtualMIDIEndpoint: MIDIEndpoint {
     deinit {
         /// note that only virtual endpoints (i.e. created with MIDISourceCreate
         /// or MIDIDestinationCreate need to be disposed)
-        MIDIEndpointDispose(ref)
+        OSAssert(MIDIEndpointDispose(ref))
     }
 }
 
