@@ -11,7 +11,6 @@ import Foundation
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
 
-
     public var description: String {
         return "message\(messageID)"
     }

@@ -38,14 +38,6 @@ extension MIDIPacketList {
     }
 }
 
-extension Data {
-    fileprivate var bytes : UnsafeRawPointer {
-        return (self as NSData).bytes
-    }
-}
-
-
-
 extension MIDIPacket  {
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {
         self.init()
