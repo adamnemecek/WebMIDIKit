@@ -71,7 +71,6 @@ public enum MIDIPortConnectionState : Equatable {
     /// an input port, or calling send() on an output port, this should be the
     /// default state of the device.
     case closed
-
 }
 
 internal enum MIDIEndpointNotificationType {

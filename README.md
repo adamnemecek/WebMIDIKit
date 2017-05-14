@@ -164,11 +164,11 @@ class MIDIPort {
 
 	var version: Int { get }
 
-	/// .connected or .disconnected,
+	/// .connected | .disconnected,
 	/// indicates if the port's endpoint is connected or not
 	var state: MIDIPortDeviceState { get }
 
-	/// .open, .closed (or pending but that's not used in WebMIDIKit)
+	/// .open | .closed
 	var connection: MIDIPortConnectionState { get }
 
 	/// open the port, is called implicitly when MIDIInput's onMIDIMessage is set or MIDIOutputs' send is called

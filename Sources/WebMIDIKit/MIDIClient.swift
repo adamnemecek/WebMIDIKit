@@ -19,16 +19,6 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
     let ref: MIDIClientRef
 
     internal init() {
-
-        /// on endpoint add/remove
-        func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
-            var ref = MIDIClientRef()
-            MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
-                _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
-            }
-            return ref
-        }
-
         ref = MIDIClientCreate {
             NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
         }
@@ -51,3 +41,12 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
     }
 }
 
+/// on endpoint add/remove
+@inline(__always) fileprivate
+func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
+    var ref = MIDIClientRef()
+    MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
+        _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
+    }
+    return ref
+}

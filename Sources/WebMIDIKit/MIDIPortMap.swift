@@ -41,6 +41,27 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
         return dump(_content).description
     }
 
+
+    public func port(with name: String) -> Value? {
+        return _content.index { $1.displayName == name }.map { self[$0] }?.1
+    }
+
+    /// Prompts the user to select a MIDIPort (non-standard)
+    public final func prompt() -> Value? {
+        guard let type = first?.1.type else { print("No ports found"); return nil }
+        print("Select \(type) by typing the associated number")
+        let ports = map { $0.1 }
+
+        for (i, port) in ports.enumerated() {
+            print("  #\(i) = \(port)")
+        }
+
+        print("Select: ", terminator: "")
+        guard let choice = (readLine().flatMap { Int($0) }) else { return nil }
+        return ports[safe: choice]
+    }
+
+    //
     internal init(client: MIDIClient, ports: [Value]) {
         self._client = client
         self._content = [:]
@@ -63,25 +84,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
         return port
     }
 
-    public func port(with name: String) -> Value? {
-        return _content.index { $1.displayName == name }.map { self[$0] }?.1
-    }
-
-    /// Prompts the user to select a MIDIPort (non-standard)
-    public final func prompt() -> Value? {
-        guard let type = first?.1.type else { print("No ports found"); return nil }
-        print("Select \(type) by typing the associated number")
-        let ports = map { $0.1 }
-
-        for (i, port) in ports.enumerated() {
-            print("  #\(i) = \(port)")
-        }
-
-        print("Select: ", terminator: "")
-        guard let choice = (readLine().flatMap { Int($0) }) else { return nil }
-        return ports[safe: choice]
-    }
-
     //
     // todo should this be doing key, value?
     //
@@ -96,11 +98,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
 public final class MIDIInputMap : MIDIPortMap<MIDIInput> {
     internal init(client: MIDIClient) {
 
-        func MIDISources() -> [MIDIEndpoint] {
-            return (0..<MIDIGetNumberOfSources()).map {
-                MIDIEndpoint(ref: MIDIGetSource($0))
-            }
-        }
         let inputs = MIDISources().map { MIDIInput(client: client, endpoint: $0) }
         super.init(client: client, ports: inputs)
     }
@@ -112,11 +109,7 @@ public final class MIDIInputMap : MIDIPortMap<MIDIInput> {
 
 public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     internal init(client: MIDIClient) {
-        func MIDIDestinations() -> [MIDIEndpoint] {
-            return (0..<MIDIGetNumberOfDestinations()).map {
-                MIDIEndpoint(ref: MIDIGetDestination($0))
-            }
-        }
+
         let outputs = MIDIDestinations().map { MIDIOutput(client: client, endpoint: $0) }
         super.init(client: client, ports: outputs)
     }
@@ -127,4 +120,16 @@ public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
 }
 
 
+@inline(__always) fileprivate
+func MIDISources() -> [MIDIEndpoint] {
+    return (0..<MIDIGetNumberOfSources()).map {
+        MIDIEndpoint(ref: MIDIGetSource($0))
+    }
+}
 
+@inline(__always) fileprivate
+func MIDIDestinations() -> [MIDIEndpoint] {
+    return (0..<MIDIGetNumberOfDestinations()).map {
+        MIDIEndpoint(ref: MIDIGetDestination($0))
+    }
+}

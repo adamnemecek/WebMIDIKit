@@ -19,16 +19,16 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
         self.ref = ref
     }
 
-    final var hashValue: Int {
-        return id
-    }
-
     static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
         return lhs.id == rhs.id
     }
 
     static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
         return lhs.id < rhs.id
+    }
+
+    final var hashValue: Int {
+        return id
     }
 
     final var id: Int {

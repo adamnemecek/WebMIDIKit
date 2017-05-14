@@ -98,16 +98,16 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
         onStateChange = nil
     }
 
-    public final var hashValue: Int {
-        return endpoint.hashValue
-    }
-
     public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.endpoint == rhs.endpoint
     }
 
     public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.endpoint < rhs.endpoint
+    }
+
+    public final var hashValue: Int {
+        return endpoint.hashValue
     }
 
     public final var description: String {

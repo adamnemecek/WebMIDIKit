@@ -10,14 +10,7 @@ import AudioToolbox
 import Foundation
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
-    internal init?(ptr: UnsafePointer<MIDINotification>) {
-        switch ptr.pointee.messageID {
-        case .msgObjectAdded, .msgObjectRemoved:
-            self = UnsafeRawPointer(ptr).assumingMemoryBound(to: MIDIObjectAddRemoveNotification.self).pointee
-        default:
-            return nil
-        }
-    }
+
 
     public var description: String {
         return "message\(messageID)"
@@ -26,6 +19,15 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
     internal var endpoint: MIDIEndpoint {
         assert(MIDIPortType(childType) == MIDIEndpoint(ref: child).type)
         return MIDIEndpoint(ref: child)
+    }
+
+    internal init?(ptr: UnsafePointer<MIDINotification>) {
+        switch ptr.pointee.messageID {
+        case .msgObjectAdded, .msgObjectRemoved:
+            self = UnsafeRawPointer(ptr).assumingMemoryBound(to: MIDIObjectAddRemoveNotification.self).pointee
+        default:
+            return nil
+        }
     }
 }
 

@@ -28,11 +28,11 @@ extension MIDIPacketList {
         MIDIReceived(output.endpoint.ref, &self)
     }
 
-    init<S: Sequence>(_ data: S) where S.Iterator.Element == UInt8 {
+    internal init<S: Sequence>(_ data: S) where S.Iterator.Element == UInt8 {
         self.init(packet: MIDIPacket(Array(data)))
     }
 
-    init(packet: MIDIPacket) {
+    internal init(packet: MIDIPacket) {
         self.init(numPackets: 1, packet: packet)
     }
 }
@@ -44,7 +44,7 @@ extension Data {
 }
 
 extension MIDIPacket {
-    init(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
+    internal init(_ data: [UInt8], timestamp: MIDITimeStamp = 0) {
         self.init()
         self.timeStamp = timestamp
         self.length = UInt16(data.count)
@@ -53,7 +53,7 @@ extension MIDIPacket {
         }
     }
 
-    init(_ data: Data, timestamp: MIDITimeStamp = 0) {
+    internal init(_ data: Data, timestamp: MIDITimeStamp = 0) {
         self.init()
         self.timeStamp = timestamp
         self.length = UInt16(data.count)
