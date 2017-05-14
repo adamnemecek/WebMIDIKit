@@ -9,11 +9,6 @@
 import enum CoreMIDI.MIDIObjectType
 import Foundation
 
-extension Collection where Index == Int {
-    public func index(after i: Index) -> Index {
-        return i + 1
-    }
-}
 
 extension Collection {
     subscript (safe index: Index) -> Iterator.Element? {
