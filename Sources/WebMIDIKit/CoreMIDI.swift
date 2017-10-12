@@ -6,7 +6,6 @@
 //
 //
 
-import Foundation
 import AudioToolbox
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {

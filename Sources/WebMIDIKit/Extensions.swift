@@ -7,8 +7,6 @@
 //
 
 import enum CoreMIDI.MIDIObjectType
-import Foundation
-
 
 extension Collection {
     subscript (safe index: Index) -> Iterator.Element? {
