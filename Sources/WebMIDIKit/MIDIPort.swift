@@ -126,22 +126,39 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
     }
 }
 
-func sequence(first: UnsafePointer<MIDIPacketList>) -> AnySequence<MIDIEvent> {
-    let count = Int(first.pointee.numPackets)
-    fatalError()
-//    return sequence(first: first) { _ in
-////        UnsafePointer($0)
-//        fatalError()
-//    }.prefix(count)
-}
+//func sequence(first: UnsafePointer<MIDIPacketList>) -> AnyIterator<MIDIEvent> {
+//    var ptr = first
+//    let count = Int(first.pointee.numPackets)
+//
+//    return AnyIterator {
+//        nil
+//    }
+//    fatalError()
+////    return sequence(first: first) { _ in
+//////        UnsafePointer($0)
+////        fatalError()
+////    }.prefix(count)
+//}
+////
+////@inline(__always) fileprivate
+////func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
+////    var port = MIDIPortRef()
+////    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+////        lst, srcconref in
+////        sequence(first: lst).forEach(readmidi)
+////    })
+////    return port
+////}
+
+
 
 @inline(__always) fileprivate
 func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
     var port = MIDIPortRef()
-    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+    MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
-        sequence(first: lst).forEach(readmidi)
-    })
+        lst.pointee.forEach(readmidi)
+    }
     return port
 }
 

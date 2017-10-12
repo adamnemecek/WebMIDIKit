@@ -70,3 +70,26 @@ extension MIDIPacket  {
         timeStamp = timestamp
     }
 }
+
+extension MIDIPacketList: Sequence {
+    public typealias Element = MIDIEvent
+
+    public func makeIterator() -> AnyIterator<Element> {
+        var p: MIDIPacket = packet
+        var idx: UInt32 = 0
+
+        return AnyIterator {
+            guard idx < self.numPackets else {
+                return nil
+            }
+            defer {
+                p = MIDIPacketNext(&p).pointee
+                idx += 1
+            }
+            return withUnsafeBytes(of: &p.data) {
+                let data = Data(bytes: $0.baseAddress!, count : Int(self.numPackets))
+                return MIDIEvent(timestamp: p.timeStamp, data: data)
+            }
+        }
+    }
+}
