@@ -42,7 +42,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     }
 
     public func port(with name: String) -> Value? {
-        return _content.index { $1.displayName == name }.map { self[$0] }?.1
+        return _content.first { $0.value.displayName == name }?.value
     }
 
     /// Prompts the user to select a MIDIPort (non-standard)
