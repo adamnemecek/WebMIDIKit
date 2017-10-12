@@ -120,13 +120,13 @@ public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
 @inline(__always) fileprivate
 func MIDISources() -> [MIDIEndpoint] {
     return (0..<MIDIGetNumberOfSources()).map {
-        MIDIEndpoint(ref: MIDIGetSource($0))
+        .init(ref: MIDIGetSource($0))
     }
 }
 
 @inline(__always) fileprivate
 func MIDIDestinations() -> [MIDIEndpoint] {
     return (0..<MIDIGetNumberOfDestinations()).map {
-        MIDIEndpoint(ref: MIDIGetDestination($0))
+        .init(ref: MIDIGetDestination($0))
     }
 }

@@ -51,15 +51,15 @@ extension UnsafeMutableRawBufferPointer {
     }
 }
 
-extension UnsafeMutableBufferPointer where Element == UInt8 {
-    init(packet : UnsafeMutablePointer<MIDIPacket>) {
-//        self  = withUnsafeMutableBytes(of: &packet.pointee.data) {
-//            Unsafe
-//            UnsafeMutableBufferPointer(start: $0, count: Int(packet.pointee.length))
-//        }
-        fatalError()
-    }
-}
+//extension UnsafeMutableBufferPointer where Element == UInt8 {
+//    init(packet : UnsafeMutablePointer<MIDIPacket>) {
+////        self  = withUnsafeMutableBytes(of: &packet.pointee.data) {
+////            Unsafe
+////            UnsafeMutableBufferPointer(start: $0, count: Int(packet.pointee.length))
+////        }
+//        fatalError()
+//    }
+//}
 
 // packet == UnsafeMutableBufferPointer<UInt8>
 extension MIDIPacket  {
