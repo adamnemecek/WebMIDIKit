@@ -73,7 +73,7 @@ outputPort.map {
 
 	/// in WebMIDIKit, you can also chain these
 	$0.send(noteOn)
-	  .send(NoteOff, offset: 1000)
+	  .send(noteOff, offset: 1000)
 }
 ```
 
