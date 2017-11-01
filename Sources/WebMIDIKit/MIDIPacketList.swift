@@ -39,7 +39,8 @@ extension MIDIPacketList {
     }
 }
 
-extension MIDIPacket  {
+extension MIDIPacket {
+    @inline(__always)
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {
         self.init()
 
@@ -48,9 +49,7 @@ extension MIDIPacket  {
         var d = Data(data)
         length = UInt16(d.count)
 
-
         /// write out bytes to data
-
         withUnsafeMutableBytes(of: &self.data) {
             d.copyBytes(to: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count: d.count)
         }
@@ -60,7 +59,7 @@ extension MIDIPacket  {
 }
 
 extension Data {
-//    @inline(__always)
+    @inline(__always)
     init(packet p: inout MIDIPacket) {
         self = Swift.withUnsafeBytes(of: &p.data) {
             Data(bytes: $0.baseAddress!, count: Int(p.length))
