@@ -49,6 +49,10 @@ extension UnsafeMutableRawBufferPointer {
         }
         return copied
     }
+
+    init(packet : inout MIDIPacket) {
+        self.init(start: &packet.data, count: 256)
+    }
 }
 
 //extension UnsafeMutableBufferPointer where Element == UInt8 {
@@ -65,7 +69,7 @@ extension UnsafeMutableRawBufferPointer {
 extension MIDIPacket  {
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {
         self.init()
-        var ptr = UnsafeMutableRawBufferPointer(start: &self.data, count: 256)
+        var ptr = UnsafeMutableRawBufferPointer(packet: &self)
         length = UInt16(ptr.copyBytes(from: data))
         timeStamp = timestamp
     }
@@ -76,18 +80,16 @@ extension MIDIPacketList: Sequence {
 
     public func makeIterator() -> AnyIterator<Element> {
         var p: MIDIPacket = packet
-        var idx: UInt32 = 0
+        var i = (0..<numPackets).makeIterator()
 
         return AnyIterator {
-            guard idx < self.numPackets else {
-                return nil
-            }
+            guard let _ = i.next() else { return nil }
             defer {
                 p = MIDIPacketNext(&p).pointee
-                idx += 1
             }
+
             return withUnsafeBytes(of: &p.data) {
-                let data = Data(bytes: $0.baseAddress!, count : Int(self.numPackets))
+                let data = Data(bytes: $0.baseAddress!, count : Int(p.length))
                 return MIDIEvent(timestamp: p.timeStamp, data: data)
             }
         }
