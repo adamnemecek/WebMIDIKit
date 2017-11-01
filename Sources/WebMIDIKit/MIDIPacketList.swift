@@ -75,13 +75,20 @@ extension MIDIPacket  {
     }
 }
 
+extension Data {
+//    @inline(__always)
+    init(packet p: inout MIDIPacket) {
+        self = Swift.withUnsafeBytes(of: &p.data) {
+            Data(bytes: $0.baseAddress!, count: Int(p.length))
+        }
+    }
+}
+
 extension MIDIEvent {
     @inline(__always)
     fileprivate init(packet p: inout MIDIPacket) {
-        self = withUnsafeBytes(of: &p.data) {
-            let data = Data(bytes: $0.baseAddress!, count : Int(p.length))
-            return MIDIEvent(timestamp: p.timeStamp, data: data)
-        }
+        timestamp = p.timeStamp
+        data = Data(packet: &p)
     }
 }
 

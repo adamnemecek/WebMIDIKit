@@ -17,6 +17,8 @@ public struct MIDIEvent : Equatable {
         return lhs.timestamp == rhs.timestamp && lhs.data == rhs.data
     }
 
+    
+
 //    internal init(_ ptr: UnsafePointer<MIDIPacket>) {
 //        self.timestamp = ptr.pointee.timeStamp
 //        self.data = Data(bytes: ptr, count: Int(ptr.pointee.length))
