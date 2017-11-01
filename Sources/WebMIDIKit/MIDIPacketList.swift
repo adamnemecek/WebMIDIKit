@@ -39,39 +39,23 @@ extension MIDIPacketList {
     }
 }
 
-extension UnsafeMutableRawBufferPointer {
-    fileprivate mutating
-    func copyBytes<S: Sequence>(from data: S) -> Int where S.Iterator.Element == UInt8 {
-        var copied = 0
-        for (i, byte) in data.enumerated() {
-            storeBytes(of: byte, toByteOffset: i, as: UInt8.self)
-            copied += 1
-        }
-        return copied
-    }
-
-    fileprivate init(packet : inout MIDIPacket) {
-        self.init(start: &packet.data, count: 256)
-    }
-}
-
-//extension UnsafeMutableBufferPointer where Element == UInt8 {
-//    init(packet : UnsafeMutablePointer<MIDIPacket>) {
-////        self  = withUnsafeMutableBytes(of: &packet.pointee.data) {
-////            Unsafe
-////            UnsafeMutableBufferPointer(start: $0, count: Int(packet.pointee.length))
-////        }
-//        fatalError()
-//    }
-//}
-
-// packet == UnsafeMutableBufferPointer<UInt8>
 extension MIDIPacket  {
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {
         self.init()
-        var ptr = UnsafeMutableRawBufferPointer(packet: &self)
-        length = UInt16(ptr.copyBytes(from: data))
+
         timeStamp = timestamp
+
+        var d = Data(data)
+        length = UInt16(d.count)
+
+
+        /// write out bytes to data
+
+        withUnsafeMutableBytes(of: &self.data) {
+            d.copyBytes(to: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count: d.count)
+        }
+
+//        var ptr = UnsafeMutableRawBufferPointer(packet: &self)
     }
 }
 
