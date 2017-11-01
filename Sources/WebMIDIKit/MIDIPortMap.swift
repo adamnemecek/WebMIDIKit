@@ -77,10 +77,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     //
     fileprivate init(client: MIDIClient, ports: [Value]) {
         self._client = client
-        self._content = [:]
-        ports.forEach {
-            self[$0.id] = $0
-        }
+        self._content = .init(uniqueKeysWithValues: ports.lazy.map { ($0.id, $0) } )
     }
 
     //
