@@ -24,6 +24,22 @@ Also note that WebMIDIKit adds some APIs which aren't a part of the WebMIDI stan
 
 ## Usage
 
+### Installation
+
+Use Swift Package Manager.
+
+```
+import PackageDescription
+
+let package = Package(
+    name: "WebMIDIKitDemo",
+    dependencies: [
+      .Package(url: "https://github.com/adamnemecek/WebMIDIKit.git", majorVersion: 1)
+    ]
+
+)
+```
+
 ### Check out the [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
 
 ### Selecting an input port and receiving MIDI messages from it
