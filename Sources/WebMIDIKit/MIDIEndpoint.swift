@@ -19,6 +19,11 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
         self.ref = ref
     }
 
+    internal init(notification n: MIDIObjectAddRemoveNotification) {
+        assert(MIDIPortType(n.childType) == MIDIEndpoint(ref: n.child).type)
+        self.ref = n.child
+    }
+
     static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
         return lhs.id == rhs.id
     }

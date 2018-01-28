@@ -14,11 +14,6 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
         return "message\(messageID)"
     }
 
-    internal var endpoint: MIDIEndpoint {
-        assert(MIDIPortType(childType) == MIDIEndpoint(ref: child).type)
-        return .init(ref: child)
-    }
-
     internal init?(ptr: UnsafePointer<MIDINotification>) {
         switch ptr.pointee.messageID {
         case .msgObjectAdded, .msgObjectRemoved:

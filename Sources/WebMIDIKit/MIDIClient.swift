@@ -41,7 +41,7 @@ internal final class MIDIClient : Equatable, Comparable, Hashable {
     }
 }
 
-/// called when an endpoint is added or remove
+/// called when an endpoint is added or removed
 @inline(__always) fileprivate
 func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
     var ref = MIDIClientRef()

@@ -114,6 +114,14 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
         return "MIDIPort: \(type), \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
     }
 
+//    public func encode(to encoder: Encoder) throws {
+//        fatalError()
+//    }
+//
+//    public required init(from decoder: Decoder) throws {
+//        fatalError()
+//    }
+
     internal private(set) final var ref: MIDIPortRef
 
     internal private(set) final weak var client: MIDIClient!

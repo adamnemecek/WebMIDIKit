@@ -6,7 +6,6 @@
 //
 //
 
-import Foundation
 import AVFoundation
 
 public struct MIDIEvent : Equatable {

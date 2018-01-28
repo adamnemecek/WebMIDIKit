@@ -100,7 +100,8 @@ fileprivate extension NotificationCenter {
     final func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
         return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
             _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
-                callback($0.endpoint, MIDIEndpointNotificationType($0.messageID))
+                callback(.init(notification: $0),
+                         MIDIEndpointNotificationType($0.messageID))
             }
         }
     }

@@ -39,6 +39,13 @@ extension MIDIPacketList {
     }
 }
 
+extension UnsafeMutablePointer where Pointee == UInt8 {
+    @inline(__always)
+    init(ptr : UnsafeMutableRawBufferPointer) {
+        self = ptr.baseAddress!.assumingMemoryBound(to: UInt8.self)
+    }
+}
+
 extension MIDIPacket {
     @inline(__always)
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {
@@ -51,7 +58,7 @@ extension MIDIPacket {
 
         /// write out bytes to data
         withUnsafeMutableBytes(of: &self.data) {
-            d.copyBytes(to: $0.baseAddress!.assumingMemoryBound(to: UInt8.self), count: d.count)
+            d.copyBytes(to: .init(ptr: $0), count: d.count)
         }
 
 //        var ptr = UnsafeMutableRawBufferPointer(packet: &self)
@@ -62,7 +69,7 @@ extension Data {
     @inline(__always)
     init(packet p: inout MIDIPacket) {
         self = Swift.withUnsafeBytes(of: &p.data) {
-            Data(bytes: $0.baseAddress!, count: Int(p.length))
+            .init(bytes: $0.baseAddress!, count: Int(p.length))
         }
     }
 }
@@ -71,7 +78,7 @@ extension MIDIEvent {
     @inline(__always)
     fileprivate init(packet p: inout MIDIPacket) {
         timestamp = p.timeStamp
-        data = Data(packet: &p)
+        data = .init(packet: &p)
     }
 }
 
@@ -87,7 +94,7 @@ extension MIDIPacketList: Sequence {
                 p = MIDIPacketNext(&p).pointee
             }
 
-            return i.next().map { _ in MIDIEvent(packet: &p) }
+            return i.next().map { _ in .init(packet: &p) }
         }
     }
 }
