@@ -67,19 +67,19 @@ internal class MIDIEndpoint {
 }
 
 extension MIDIEndpoint: Equatable, Comparable {
-	static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-		return lhs.id == rhs.id
-	}
+    static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
+        return lhs.id == rhs.id
+    }
 
-	static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-		return lhs.id < rhs.id
-	}
+    static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
+        return lhs.id < rhs.id
+    }
 }
 
 extension MIDIEndpoint : Hashable {
-	func hash(into hasher: inout Hasher) {
-		hasher.combine(id)
-	}
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
 @inline(__always) fileprivate

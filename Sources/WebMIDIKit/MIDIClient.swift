@@ -30,19 +30,19 @@ internal final class MIDIClient {
 }
 
 extension MIDIClient : Equatable, Comparable {
-	static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-		return lhs.ref == rhs.ref
-	}
+    static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+        return lhs.ref == rhs.ref
+    }
 
-	static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-		return lhs.ref < rhs.ref
-	}
+    static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
+        return lhs.ref < rhs.ref
+    }
 }
 
 extension MIDIClient : Hashable {
-	func hash(into hasher: inout Hasher) {
-		hasher.combine(ref.hashValue)
-	}
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(ref.hashValue)
+    }
 }
 
 /// called when an endpoint is added or removed

@@ -14,8 +14,8 @@ extension MIDIPacketList {
     internal mutating func send(to output: MIDIOutput, offset: Double? = nil) {
 
         _ = offset.map {
-			// NOTE: AudioGetCurrentHostTime() CoreAudio method is only available on macOS
-			let current = AudioGetCurrentHostTime()
+            // NOTE: AudioGetCurrentHostTime() CoreAudio method is only available on macOS
+            let current = AudioGetCurrentHostTime()
             let _offset = AudioConvertNanosToHostTime(UInt64($0 * 1000000))
 
             let ts = current + _offset
@@ -91,7 +91,7 @@ extension MIDIPacketList: Sequence {
 
         return AnyIterator {
             defer {
-				p = withUnsafePointer(to: &p) { MIDIPacketNext($0).pointee }
+                p = withUnsafePointer(to: &p) { MIDIPacketNext($0).pointee }
             }
 
             return i.next().map { _ in .init(packet: &p) }

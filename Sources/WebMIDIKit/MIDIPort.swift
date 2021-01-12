@@ -97,7 +97,7 @@ public class MIDIPort {
         onStateChange?(self)
         onStateChange = nil
     }
-	
+
     internal private(set) final var ref: MIDIPortRef
 
     internal private(set) final weak var client: MIDIClient!
@@ -111,25 +111,25 @@ public class MIDIPort {
 }
 
 extension MIDIPort : CustomStringConvertible {
-	public final var description: String {
-		return "MIDIPort: \(type), \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
-	}
+    public final var description: String {
+        return "MIDIPort: \(type), \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
+    }
 }
 
 extension MIDIPort : Equatable, Comparable {
-	public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-		return lhs.endpoint == rhs.endpoint
-	}
+    public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+        return lhs.endpoint == rhs.endpoint
+    }
 
-	public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-		return lhs.endpoint < rhs.endpoint
-	}
+    public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+        return lhs.endpoint < rhs.endpoint
+    }
 }
 
 extension MIDIPort : Hashable {
-	public func hash(into hasher: inout Hasher) {
-		hasher.combine(endpoint.hashValue)
-	}
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(endpoint.hashValue)
+    }
 }
 
 //func sequence(first: UnsafePointer<MIDIPacketList>) -> AnyIterator<MIDIEvent> {

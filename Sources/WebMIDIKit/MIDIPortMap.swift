@@ -36,7 +36,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     public final func index(after i: Index) -> Index {
         return _content.index(after: i)
     }
-	
+
     public func port(with name: String) -> Value? {
         return _content.first { $0.value.displayName == name }?.value
     }
@@ -110,12 +110,12 @@ public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
 }
 
 extension MIDIPortMap: CustomStringConvertible, CustomDebugStringConvertible {
-	public final var description: String {
-		return dump(_content).description
-	}
-	public var debugDescription: String {
-		return "\(self.self)(\(description))"
-	}
+    public final var description: String {
+        return dump(_content).description
+    }
+    public var debugDescription: String {
+        return "\(self.self)(\(description))"
+    }
 }
 
 @inline(__always) fileprivate
