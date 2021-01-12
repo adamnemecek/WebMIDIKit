@@ -10,7 +10,7 @@ import CoreMIDI
 import Foundation
 
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
-public final class MIDIAccess : CustomStringConvertible, CustomDebugStringConvertible {
+public final class MIDIAccess {
 
     public let inputs: MIDIInputMap
     public let outputs: MIDIOutputMap
@@ -42,10 +42,6 @@ public final class MIDIAccess : CustomStringConvertible, CustomDebugStringConver
 
     deinit {
         _observer.map(NotificationCenter.default.removeObserver)
-    }
-
-    public var description: String {
-        return "inputs: \(inputs)\n, output: \(outputs)"
     }
 
     private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
@@ -95,6 +91,16 @@ public final class MIDIAccess : CustomStringConvertible, CustomDebugStringConver
     private var _observer: NSObjectProtocol? = nil
 
 }
+
+extension MIDIAccess : CustomStringConvertible, CustomDebugStringConvertible {
+	public var description: String {
+		return "inputs: \(inputs)\n, output: \(outputs)"
+	}
+	public var debugDescription: String {
+		return "\(self.self)(\(description))"
+	}
+}
+
 
 fileprivate extension NotificationCenter {
     final func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {

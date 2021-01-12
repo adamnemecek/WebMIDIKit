@@ -10,7 +10,7 @@ import CoreMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
-public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible {
+public class MIDIPort {
 
     /// A unique ID of the port. This can be used by developers to remember ports
     /// the user has chosen for their application. This is maintained across
@@ -97,31 +97,7 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
         onStateChange?(self)
         onStateChange = nil
     }
-
-    public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-        return lhs.endpoint == rhs.endpoint
-    }
-
-    public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-        return lhs.endpoint < rhs.endpoint
-    }
-
-    public final var hashValue: Int {
-        return endpoint.hashValue
-    }
-
-    public final var description: String {
-        return "MIDIPort: \(type), \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
-    }
-
-//    public func encode(to encoder: Encoder) throws {
-//        fatalError()
-//    }
-//
-//    public required init(from decoder: Decoder) throws {
-//        fatalError()
-//    }
-
+	
     internal private(set) final var ref: MIDIPortRef
 
     internal private(set) final weak var client: MIDIClient!
@@ -132,6 +108,28 @@ public class MIDIPort : Equatable, Comparable, Hashable, CustomStringConvertible
         self.endpoint = endpoint
         self.ref = 0
     }
+}
+
+extension MIDIPort : CustomStringConvertible {
+	public final var description: String {
+		return "MIDIPort: \(type), \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
+	}
+}
+
+extension MIDIPort : Equatable, Comparable {
+	public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+		return lhs.endpoint == rhs.endpoint
+	}
+
+	public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
+		return lhs.endpoint < rhs.endpoint
+	}
+}
+
+extension MIDIPort : Hashable {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(endpoint.hashValue)
+	}
 }
 
 //func sequence(first: UnsafePointer<MIDIPacketList>) -> AnyIterator<MIDIEvent> {

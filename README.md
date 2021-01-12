@@ -26,18 +26,10 @@ Also note that WebMIDIKit adds some APIs which aren't a part of the WebMIDI stan
 
 ### Installation
 
-Use Swift Package Manager.
+Use Swift Package Manager. Add the following `.Package` entry into your dependencies.
 
-```
-import PackageDescription
-
-let package = Package(
-    name: "WebMIDIKitDemo",
-    dependencies: [
-      .Package(url: "https://github.com/adamnemecek/WebMIDIKit.git", majorVersion: 1)
-    ]
-
-)
+```swift
+.Package(url: "https://github.com/adamnemecek/webmidikit", from: "1.0.0")
 ```
 
 ### Check out the [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).
@@ -121,16 +113,7 @@ for (id, port) in midi.inputs {
 Use Swift Package Manager. Add the following `.Package` entry into your dependencies.
 
 ```swift
-import PackageDescription
-
-let packet = Package(
-	name: "...",
-	target: [],
-	dependencies: [
-		// ...
-		.Package(url:"https://github.com/adamnemecek/webmidikit", version: 1)
-	]
-)
+.Package(url: "https://github.com/adamnemecek/webmidikit", from: "1.0.0")
 ```
 
  If you are having any build issues, look at the sample project [sample project](https://github.com/adamnemecek/WebMIDIKitDemo).

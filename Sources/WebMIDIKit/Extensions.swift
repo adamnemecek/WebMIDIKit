@@ -27,13 +27,9 @@ extension MIDIObjectType : CustomStringConvertible {
         case .externalEntity: return "externalEntity"
         case .externalSource: return "externalSource"
         case .externalDestination: return "externalDestination"
-        }
+		}
     }
+	public var debugDescription: String {
+		return "\(self.self)(\(description))"
+	}
 }
-
-extension CustomStringConvertible {
-    public var debugDescription: String {
-        return "\(self.self)(\(description))"
-    }
-}
-
