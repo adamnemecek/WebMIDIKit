@@ -8,7 +8,7 @@
 
 import CoreMIDI
 
-public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible, CustomDebugStringConvertible {
+public class MIDIPortMap<Value: MIDIPort> : Collection {
     public typealias Key = Int
     public typealias Index = Dictionary<Key, Value>.Index
 
@@ -36,11 +36,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection, CustomStringConvertible,
     public final func index(after i: Index) -> Index {
         return _content.index(after: i)
     }
-
-    public final var description: String {
-        return dump(_content).description
-    }
-
+	
     public func port(with name: String) -> Value? {
         return _content.first { $0.value.displayName == name }?.value
     }
@@ -113,6 +109,14 @@ public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
     }
 }
 
+extension MIDIPortMap: CustomStringConvertible, CustomDebugStringConvertible {
+	public final var description: String {
+		return dump(_content).description
+	}
+	public var debugDescription: String {
+		return "\(self.self)(\(description))"
+	}
+}
 
 @inline(__always) fileprivate
 func MIDISources() -> [MIDIEndpoint] {

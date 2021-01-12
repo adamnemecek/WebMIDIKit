@@ -83,7 +83,7 @@ internal enum MIDIEndpointNotificationType {
         case .msgObjectRemoved:
             self = .removed
         default:
-            fatalError("unpexpected")
+            fatalError("unexpected")
         }
     }
 }

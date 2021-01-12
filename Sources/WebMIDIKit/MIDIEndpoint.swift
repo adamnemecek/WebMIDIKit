@@ -12,7 +12,7 @@ import CoreMIDI
 // you can think of this as the HW input/output or virtual endpoint
 //
 
-internal class MIDIEndpoint : Equatable, Comparable, Hashable {
+internal class MIDIEndpoint {
     final let ref: MIDIEndpointRef
 
     init(ref: MIDIEndpointRef) {
@@ -22,18 +22,6 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     internal init(notification n: MIDIObjectAddRemoveNotification) {
         assert(MIDIPortType(n.childType) == MIDIEndpoint(ref: n.child).type)
         self.ref = n.child
-    }
-
-    static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-        return lhs.id == rhs.id
-    }
-
-    static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-        return lhs.id < rhs.id
-    }
-
-    final var hashValue: Int {
-        return id
     }
 
     final var id: Int {
@@ -76,6 +64,22 @@ internal class MIDIEndpoint : Equatable, Comparable, Hashable {
     final private subscript(int property: CFString) -> Int {
         return MIDIObjectGetIntProperty(ref: ref, property: property)
     }
+}
+
+extension MIDIEndpoint: Equatable, Comparable {
+	static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
+		return lhs.id == rhs.id
+	}
+
+	static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
+		return lhs.id < rhs.id
+	}
+}
+
+extension MIDIEndpoint : Hashable {
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 }
 
 @inline(__always) fileprivate
