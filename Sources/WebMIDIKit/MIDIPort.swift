@@ -112,7 +112,14 @@ public class MIDIPort {
 
 extension MIDIPort : CustomStringConvertible {
     public final var description: String {
-        return "\(self.self) \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
+        let type: String
+        if self.type == .input {
+            type = "MIDIInput"
+        } else {
+            type = "MIDIOutput"
+        }
+        return "\(type) \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
+        
     }
 }
 
