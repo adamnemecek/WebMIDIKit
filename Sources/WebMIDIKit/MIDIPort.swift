@@ -112,7 +112,7 @@ public class MIDIPort {
 
 extension MIDIPort : CustomStringConvertible {
     public final var description: String {
-        return "MIDIPort: \(type), \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
+        return "\(self.self) \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
     }
 }
 
