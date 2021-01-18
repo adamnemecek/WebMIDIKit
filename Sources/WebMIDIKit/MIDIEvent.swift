@@ -9,8 +9,8 @@
 import AVFoundation
 
 public struct MIDIEvent : Equatable {
-    let timestamp : MIDITimeStamp
-    let data : Data
+    public let timestamp : MIDITimeStamp
+    public let data : Data
 
     public static func ==(lhs: MIDIEvent, rhs: MIDIEvent) -> Bool {
         return lhs.timestamp == rhs.timestamp && lhs.data == rhs.data
