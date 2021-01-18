@@ -67,7 +67,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
         guard let port = self[endpoint] else { 
             //assert(false); 
             return nil 
-    }
+        }
         //assert(port.state == .connected)
         self[port.id] = nil
         return port
