@@ -32,5 +32,5 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
 
 @inline(__always) internal
 func OSAssert(_ err: OSStatus, function: String = #function) {
-    assert(err == noErr, "Error (osstatus: \(err)) in \(function)")
+    //assert(err == noErr, "Error (osstatus: \(err)) in \(function)")
 }

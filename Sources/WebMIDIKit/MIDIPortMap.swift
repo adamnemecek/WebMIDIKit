@@ -57,15 +57,18 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     }
 
     internal final func add(_ port: Value) -> Value? {
-        assert(self[port.id] == nil)
+        //assert(self[port.id] == nil)
         self[port.id] = port
         return port
     }
 
     internal final func remove(_ endpoint: MIDIEndpoint) -> Value? {
         //disconnect?
-        guard let port = self[endpoint] else { assert(false); return nil }
-        assert(port.state == .connected)
+        guard let port = self[endpoint] else { 
+            //assert(false); 
+            return nil 
+        }
+        //assert(port.state == .connected)
         self[port.id] = nil
         return port
     }
