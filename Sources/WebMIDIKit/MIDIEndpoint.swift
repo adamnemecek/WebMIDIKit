@@ -20,7 +20,6 @@ internal class MIDIEndpoint {
     }
 
     internal init(notification n: MIDIObjectAddRemoveNotification) {
-        assert(MIDIPortType(n.childType) == MIDIEndpoint(ref: n.child).type)
         self.ref = n.child
     }
 

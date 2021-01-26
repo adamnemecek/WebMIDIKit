@@ -67,17 +67,21 @@ public class MIDIPort {
         guard connection != .open else { return }
 
         switch type {
-        case .input:
-            let `self` = self as! MIDIInput
-            ref = MIDIInputPortCreate(ref: client.ref) {
-                `self`.onMIDIMessage?($0)
-            }
+            case .input:
+                let `self` = self as! MIDIInput
+                ref = MIDIInputPortCreate(ref: client.ref) {
+                    `self`.onMIDIMessage?($0)
+                }
 
-            OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
+                OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
 
-        case .output:
-            ref = MIDIOutputPortCreate(ref: client.ref)
+            case .output:
+                ref = MIDIOutputPortCreate(ref: client.ref)
+            
+            default:
+                break
         }
+        
 
         onStateChange?(self)
     }
@@ -87,10 +91,12 @@ public class MIDIPort {
         guard connection != .closed else { return }
 
         switch type {
-        case .input:
-            OSAssert(MIDIPortDisconnectSource(ref, endpoint.ref))
-        case .output:
-            endpoint.flush()
+            case .input:
+                OSAssert(MIDIPortDisconnectSource(ref, endpoint.ref))
+            case .output:
+                endpoint.flush()
+            default:
+                break
         }
 
         ref = 0

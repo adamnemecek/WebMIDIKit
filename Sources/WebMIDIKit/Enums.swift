@@ -21,6 +21,9 @@ public enum MIDIPortType : Equatable, CustomStringConvertible {
 
     /// If a MIDIPort is an output port, the type member must be this value.
     case output
+    
+    /// For other values
+    case other
 
     internal init(_ type: MIDIObjectType) {
         switch type {
@@ -28,10 +31,8 @@ public enum MIDIPortType : Equatable, CustomStringConvertible {
             self = .input
         case .destination:
             self = .output
-        case .other:
-            fatalError("You didn't initialize a virtual port")
         default:
-            fatalError("Unexpected port type \(type)")
+            self = .other
         }
     }
 
@@ -39,6 +40,7 @@ public enum MIDIPortType : Equatable, CustomStringConvertible {
         switch self {
         case .input: return "input"
         case .output: return "output"
+        default: return "other"
         }
     }
 }
