@@ -76,7 +76,7 @@ public enum MIDIPortConnectionState : Equatable {
 }
 
 internal enum MIDIEndpointNotificationType {
-    case added, removed
+    case added, removed, other
 
     init(_ messageID: MIDINotificationMessageID) {
         switch messageID {
@@ -85,7 +85,7 @@ internal enum MIDIEndpointNotificationType {
         case .msgObjectRemoved:
             self = .removed
         default:
-            fatalError("unexpected")
+            self = .other
         }
     }
 }
