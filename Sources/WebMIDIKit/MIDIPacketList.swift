@@ -11,7 +11,7 @@ import AVFoundation
 extension MIDIPacketList {
     /// this needs to be mutating since we are potentionally changint the timestamp
     /// we cannot make a copy since that woulnd't copy the whole list
-    internal mutating func send(to output: MIDIOutput, offset: Double? = nil) {
+    internal mutating func send(to port: MIDIPort, offset: Double? = nil) {
 
         _ = offset.map {
             // NOTE: AudioGetCurrentHostTime() CoreAudio method is only available on macOS
@@ -22,12 +22,15 @@ extension MIDIPacketList {
             packet.timeStamp = ts
         }
 
-        OSAssert(MIDISend(output.ref, output.endpoint.ref, &self))
+        if port is MIDIOutput {
+            MIDISend(port.ref, port.endpoint.ref, &self)
+        } else {
+            MIDIReceived(port.endpoint.ref, &self)
+        }
         /// this let's us propagate the events to everyone subscribed to this
         /// endpoint not just this port, i'm not sure if we actually want this
         /// but for now, it let's us create multiple ports from different MIDIAccess
         /// objects and have them all receive the same messages
-        OSAssert(MIDIReceived(output.endpoint.ref, &self))
     }
 
     internal init<S: Sequence>(_ data: S, timestamp: MIDITimeStamp = 0) where S.Iterator.Element == UInt8 {

@@ -15,10 +15,10 @@ internal extension Notification.Name {
 
 /// Kind of like a session, context or handle, it doesn't really do anything
 /// besides being passed around. Also dispatches notifications.
-internal final class MIDIClient {
+final class MIDIClient {
     let ref: MIDIClientRef
 
-    internal init() {
+    init() {
         ref = MIDIClientCreate {
             NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
         }
@@ -49,8 +49,8 @@ extension MIDIClient : Hashable {
 @inline(__always) fileprivate
 func MIDIClientCreate(callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
     var ref = MIDIClientRef()
-    OSAssert(MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
+    MIDIClientCreateWithBlock("WebMIDIKit" as CFString, &ref) {
         _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)
-    })
+    }
     return ref
 }
