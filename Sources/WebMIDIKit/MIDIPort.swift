@@ -8,47 +8,31 @@
 
 import CoreMIDI
 
-/// This interface represents a MIDI input or output port.
-/// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
 public class MIDIPort {
 
-    /// A unique ID of the port. This can be used by developers to remember ports
-    /// the user has chosen for their application. This is maintained across
-    /// instances of the application - e.g., when the system is rebooted - and a
-    /// device is removed from the system. Applications may want to cache these
-    /// ids locally to re-create a MIDI setup. Applications may use the comparison
-    /// of id of MIDIPorts to test for equality.
-    public final var id: Int {
-        return endpoint.id
+    public final var id: Int
+    public final var manufacturer: String
+    public final var name: String
+    public final var displayName: String
+    public final var type: MIDIPortType
+    public final var version: Int
+    
+    internal private(set) final var ref: MIDIPortRef
+    internal private(set) final weak var client: MIDIClient!
+    internal final let endpoint: MIDIEndpoint
+    
+    internal init(client: MIDIClient, endpoint: MIDIEndpoint) {
+        self.client = client
+        self.endpoint = endpoint
+        self.id = endpoint.id
+        self.manufacturer = endpoint.manufacturer
+        self.name = endpoint.name
+        self.displayName = endpoint.displayName
+        self.type = endpoint.type
+        self.version = endpoint.version
+        self.ref = 0
     }
-
-    /// The manufacturer of the port.
-    public final var manufacturer: String {
-        return endpoint.manufacturer
-    }
-
-    /// The system name of the port.
-    public final var name: String {
-        return endpoint.name
-    }
-
-    /// The full name of the port.
-    public final var displayName: String {
-        return endpoint.displayName
-    }
-
-    /// A descriptor property to distinguish whether the port is an input or an
-    /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
-    /// must be "input".
-    public final var type: MIDIPortType {
-        return endpoint.type
-    }
-
-    /// The version of the port.
-    public final var version: Int {
-        return endpoint.version
-    }
-
+    
     /// The state of the connection to the device.
     public final var connection: MIDIPortConnectionState {
         return ref == 0 ? .closed : .open
@@ -67,19 +51,36 @@ public class MIDIPort {
         guard connection != .open else { return }
 
         switch type {
-        case .input:
-            let `self` = self as! MIDIInput
-            ref = MIDIInputPortCreate(ref: client.ref) {
-                `self`.onMIDIMessage?($0)
-            }
+            case .input:
+                let `self` = self as! MIDIInput
+                ref = MIDIInputPortCreate(ref: client.ref) {event in
+                    MIDIAccess.queue.async {
+                        `self`.onMIDIMessage?(event)
+                    }
+                }
 
-            OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
+                MIDIPortConnectSource(ref, endpoint.ref, nil)
 
-        case .output:
-            ref = MIDIOutputPortCreate(ref: client.ref)
+            case .output:
+                ref = MIDIOutputPortCreate(ref: client.ref)
+            
+            default:
+                break
         }
+        
 
         onStateChange?(self)
+    }
+    
+    @discardableResult
+    public func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIPort where S.Iterator.Element == UInt8 {
+//        MIDIAccess.queue.sync {
+            open()
+            var lst = MIDIPacketList(data)
+            lst.send(to: self, offset: offset)
+            
+            return self
+//        }
     }
 
     /// Closes the port.
@@ -87,26 +88,21 @@ public class MIDIPort {
         guard connection != .closed else { return }
 
         switch type {
-        case .input:
-            OSAssert(MIDIPortDisconnectSource(ref, endpoint.ref))
-        case .output:
-            endpoint.flush()
+            case .input:
+                MIDIPortDisconnectSource(ref, endpoint.ref)
+            case .output:
+                endpoint.flush()
+            default:
+                break
         }
 
         ref = 0
         onStateChange?(self)
         onStateChange = nil
     }
-
-    internal private(set) final var ref: MIDIPortRef
-
-    internal private(set) final weak var client: MIDIClient!
-    internal final let endpoint: MIDIEndpoint
-
-    internal init(client: MIDIClient, endpoint: MIDIEndpoint) {
-        self.client = client
-        self.endpoint = endpoint
-        self.ref = 0
+    
+    public func closeVirtual() {
+        MIDIPortDispose(endpoint.ref)
     }
 }
 
@@ -139,45 +135,32 @@ extension MIDIPort : Hashable {
     }
 }
 
-//func sequence(first: UnsafePointer<MIDIPacketList>) -> AnyIterator<MIDIEvent> {
-//    var ptr = first
-//    let count = Int(first.pointee.numPackets)
-//
-//    return AnyIterator {
-//        nil
-//    }
-//    fatalError()
-////    return sequence(first: first) { _ in
-//////        UnsafePointer($0)
-////        fatalError()
-////    }.prefix(count)
-//}
-////
-////@inline(__always) fileprivate
-////func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
-////    var port = MIDIPortRef()
-////    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
-////        lst, srcconref in
-////        sequence(first: lst).forEach(readmidi)
-////    })
-////    return port
-////}
-
-
-
-@inline(__always) fileprivate
 func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
     var port = MIDIPortRef()
-    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+    MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
         lst.pointee.forEach(readmidi)
-    })
+    }
     return port
 }
 
-@inline(__always) fileprivate
+func MIDIDestinationCreate(clientRef: MIDIClientRef, name: String, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIEndpointRef {
+    var endpoint: MIDIEndpointRef = MIDIEndpointRef()
+    MIDIDestinationCreateWithBlock(clientRef, name as CFString, &endpoint) {
+        lst, srcconref in
+        lst.pointee.forEach(readmidi)
+    }
+    return endpoint
+}
+
+func MIDISourceCreate(clientRef: MIDIClientRef, name: String) -> MIDIEndpointRef {
+    var endpoint: MIDIEndpointRef = MIDIEndpointRef()
+    MIDISourceCreate(clientRef, name as CFString, &endpoint)
+    return endpoint
+}
+
 func MIDIOutputPortCreate(ref: MIDIClientRef) -> MIDIPortRef {
     var port = MIDIPortRef()
-    OSAssert(MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port))
+    MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port)
     return port
 }

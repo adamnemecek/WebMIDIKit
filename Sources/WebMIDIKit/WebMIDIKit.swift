@@ -11,6 +11,8 @@ import Foundation
 
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
 public final class MIDIAccess {
+    
+    public static let queue = DispatchQueue.init(label: "midiQueue")
 
     public let inputs: MIDIInputMap
     public let outputs: MIDIOutputMap
@@ -22,22 +24,21 @@ public final class MIDIAccess {
 
         self.inputs = MIDIInputMap(client: _client)
         self.outputs = MIDIOutputMap(client: _client)
-
-        //    self._input = MIDIInput(virtual: _client)
-        //    self._output = MIDIOutput(virtual: _client) {
-        //      print($0.0)
-        //    }
-        //    //todo
-        //    self._input.onMIDIMessage = {
-        //      //          self.midi(src: 0, lst: $0)
-        //      print($0)
-        //    }
-
+//
         self._observer = NotificationCenter.default.observeMIDIEndpoints {
             self._notification(endpoint: $0, type: $1).map {
                 self.onStateChange?($0)
             }
         }
+    }
+    
+    func addVirtualInput(name: String) -> MIDIInput {
+        return MIDIInput(virtual: self._client, name: name)
+    }
+    
+    func addVirtualOutput(name: String, onMidiMessage: @escaping (MIDIEvent) -> ()) -> MIDIOutput {
+        let output = MIDIOutput(virtual: self._client, name: name, readmidi: onMidiMessage)
+        return output
     }
 
     deinit {
@@ -45,26 +46,37 @@ public final class MIDIAccess {
     }
 
     private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
-        switch (endpoint.type, type) {
+//        MIDIAccess.queue.sync {
+            let endpointType = endpoint.type
+            switch (endpointType, type) {
 
-        case (.input, .added):
-            return inputs.add(endpoint)
+                case (.input, .added):
+                    return inputs.add(endpoint)
 
-        case (.output, .added):
-            return outputs.add(endpoint)
+                case (.output, .added):
+                    return outputs.add(endpoint)
 
-        case (.input, .removed):
-            return inputs.remove(endpoint).map {
-                $0.close()
-                return $0
+                case (.input, .removed):
+                    return inputs.remove(endpoint).map {
+                        $0.close()
+                        return $0
+                    }
+
+                case (.output, .removed):
+                    return outputs.remove(endpoint).map {
+                        $0.close()
+                        return $0
+                    }
+                    
+//                case (.other, .added):
+//                    return outputs.add(endpoint)
+//                    print("other added")
+//                    return nil
+                    
+                default:
+                    return nil
             }
-
-        case (.output, .removed):
-            return outputs.remove(endpoint).map {
-                $0.close()
-                return $0
-            }
-        }
+//        }
     }
 
     /// given an output, tries to find the corresponding input port (non-standard)
@@ -82,7 +94,7 @@ public final class MIDIAccess {
         MIDIRestart()
     }
 
-    private let _client: MIDIClient
+    let _client: MIDIClient
     //  private let _clients: Set<MIDIClient> = []
 
     //  private let _input: MIDIInput
@@ -105,9 +117,21 @@ extension MIDIAccess : CustomStringConvertible, CustomDebugStringConvertible {
 fileprivate extension NotificationCenter {
     final func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
         return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
-            _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
-                callback(.init(notification: $0),
-                         MIDIEndpointNotificationType($0.messageID))
+            switch $0.object {
+                case is MIDIObjectAddRemoveNotification:
+                    _ = ($0.object as? MIDIObjectAddRemoveNotification).map { event in
+                        MIDIAccess.queue.async {
+                            callback(MIDIEndpoint(notification: event),
+                            MIDIEndpointNotificationType(event.messageID))
+                        }
+                    }
+                case is MIDIObjectPropertyChangeNotification:
+                    print ("midi property change")
+                case is MIDIIOErrorNotification:
+                    print ("midi error")
+                
+                default:
+                print ("midi nothing")
             }
         }
     }
