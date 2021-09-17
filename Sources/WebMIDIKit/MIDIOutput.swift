@@ -14,19 +14,24 @@ public final class MIDIOutput : MIDIPort {
         endpoint.flush()
     }
     
-    public var onMIDIMessage: ((MIDIEvent) -> ())? = nil
+//    public var onMIDIMessage: ((MIDIEvent) -> ())? = nil
 
-    internal convenience init(virtual client: MIDIClient, name: String, readmidi: @escaping (MIDIEvent) -> ()) {
+    internal convenience init(virtual client: MIDIClient, name: String, readmidi: MidiReadEvent?) {
         let endpoint = VirtualMIDIDestination(client: client, name: name, readmidi: readmidi)
         self.init(client: client, endpoint: endpoint)
-        onMIDIMessage = readmidi
+//        onMIDIMessage = readmidi
+        
 //        open()
       }
 }
 
 class VirtualMIDIDestination: VirtualMIDIEndpoint {
-    init(client: MIDIClient, name: String, readmidi: @escaping (MIDIEvent) -> ()) {
-        let dest = MIDIDestinationCreate(clientRef: client.ref, name: name, readmidi: readmidi)
+    init(client: MIDIClient, name: String, readmidi: MidiReadEvent?) {
+        let dest = MIDIDestinationCreate(clientRef: client.ref, name: name) { event in
+            MIDIAccess.queue.async {
+                readmidi?(event)
+            }
+        }
         super.init(ref: dest)
     }
 }

@@ -20,8 +20,9 @@ internal class MIDIEndpoint {
     final var name: String
     final var displayName: String
     final var version: Int
+    final var virtual: Bool
 
-    init(ref: MIDIEndpointRef) {
+    init(ref: MIDIEndpointRef, parentType: MIDIObjectType? = nil) {
         self.ref = ref
         self.id = MIDIEndpoint[ref, int: kMIDIPropertyUniqueID]
         self.type = MIDIPortType(MIDIObjectGetType(id: id))
@@ -30,10 +31,11 @@ internal class MIDIEndpoint {
         self.displayName = MIDIEndpoint[ref, string: kMIDIPropertyDisplayName]
         self.version = MIDIEndpoint[ref, int: kMIDIPropertyDriverVersion]
         self.name = MIDIEndpoint[ref, string: kMIDIPropertyName]
+        self.virtual = parentType == nil ? manufacturer == "" : parentType == .other
     }
 
     convenience init(notification n: MIDIObjectAddRemoveNotification) {
-        self.init(ref: n.child)
+        self.init(ref: n.child, parentType: n.parentType)
     }
 
     final var state: MIDIPortDeviceState {

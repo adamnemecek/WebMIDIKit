@@ -20,6 +20,7 @@ public class MIDIPort {
     internal private(set) final var ref: MIDIPortRef
     internal private(set) final weak var client: MIDIClient!
     internal final let endpoint: MIDIEndpoint
+    internal var closed: Bool = false
     
     internal init(client: MIDIClient, endpoint: MIDIEndpoint) {
         self.client = client
@@ -33,13 +34,21 @@ public class MIDIPort {
         self.ref = 0
     }
     
+    public func getDeviceId() -> String {
+        return virtual ? displayName : String(id)
+    }
+    
     /// The state of the connection to the device.
     public final var connection: MIDIPortConnectionState {
         return ref == 0 ? .closed : .open
     }
 
     public final var state: MIDIPortDeviceState {
-        return endpoint.state
+        return closed ? .disconnected : endpoint.state
+    }
+    
+    public final var virtual: Bool {
+        return endpoint.virtual
     }
 
     /// gets called when the port state changes (open/closed are called,
@@ -53,7 +62,7 @@ public class MIDIPort {
         switch type {
             case .input:
                 let `self` = self as! MIDIInput
-                ref = MIDIInputPortCreate(ref: client.ref) {event in
+                ref = MIDIInputPortCreate(ref: client.ref) { event in
                     MIDIAccess.queue.async {
                         `self`.onMIDIMessage?(event)
                     }
@@ -97,6 +106,7 @@ public class MIDIPort {
         }
 
         ref = 0
+        closed = true
         onStateChange?(self)
         onStateChange = nil
     }
@@ -135,20 +145,30 @@ extension MIDIPort : Hashable {
     }
 }
 
-func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
+func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: MidiReadEvent?) -> MIDIPortRef {
     var port = MIDIPortRef()
     MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
-        lst.pointee.forEach(readmidi)
+        
+//        MIDIAccess.queue.async {
+            guard readmidi != nil else { return }
+            
+            lst.pointee.forEach(readmidi!)
+//        }
     }
     return port
 }
 
-func MIDIDestinationCreate(clientRef: MIDIClientRef, name: String, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIEndpointRef {
+func MIDIDestinationCreate(clientRef: MIDIClientRef, name: String, readmidi: MidiReadEvent?) -> MIDIEndpointRef {
     var endpoint: MIDIEndpointRef = MIDIEndpointRef()
     MIDIDestinationCreateWithBlock(clientRef, name as CFString, &endpoint) {
         lst, srcconref in
-        lst.pointee.forEach(readmidi)
+        
+//        MIDIAccess.queue.async {
+            guard readmidi != nil else { return }
+            
+            lst.pointee.forEach(readmidi!)
+//        }
     }
     return endpoint
 }

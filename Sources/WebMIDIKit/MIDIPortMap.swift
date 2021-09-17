@@ -37,8 +37,9 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
         return _content.index(after: i)
     }
 
-    public func port(with name: String) -> Value? {
-        return _content.first { $0.value.displayName == name }?.value
+    public func port(with port: MIDIPort) -> Value? {
+        return _content.first { $0.value.displayName == port.displayName }?.value ??
+            _content.first { $0.value.name == port.name }?.value
     }
 
     /// Prompts the user to select a MIDIPort (non-standard)
