@@ -87,14 +87,17 @@ extension MIDIPacketList: Sequence {
 
     public func makeIterator() -> AnyIterator<Element> {
         var p: MIDIPacket = packet
-        var i = (0..<numPackets).makeIterator()
+        var idx: UInt32 = 0
 
         return AnyIterator {
-            defer {
-                p = withUnsafePointer(to: &p) { MIDIPacketNext($0).pointee }
+            guard idx < self.numPackets else {
+                return nil
             }
-
-            return i.next().map { _ in .init(packet: &p) }
+            defer {
+                p = MIDIPacketNext(&p).pointee
+                idx += 1
+            }
+            return .init(packet: &p)
         }
     }
 }
