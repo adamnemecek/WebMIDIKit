@@ -1,11 +1,3 @@
-//
-//  Extension.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 12/13/16.
-//
-//
-
 import enum CoreMIDI.MIDIObjectType
 
 extension Collection {

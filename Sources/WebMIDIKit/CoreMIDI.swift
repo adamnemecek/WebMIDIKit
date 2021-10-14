@@ -1,11 +1,3 @@
-//
-//  Utils.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 1/30/17.
-//
-//
-
 import AudioToolbox
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {

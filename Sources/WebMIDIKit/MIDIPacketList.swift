@@ -1,11 +1,3 @@
-//
-//  MIDIPacketList.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 2/3/17.
-//
-//
-
 import AVFoundation
 
 extension MIDIPacketList {

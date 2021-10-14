@@ -1,11 +1,3 @@
-//
-//  MIDIPortMap.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 1/31/17.
-//
-//
-
 import CoreMIDI
 
 public class MIDIPortMap<Value: MIDIPort> : Collection {
@@ -41,7 +33,9 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
         return _content.first { $0.value.displayName == name }?.value
     }
 
+    ///
     /// Prompts the user to select a MIDIPort (non-standard)
+    ///
     public final func prompt() -> Value? {
         guard let type = first?.1.type else { print("No ports found"); return nil }
         print("Select \(type) by typing the associated number")

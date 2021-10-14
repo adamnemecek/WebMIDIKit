@@ -1,55 +1,60 @@
-//
-//  WebMIDI.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 12/6/16.
-//
-//
-
 import CoreMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
 public class MIDIPort {
-
+    ///
     /// A unique ID of the port. This can be used by developers to remember ports
     /// the user has chosen for their application. This is maintained across
     /// instances of the application - e.g., when the system is rebooted - and a
     /// device is removed from the system. Applications may want to cache these
     /// ids locally to re-create a MIDI setup. Applications may use the comparison
     /// of id of MIDIPorts to test for equality.
+    ///
     public final var id: Int {
         return endpoint.id
     }
 
+    ///
     /// The manufacturer of the port.
+    ///
     public final var manufacturer: String {
         return endpoint.manufacturer
     }
 
+    ///
     /// The system name of the port.
+    ///
     public final var name: String {
         return endpoint.name
     }
 
+    ///
     /// The full name of the port.
+    ///
     public final var displayName: String {
         return endpoint.displayName
     }
 
+    ///
     /// A descriptor property to distinguish whether the port is an input or an
     /// output port. For MIDIOutput, this must be "output". For MIDIInput, this
     /// must be "input".
+    ///
     public final var type: MIDIPortType {
         return endpoint.type
     }
 
+    ///
     /// The version of the port.
+    ///
     public final var version: Int {
         return endpoint.version
     }
 
+    ///
     /// The state of the connection to the device.
+    ///
     public final var connection: MIDIPortConnectionState {
         return ref == 0 ? .closed : .open
     }
@@ -58,8 +63,10 @@ public class MIDIPort {
         return endpoint.state
     }
 
+    ///
     /// gets called when the port state changes (open/closed are called,
     /// or the device endpoint gets disconnected.
+    ///
     public final var onStateChange: ((MIDIPort) -> ())? = nil
 
     /// establishes a connection
@@ -82,7 +89,9 @@ public class MIDIPort {
         onStateChange?(self)
     }
 
+    ///
     /// Closes the port.
+    ///
     public final func close() {
         guard connection != .closed else { return }
 

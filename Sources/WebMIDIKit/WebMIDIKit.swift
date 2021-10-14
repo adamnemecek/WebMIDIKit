@@ -1,15 +1,9 @@
-//
-//  MIDIAccess.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 12/7/16.
-//
-//
-
 import CoreMIDI
 import Foundation
 
+///
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
+///
 public final class MIDIAccess {
 
     public let inputs: MIDIInputMap
@@ -17,8 +11,8 @@ public final class MIDIAccess {
 
     public var onStateChange: ((MIDIPort) -> ())? = nil
 
-    public init() {
-        self._client = MIDIClient()
+    public init(name: String) {
+        self._client = MIDIClient(name: name)
 
         self.inputs = MIDIInputMap(client: _client)
         self.outputs = MIDIOutputMap(client: _client)
@@ -67,17 +61,23 @@ public final class MIDIAccess {
         }
     }
 
+    ///
     /// given an output, tries to find the corresponding input port (non-standard)
+    ///
     public func input(for port: MIDIOutput) -> MIDIInput? {
         return inputs.port(with: port.displayName)
     }
 
+    ///
     /// given an input, tries to find the corresponding output port (non-standard)
+    ///
     public func output(for port: MIDIInput) -> MIDIOutput? {
         return outputs.port(with: port.displayName)
     }
 
+    ///
     /// Stops and restarts MIDI I/O (non-standard)
+    ///
     public func restart() {
         MIDIRestart()
     }

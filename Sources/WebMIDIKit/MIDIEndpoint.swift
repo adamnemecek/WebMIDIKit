@@ -1,11 +1,3 @@
-//
-//  MIDIEndpoint.swift
-//  WebMIDIKit
-//
-//  Created by Adam Nemecek on 2/2/17.
-//
-//
-
 import CoreMIDI
 
 //
