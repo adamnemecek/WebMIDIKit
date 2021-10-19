@@ -10,6 +10,16 @@ public final class MIDIInput : MIDIPort {
         }
     }
 
+    public var onMIDIMessage2: ((MIDIEvent2) -> ())? = nil {
+        willSet {
+            close()
+        }
+        didSet {
+//            open2()
+        }
+    }
+
+
     //
     //  convenience internal init(virtual client: MIDIClient) {
     //    self.init(client: client, endpoint: VirtualMIDISource(client: client))

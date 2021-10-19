@@ -55,6 +55,22 @@ extension MIDIPacket {
 
 //        var ptr = UnsafeMutableRawBufferPointer(packet: &self)
     }
+
+
+
+    mutating func buffer() -> UnsafeRawBufferPointer {
+        withUnsafePointer(to: &self.data) {
+            UnsafeRawBufferPointer(start: $0, count: Int(self.length))
+        }
+    }
+
+//    internal init(data: UnsafeRawBufferPointer, timestamp: MIDITimeStamp = 0) {
+//        self.init()
+//        withUnsafeMutablePointer(to: &self.data) {
+//            data.copyBytes(to: <#T##UnsafeMutableRawBufferPointer#>)
+//        }
+//
+//    }
 }
 
 extension Data {

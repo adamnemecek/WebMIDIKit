@@ -15,3 +15,12 @@ public struct MIDIEvent : Equatable {
 //        self.data = Data(bytes: ptr, count: Int(ptr.pointee.length))
 //    }
 }
+
+
+public struct MIDIEvent2 {
+    let timestamp: MIDITimeStamp
+    let data: UnsafeRawBufferPointer
+}
+
+
+

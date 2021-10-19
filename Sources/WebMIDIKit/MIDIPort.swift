@@ -2,7 +2,7 @@ import CoreMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
-public class MIDIPort {
+public class MIDIPort : Identifiable {
     ///
     /// A unique ID of the port. This can be used by developers to remember ports
     /// the user has chosen for their application. This is maintained across
@@ -69,7 +69,9 @@ public class MIDIPort {
     ///
     public final var onStateChange: ((MIDIPort) -> ())? = nil
 
+    ///
     /// establishes a connection
+    ///
     public final func open() {
         guard connection != .open else { return }
 
@@ -88,6 +90,25 @@ public class MIDIPort {
 
         onStateChange?(self)
     }
+
+//    public final func open2() {
+//        guard connection != .open else { return }
+//
+//        switch type {
+//        case .input:
+//            let `self` = self as! MIDIInput
+//            ref = MIDIInputPortCreate(ref: client.ref) {
+//                `self`.onMIDIMessage2?($0)
+//            }
+//
+//            OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
+//
+//        case .output:
+//            ref = MIDIOutputPortCreate(ref: client.ref)
+//        }
+//
+//        onStateChange?(self)
+//    }
 
     ///
     /// Closes the port.
@@ -183,6 +204,17 @@ func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> 
     })
     return port
 }
+
+@inline(__always) fileprivate
+func MIDIInputPortCreate2(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent2) -> ()) -> MIDIPortRef {
+    var port = MIDIPortRef()
+    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+        lst, srcconref in
+//        lst.pointee.forEach(readmidi)
+    })
+    return port
+}
+
 
 @inline(__always) fileprivate
 func MIDIOutputPortCreate(ref: MIDIClientRef) -> MIDIPortRef {

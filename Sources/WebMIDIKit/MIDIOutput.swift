@@ -1,5 +1,25 @@
 import CoreMIDI
 
+extension MIDIPacket  {
+//    public typealias ArrayLiteralElement = UInt8
+    public init(data: UInt8..., timestamp: MIDITimeStamp = 0) {
+        assert(data.count < 256)
+        self.init()
+        self.timeStamp = timestamp
+
+//        var elements = elements
+//        with
+        data.withUnsafeBufferPointer { _ in
+
+        }
+        fatalError()
+    }
+}
+
+func test() {
+    let packet = MIDIPacket(data: 1,2,3, timestamp: 0)
+}
+
 public final class MIDIOutput : MIDIPort {
 
     @discardableResult
