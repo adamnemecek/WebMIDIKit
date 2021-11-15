@@ -16,10 +16,6 @@ extension MIDIPacket  {
     }
 }
 
-func test() {
-    let packet = MIDIPacket(data: 1,2,3, timestamp: 0)
-}
-
 public final class MIDIOutput : MIDIPort {
 
     @discardableResult

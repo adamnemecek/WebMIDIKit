@@ -19,6 +19,8 @@ extension MIDIObjectType : CustomStringConvertible {
         case .externalEntity: return "externalEntity"
         case .externalSource: return "externalSource"
         case .externalDestination: return "externalDestination"
+        @unknown default:
+            fatalError()
         }
     }
     public var debugDescription: String {

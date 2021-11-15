@@ -91,24 +91,25 @@ public class MIDIPort : Identifiable {
         onStateChange?(self)
     }
 
-//    public final func open2() {
-//        guard connection != .open else { return }
-//
-//        switch type {
-//        case .input:
-//            let `self` = self as! MIDIInput
-//            ref = MIDIInputPortCreate(ref: client.ref) {
-//                `self`.onMIDIMessage2?($0)
-//            }
-//
-//            OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
-//
-//        case .output:
-//            ref = MIDIOutputPortCreate(ref: client.ref)
-//        }
-//
-//        onStateChange?(self)
-//    }
+    // it's about onmidimessage2
+    //    public final func open2() {
+    //        guard connection != .open else { return }
+    //
+    //        switch type {
+    //        case .input:
+    //            let `self` = self as! MIDIInput
+    //            ref = MIDIInputPortCreate(ref: client.ref) {
+    //                `self`.onMIDIMessage2?($0)
+    //            }
+    //
+    //            OSAssert(MIDIPortConnectSource(ref, endpoint.ref, nil))
+    //
+    //        case .output:
+    //            ref = MIDIOutputPortCreate(ref: client.ref)
+    //        }
+    //
+    //        onStateChange?(self)
+    //    }
 
     ///
     /// Closes the port.
@@ -143,13 +144,11 @@ public class MIDIPort : Identifiable {
 extension MIDIPort : CustomStringConvertible {
     public final var description: String {
         let type: String
-        if self.type == .input {
-            type = "MIDIInput"
-        } else {
-            type = "MIDIOutput"
+        switch self.type {
+        case .input: type = "MIDIInput"
+        case .output: type = "MIDIOutput"
         }
         return "\(type) \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
-        
     }
 }
 
@@ -205,15 +204,15 @@ func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> 
     return port
 }
 
-@inline(__always) fileprivate
-func MIDIInputPortCreate2(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent2) -> ()) -> MIDIPortRef {
-    var port = MIDIPortRef()
-    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
-        lst, srcconref in
-//        lst.pointee.forEach(readmidi)
-    })
-    return port
-}
+//@inline(__always) fileprivate
+//func MIDIInputPortCreate2(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent2) -> ()) -> MIDIPortRef {
+//    var port = MIDIPortRef()
+//    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
+//        lst, srcconref in
+//        //        lst.pointee.forEach(readmidi)
+//    })
+//    return port
+//}
 
 
 @inline(__always) fileprivate
