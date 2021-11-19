@@ -1,7 +1,7 @@
 import CoreMIDI
 
-public final class MIDIInput : MIDIPort {
-    public var onMIDIMessage: ((MIDIEvent) -> ())? = nil {
+public class MIDIInput : MIDIPort {
+    public final var onMIDIMessage: ((MIDIEvent) -> ())? = nil {
         willSet {
             close()
         }
@@ -10,12 +10,12 @@ public final class MIDIInput : MIDIPort {
         }
     }
 
-    public var onMIDIMessage2: ((MIDIEvent2) -> ())? = nil {
+    public final var onMIDIMessage2: ((MIDIEvent2) -> ())? = nil {
         willSet {
             close()
         }
         didSet {
-//            open2()
+            //            open2()
         }
     }
 
@@ -33,8 +33,20 @@ public final class MIDIInput : MIDIPort {
 //  }
 //}
 //
-//fileprivate func MIDISourceCreate(ref: MIDIClientRef) -> MIDIEndpointRef {
-//  var endpoint: MIDIEndpointRef = 0
-//  MIDISourceCreate(ref, "Virtual MIDI source endpoint" as CFString, &endpoint)
-//  return endpoint
-//}
+internal func MIDISourceCreate(ref: MIDIClientRef, name: String) -> MIDIEndpoint {
+    var endpoint: MIDIEndpointRef = 0
+    OSAssert(MIDISourceCreate(ref, name as CFString, &endpoint))
+    return MIDIEndpoint(ref: endpoint)
+}
+
+
+internal func MIDIDestinationCreate(ref: MIDIClientRef, name: String, block: @escaping MIDIReceiveBlock) -> MIDIEndpoint {
+    var endpoint: MIDIEndpointRef = 0
+    if #available(macOS 11.0, *) {
+        MIDIDestinationCreateWithProtocol(ref, name as CFString, ._1_0, &endpoint, block)
+    } else {
+        // Fallback on earlier versions
+        fatalError()
+    }
+    return MIDIEndpoint(ref: endpoint)
+}

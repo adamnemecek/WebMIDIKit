@@ -90,6 +90,12 @@ public final class MIDIInputMap : MIDIPortMap<MIDIInput> {
     internal final func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
         return add(MIDIInput(client: _client, endpoint: endpoint))
     }
+
+    internal final func addVirtual(_ endpoint: MIDIEndpoint) -> VirtualMIDIInput? {
+        let port = VirtualMIDIInput(client: _client, endpoint: endpoint)
+        let _ = add(port as MIDIInput)
+        return port
+    }
 }
 
 public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
@@ -100,6 +106,12 @@ public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
 
     internal final func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
         return add(MIDIOutput(client: _client, endpoint: endpoint))
+    }
+
+    internal final func addVirtual(_ endpoint: MIDIEndpoint) -> VirtualMIDIOutput? {
+        let port = VirtualMIDIOutput(client: _client, endpoint: endpoint)
+        let _ = add(port as MIDIOutput)
+        return port
     }
 }
 

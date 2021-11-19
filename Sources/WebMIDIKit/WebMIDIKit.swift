@@ -68,6 +68,18 @@ public final class MIDIAccess {
         return inputs.port(with: port.displayName)
     }
 
+    public func createVirtualMIDIInput(name: String) -> VirtualMIDIInput? {
+        let endpoint = MIDISourceCreate(ref: self._client.ref, name: name)
+        return self.inputs.addVirtual(endpoint)
+    }
+
+    public func createVirtualMIDIOutput(name: String) -> VirtualMIDIOutput? {
+        let endpoint = MIDIDestinationCreate(ref: self._client.ref, name: name) { (_, _) in
+            
+        }
+        return self.outputs.addVirtual(endpoint)
+    }
+
     ///
     /// given an input, tries to find the corresponding output port (non-standard)
     ///

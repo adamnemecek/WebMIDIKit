@@ -1,25 +1,25 @@
 import CoreMIDI
 
-extension MIDIPacket  {
-//    public typealias ArrayLiteralElement = UInt8
-    public init(data: UInt8..., timestamp: MIDITimeStamp = 0) {
-        assert(data.count < 256)
-        self.init()
-        self.timeStamp = timestamp
+//extension MIDIPacket  {
+////    public typealias ArrayLiteralElement = UInt8
+//    public init(data: UInt8..., timestamp: MIDITimeStamp = 0) {
+//        assert(data.count < 256)
+//        self.init()
+//        self.timeStamp = timestamp
+//
+////        var elements = elements
+////        with
+//        data.withUnsafeBufferPointer { _ in
+//
+//        }
+//        fatalError()
+//    }
+//}
 
-//        var elements = elements
-//        with
-        data.withUnsafeBufferPointer { _ in
-
-        }
-        fatalError()
-    }
-}
-
-public final class MIDIOutput : MIDIPort {
+public class MIDIOutput : MIDIPort {
 
     @discardableResult
-    public func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
+    public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
         open()
         var lst = MIDIPacketList(data)
         lst.send(to: self, offset: offset)
@@ -27,7 +27,7 @@ public final class MIDIOutput : MIDIPort {
         return self
     }
 
-    public func clear() {
+    public final func clear() {
         endpoint.flush()
     }
 

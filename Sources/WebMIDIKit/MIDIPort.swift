@@ -63,6 +63,17 @@ public class MIDIPort : Identifiable {
         return endpoint.state
     }
 
+    public final var isVirtual: Bool {
+        if let _ = self as? VirtualMIDIInput {
+            return true
+        }
+
+        if let _ = self as? VirtualMIDIOutput {
+            return true
+        }
+        return false
+    }
+
     ///
     /// gets called when the port state changes (open/closed are called,
     /// or the device endpoint gets disconnected.
@@ -199,6 +210,7 @@ func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> 
     var port = MIDIPortRef()
     OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
         lst, srcconref in
+
         lst.pointee.forEach(readmidi)
     })
     return port
