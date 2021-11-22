@@ -73,9 +73,15 @@ public final class MIDIAccess {
         return self.inputs.addVirtual(endpoint)
     }
 
-    public func createVirtualMIDIOutput(name: String) -> VirtualMIDIOutput? {
-        let endpoint = MIDIDestinationCreate(ref: self._client.ref, name: name) { (_, _) in
-            
+    public func createVirtualMIDIOutput(
+        name: String,
+        block: @escaping (UnsafePointer<MIDIPacketList>) -> ()
+    ) -> VirtualMIDIOutput? {
+        let endpoint = MIDIDestinationCreate(ref: self._client.ref, name: name) { (packet, _) in
+            block(packet)
+        }
+        defer {
+            // todo: send notification? but maybe not since this is user created
         }
         return self.outputs.addVirtual(endpoint)
     }
@@ -123,4 +129,25 @@ fileprivate extension NotificationCenter {
             }
         }
     }
+}
+
+internal func MIDISourceCreate(ref: MIDIClientRef, name: String) -> MIDIEndpoint {
+    var endpoint: MIDIEndpointRef = 0
+    OSAssert(MIDISourceCreate(ref, name as CFString, &endpoint))
+    return MIDIEndpoint(ref: endpoint)
+}
+
+
+
+internal func MIDIDestinationCreate(ref: MIDIClientRef, name: String, block: @escaping MIDIReadBlock) -> MIDIEndpoint {
+    var endpoint: MIDIEndpointRef = 0
+//    if #available(macOS 11.0, *) {
+//        MIDIDestinationCreateWithProtocol(ref, name as CFString, ._1_0, &endpoint, block)
+//    } else {
+//        // Fallback on earlier versions
+//        MIDIDestinationCreate(<#T##client: MIDIClientRef##MIDIClientRef#>, <#T##name: CFString##CFString#>, <#T##readProc: MIDIReadProc##MIDIReadProc##(UnsafePointer<MIDIPacketList>, UnsafeMutableRawPointer?, UnsafeMutableRawPointer?) -> Void#>, <#T##refCon: UnsafeMutableRawPointer?##UnsafeMutableRawPointer?#>, <#T##outDest: UnsafeMutablePointer<MIDIEndpointRef>##UnsafeMutablePointer<MIDIEndpointRef>#>)
+//        fatalError()
+//    }
+    OSAssert(MIDIDestinationCreateWithBlock(ref, name as CFString, &endpoint, block))
+    return MIDIEndpoint(ref: endpoint)
 }
