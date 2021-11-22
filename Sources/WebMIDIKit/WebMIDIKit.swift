@@ -72,9 +72,24 @@ public final class MIDIAccess {
 
     }
 
+    ///
+    /// given an input, tries to find the corresponding output port (non-standard)
+    ///
+    public func output(for port: MIDIInput) -> MIDIOutput? {
+
+        if let name = port.displayName {
+            return outputs.port(with: name)
+        }
+        return nil
+    }
+
     public func createVirtualMIDIInput(name: String) -> VirtualMIDIInput? {
         let endpoint = MIDISourceCreate(ref: self._client.ref, name: name)
         return self.inputs.addVirtual(endpoint)
+    }
+
+    public func removeVirtualMIDIInput(_ port: VirtualMIDIInput) {
+        let _ = self.inputs.remove(port.endpoint)
     }
 
     public func createVirtualMIDIOutput(
@@ -96,21 +111,15 @@ public final class MIDIAccess {
         return port
     }
 
-    ///
-    /// given an input, tries to find the corresponding output port (non-standard)
-    ///
-    public func output(for port: MIDIInput) -> MIDIOutput? {
-        if let name = port.displayName {
-            return outputs.port(with: name)
-        }
-        return nil
+    public func removeVirtualMIDIOutput(_ port: VirtualMIDIOutput) {
+        let _ = self.outputs.remove(port.endpoint)
     }
 
     ///
     /// Stops and restarts MIDI I/O (non-standard)
     ///
     public func restart() {
-        MIDIRestart()
+        OSAssert(MIDIRestart())
     }
 
     private let _client: MIDIClient

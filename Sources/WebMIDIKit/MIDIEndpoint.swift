@@ -4,7 +4,7 @@ import CoreMIDI
 // you can think of this as the HW input/output or virtual endpoint
 //
 
-internal class MIDIEndpoint {
+internal final class MIDIEndpoint {
     final let ref: MIDIEndpointRef
 
     init(ref: MIDIEndpointRef) {
@@ -56,6 +56,12 @@ internal class MIDIEndpoint {
     final private subscript(int property: CFString) -> Int {
         return MIDIObjectGetIntProperty(ref: ref, property: property)
     }
+
+    /// note that only virtual endpoints (i.e. created with MIDISourceCreate
+    /// or MIDIDestinationCreate need to be disposed)
+    final func dispose() {
+        OSAssert(MIDIEndpointDispose(ref))
+    }
 }
 
 extension MIDIEndpoint: Equatable, Comparable {
@@ -96,12 +102,12 @@ func MIDIObjectGetType(id: Int) -> MIDIObjectType {
     OSAssert(MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type))
     return type
 }
-
-internal class VirtualMIDIEndpoint: MIDIEndpoint {
-    deinit {
-        /// note that only virtual endpoints (i.e. created with MIDISourceCreate
-        /// or MIDIDestinationCreate need to be disposed)
-        OSAssert(MIDIEndpointDispose(ref))
-    }
-}
+//
+//internal class VirtualMIDIEndpoint: MIDIEndpoint {
+//    deinit {
+//        /// note that only virtual endpoints (i.e. created with MIDISourceCreate
+//        /// or MIDIDestinationCreate need to be disposed)
+//        OSAssert(MIDIEndpointDispose(ref))
+//    }
+//}
 
