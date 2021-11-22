@@ -80,10 +80,16 @@ public final class MIDIAccess {
         let endpoint = MIDIDestinationCreate(ref: self._client.ref, name: name) { (packet, _) in
             block(packet)
         }
-        defer {
-            // todo: send notification? but maybe not since this is user created
-        }
-        return self.outputs.addVirtual(endpoint)
+        let port = self.outputs.addVirtual(endpoint)
+        //
+        // send a notificaiton that the port has changed?
+        //
+//        defer {
+//            if let port = port, let onStateChange = self.onStateChange {
+//                onStateChange(port)
+//            }
+//        }
+        return port
     }
 
     ///
@@ -101,11 +107,6 @@ public final class MIDIAccess {
     }
 
     private let _client: MIDIClient
-    //  private let _clients: Set<MIDIClient> = []
-
-    //  private let _input: MIDIInput
-    //  private let _output: MIDIOutput
-
     private var _observer: NSObjectProtocol? = nil
 
 }
@@ -137,17 +138,13 @@ internal func MIDISourceCreate(ref: MIDIClientRef, name: String) -> MIDIEndpoint
     return MIDIEndpoint(ref: endpoint)
 }
 
-
-
-internal func MIDIDestinationCreate(ref: MIDIClientRef, name: String, block: @escaping MIDIReadBlock) -> MIDIEndpoint {
+// update to midi2?
+internal func MIDIDestinationCreate(
+    ref: MIDIClientRef,
+    name: String,
+    block: @escaping MIDIReadBlock
+) -> MIDIEndpoint {
     var endpoint: MIDIEndpointRef = 0
-//    if #available(macOS 11.0, *) {
-//        MIDIDestinationCreateWithProtocol(ref, name as CFString, ._1_0, &endpoint, block)
-//    } else {
-//        // Fallback on earlier versions
-//        MIDIDestinationCreate(<#T##client: MIDIClientRef##MIDIClientRef#>, <#T##name: CFString##CFString#>, <#T##readProc: MIDIReadProc##MIDIReadProc##(UnsafePointer<MIDIPacketList>, UnsafeMutableRawPointer?, UnsafeMutableRawPointer?) -> Void#>, <#T##refCon: UnsafeMutableRawPointer?##UnsafeMutableRawPointer?#>, <#T##outDest: UnsafeMutablePointer<MIDIEndpointRef>##UnsafeMutablePointer<MIDIEndpointRef>#>)
-//        fatalError()
-//    }
     OSAssert(MIDIDestinationCreateWithBlock(ref, name as CFString, &endpoint, block))
     return MIDIEndpoint(ref: endpoint)
 }
