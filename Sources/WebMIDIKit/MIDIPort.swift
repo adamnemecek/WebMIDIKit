@@ -18,21 +18,21 @@ public class MIDIPort : Identifiable {
     ///
     /// The manufacturer of the port.
     ///
-    public final var manufacturer: String {
+    public final var manufacturer: String? {
         return endpoint.manufacturer
     }
 
     ///
     /// The system name of the port.
     ///
-    public final var name: String {
+    public final var name: String? {
         return endpoint.name
     }
 
     ///
     /// The full name of the port.
     ///
-    public final var displayName: String {
+    public final var displayName: String? {
         return endpoint.displayName
     }
 

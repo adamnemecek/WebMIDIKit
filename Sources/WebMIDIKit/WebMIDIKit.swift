@@ -65,7 +65,11 @@ public final class MIDIAccess {
     /// given an output, tries to find the corresponding input port (non-standard)
     ///
     public func input(for port: MIDIOutput) -> MIDIInput? {
-        return inputs.port(with: port.displayName)
+        if let name = port.displayName {
+            return inputs.port(with: name)
+        }
+        return nil
+
     }
 
     public func createVirtualMIDIInput(name: String) -> VirtualMIDIInput? {
@@ -96,7 +100,10 @@ public final class MIDIAccess {
     /// given an input, tries to find the corresponding output port (non-standard)
     ///
     public func output(for port: MIDIInput) -> MIDIOutput? {
-        return outputs.port(with: port.displayName)
+        if let name = port.displayName {
+            return outputs.port(with: name)
+        }
+        return nil
     }
 
     ///

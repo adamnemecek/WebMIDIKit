@@ -20,15 +20,15 @@ internal class MIDIEndpoint {
         return self[int: kMIDIPropertyUniqueID]
     }
 
-    final var manufacturer: String {
+    final var manufacturer: String? {
         return self[string: kMIDIPropertyManufacturer]
     }
 
-    final var name: String {
+    final var name: String? {
         return self[string: kMIDIPropertyName]
     }
 
-    final var displayName: String {
+    final var displayName: String? {
         return self[string: kMIDIPropertyDisplayName]
     }
 
@@ -49,7 +49,7 @@ internal class MIDIEndpoint {
         OSAssert(MIDIFlushOutput(ref))
     }
 
-    final private subscript(string property: CFString) -> String {
+    final private subscript(string property: CFString) -> String? {
         return MIDIObjectGetStringProperty(ref: ref, property: property)
     }
 
@@ -75,10 +75,10 @@ extension MIDIEndpoint : Hashable {
 }
 
 @inline(__always) fileprivate
-func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String {
+func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String? {
     var string: Unmanaged<CFString>? = nil
     OSAssert(MIDIObjectGetStringProperty(ref, property, &string))
-    return (string?.takeRetainedValue()) as String? ?? ""
+    return (string?.takeRetainedValue()) as String?
 }
 
 

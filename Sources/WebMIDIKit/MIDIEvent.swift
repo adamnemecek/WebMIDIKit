@@ -4,7 +4,7 @@ public struct MIDIEvent : Equatable {
     let timestamp : MIDITimeStamp
     let data : Data
 
-    public static func ==(lhs: MIDIEvent, rhs: MIDIEvent) -> Bool {
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
         return lhs.timestamp == rhs.timestamp && lhs.data == rhs.data
     }
 
@@ -17,9 +17,13 @@ public struct MIDIEvent : Equatable {
 }
 
 
-public struct MIDIEvent2 {
+public struct MIDIEvent2: Equatable {
     let timestamp: MIDITimeStamp
-    let data: UnsafeRawBufferPointer
+    let data: UnsafeBufferPointer<UInt8>
+
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        fatalError()
+    }
 }
 
 
