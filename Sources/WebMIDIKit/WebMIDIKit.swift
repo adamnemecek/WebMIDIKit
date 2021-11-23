@@ -5,21 +5,21 @@ import Foundation
 /// https://www.w3.org/TR/webmidi/#midiaccess-interface
 ///
 public final class MIDIAccess {
-    
+
     public let inputs: MIDIInputMap
     public let outputs: MIDIOutputMap
-    
+
     public var onStateChange: ((MIDIPort) -> ())? = nil
-    
+
     private let _client: MIDIClient
     private var _observer: NSObjectProtocol? = nil
-    
+
     public init(name: String) {
         self._client = MIDIClient(name: name)
-        
+
         self.inputs = MIDIInputMap(client: _client)
         self.outputs = MIDIOutputMap(client: _client)
-        
+
         //    self._input = MIDIInput(virtual: _client)
         //    self._output = MIDIOutput(virtual: _client) {
         //      print($0.0)
@@ -29,33 +29,33 @@ public final class MIDIAccess {
         //      //          self.midi(src: 0, lst: $0)
         //      print($0)
         //    }
-        
+
         self._observer = NotificationCenter.default.observeMIDIEndpoints {
             self._notification(endpoint: $0, type: $1).map {
                 self.onStateChange?($0)
             }
         }
     }
-    
+
     deinit {
         _observer.map(NotificationCenter.default.removeObserver)
     }
-    
+
     private func _notification(endpoint: MIDIEndpoint, type: MIDIEndpointNotificationType) -> MIDIPort? {
         switch (endpoint.type, type) {
-            
+
         case (.input, .added):
             return inputs.add(endpoint)
-            
+
         case (.output, .added):
             return outputs.add(endpoint)
-            
+
         case (.input, .removed):
             return inputs.remove(endpoint).map {
                 $0.close()
                 return $0
             }
-            
+
         case (.output, .removed):
             return outputs.remove(endpoint).map {
                 $0.close()
@@ -63,7 +63,7 @@ public final class MIDIAccess {
             }
         }
     }
-    
+
     ///
     /// given an output, tries to find the corresponding input port (non-standard)
     ///
@@ -72,29 +72,29 @@ public final class MIDIAccess {
             return inputs.port(with: name)
         }
         return nil
-        
+
     }
-    
+
     ///
     /// given an input, tries to find the corresponding output port (non-standard)
     ///
     public func output(for port: MIDIInput) -> MIDIOutput? {
-        
+
         if let name = port.displayName {
             return outputs.port(with: name)
         }
         return nil
     }
-    
+
     public func createVirtualMIDIInput(name: String) -> VirtualMIDIInput? {
         let endpoint = MIDISourceCreate(ref: self._client.ref, name: name)
         return self.inputs.addVirtual(endpoint)
     }
-    
+
     public func removeVirtualMIDIInput(_ port: VirtualMIDIInput) {
         let _ = self.inputs.remove(port.endpoint)
     }
-    
+
     public func createVirtualMIDIOutput(
         name: String,
         block: @escaping (UnsafePointer<MIDIPacketList>) -> ()
@@ -113,11 +113,11 @@ public final class MIDIAccess {
         //        }
         return port
     }
-    
+
     public func removeVirtualMIDIOutput(_ port: VirtualMIDIOutput) {
         let _ = self.outputs.remove(port.endpoint)
     }
-    
+
     ///
     /// Stops and restarts MIDI I/O (non-standard)
     ///

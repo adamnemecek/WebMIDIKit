@@ -5,6 +5,14 @@ import CoreMIDI
 //
 
 internal final class MIDIEndpoint : Codable {
+    enum CodingKeys: CodingKey {
+        case type,
+             id,
+             manufacturer,
+             name,
+             isVirtual
+    }
+
     final let ref: MIDIEndpointRef
     
     init(ref: MIDIEndpointRef) {
@@ -75,7 +83,7 @@ internal final class MIDIEndpoint : Codable {
     func assignUniqueID() {
         let id = MIDIObjectAllocUniqueID()
         MIDIObjectSetIntProperty(ref: ref, property: kMIDIPropertyUniqueID, value: id)
-        print("port id \(self.id)")
+        //        print("port id \(self.id)")
     }
     
     /// note that only virtual endpoints (i.e. created with MIDISourceCreate

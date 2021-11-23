@@ -21,8 +21,6 @@ internal final class MIDIClient {
     deinit {
         OSAssert(MIDIClientDispose(ref))
     }
-    
-    
 }
 
 extension MIDIClient : Equatable, Comparable {

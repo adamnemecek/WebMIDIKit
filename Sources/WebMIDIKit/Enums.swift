@@ -8,7 +8,7 @@ import enum CoreMIDI.MIDINotificationMessageID
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortType)
 ///
 
-public enum MIDIPortType : Equatable, CustomStringConvertible {
+public enum MIDIPortType : Equatable, CustomStringConvertible, Codable {
     ///
     /// If a MIDIPort is an input port, the type member must be this value.
     ///
