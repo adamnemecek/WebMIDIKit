@@ -103,14 +103,6 @@ public final class MIDIAccess {
             block(packet)
         }
         let port = self.outputs.addVirtual(endpoint)
-        //
-        // send a notificaiton that the port has changed?
-        //
-        //        defer {
-        //            if let port = port, let onStateChange = self.onStateChange {
-        //                onStateChange(port)
-        //            }
-        //        }
         return port
     }
 

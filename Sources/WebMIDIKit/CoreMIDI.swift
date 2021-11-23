@@ -1,4 +1,4 @@
-import AudioToolbox
+import CoreMIDI
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
     
