@@ -40,6 +40,9 @@ internal final class MIDIEndpoint {
         return self[int: kMIDIPropertyDriverVersion]
     }
 
+    ///
+    ///
+    ///
     final var state: MIDIPortDeviceState {
         /// As per docs, 0 means connected, 1 disconnected (kaksoispiste dee)
         return self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
@@ -55,6 +58,10 @@ internal final class MIDIEndpoint {
 
     final private subscript(int property: CFString) -> Int {
         return MIDIObjectGetIntProperty(ref: ref, property: property)
+    }
+
+    func assignUniqueID() {
+        MIDIObjectSetIntProperty(ref: ref, property: kMIDIPropertyUniqueID, value: 0)
     }
 
     /// note that only virtual endpoints (i.e. created with MIDISourceCreate
@@ -101,6 +108,12 @@ func MIDIObjectGetType(id: Int) -> MIDIObjectType {
     var type: MIDIObjectType = .other
     OSAssert(MIDIObjectFindByUniqueID(MIDIUniqueID(id), &ref, &type))
     return type
+}
+
+
+@inline(__always) fileprivate
+func MIDIObjectSetIntProperty(ref: MIDIObjectRef, property: CFString, value: Int32) {
+    OSAssert(MIDIObjectSetIntegerProperty(ref, property, value))
 }
 //
 //internal class VirtualMIDIEndpoint: MIDIEndpoint {
