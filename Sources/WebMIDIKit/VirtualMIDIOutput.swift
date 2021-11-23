@@ -5,7 +5,7 @@ public final class VirtualMIDIOutput: MIDIOutput {
         self.endpoint.assignUniqueID()
     }
 
-    deinit {
-        self.endpoint.dispose()
-    }
+//    deinit {
+//        self.endpoint.dispose()
+//    }
 }

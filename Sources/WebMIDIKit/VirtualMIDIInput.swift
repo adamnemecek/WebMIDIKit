@@ -4,7 +4,7 @@ public final class VirtualMIDIInput: MIDIInput {
         self.endpoint.assignUniqueID()
     }
 
-    deinit {
-        self.endpoint.dispose()
-    }
+//    deinit {
+//        self.endpoint.dispose()
+//    }
 }

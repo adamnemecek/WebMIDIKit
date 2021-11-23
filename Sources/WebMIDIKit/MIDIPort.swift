@@ -63,15 +63,12 @@ public class MIDIPort : Identifiable {
         return endpoint.state
     }
 
-    public final var isVirtual: Bool {
-        if let _ = self as? VirtualMIDIInput {
-            return true
-        }
 
-        if let _ = self as? VirtualMIDIOutput {
-            return true
-        }
-        return false
+    ///
+    /// nonstandard
+    ///
+    public final var isVirtual: Bool {
+        self.endpoint.isVirtual
     }
 
     ///
@@ -149,6 +146,15 @@ public class MIDIPort : Identifiable {
         self.client = client
         self.endpoint = endpoint
         self.ref = 0
+    }
+
+    ///
+    /// according to the docs, virtual endpoints need to be disposed
+    ///
+    deinit {
+        if self.isVirtual {
+            self.endpoint.dispose()
+        }
     }
 }
 

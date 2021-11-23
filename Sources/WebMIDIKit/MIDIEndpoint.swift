@@ -77,11 +77,13 @@ internal final class MIDIEndpoint {
     }
 }
 
-extension MIDIEndpoint: Equatable, Comparable {
+extension MIDIEndpoint: Equatable {
     static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
         return lhs.id == rhs.id
     }
+}
 
+extension MIDIEndpoint: Comparable {
     static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
         return lhs.id < rhs.id
     }
@@ -92,6 +94,10 @@ extension MIDIEndpoint : Hashable {
         hasher.combine(id)
     }
 }
+
+///
+/// utilities
+///
 
 @inline(__always) fileprivate
 func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String? {
