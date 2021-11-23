@@ -4,6 +4,9 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     public typealias Key = Int
     public typealias Index = Dictionary<Key, Value>.Index
 
+    private final var _content: [Key: Value]
+    fileprivate final weak var _client: MIDIClient!
+
     public final var startIndex: Index {
         return _content.startIndex
     }
@@ -77,9 +80,6 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     private final subscript (endpoint: MIDIEndpoint) -> Value? {
         return _content.first { $0.value.endpoint == endpoint }?.value
     }
-
-    private final var _content: [Key: Value]
-    fileprivate final weak var _client: MIDIClient!
 }
 
 public final class MIDIInputMap : MIDIPortMap<MIDIInput> {

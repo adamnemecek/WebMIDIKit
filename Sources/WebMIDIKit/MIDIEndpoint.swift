@@ -6,52 +6,52 @@ import CoreMIDI
 
 internal final class MIDIEndpoint : Codable {
     final let ref: MIDIEndpointRef
-
+    
     init(ref: MIDIEndpointRef) {
         self.ref = ref
     }
-
+    
     init(from decoder: Decoder) throws {
         fatalError()
     }
-
+    
     func encode(to encoder: Encoder) throws {
         fatalError()
     }
-
+    
     internal init(notification n: MIDIObjectAddRemoveNotification) {
         assert(MIDIPortType(n.childType) == MIDIEndpoint(ref: n.child).type)
         self.ref = n.child
     }
-
+    
     final var id: Int {
         return self[int: kMIDIPropertyUniqueID]
     }
-
+    
     final var manufacturer: String? {
         return self[string: kMIDIPropertyManufacturer]
     }
-
+    
     final var name: String? {
         return self[string: kMIDIPropertyName]
     }
-
+    
     final var displayName: String? {
         return self[string: kMIDIPropertyDisplayName]
     }
-
+    
     final var type: MIDIPortType {
         return MIDIPortType(MIDIObjectGetType(id: id))
     }
-
+    
     final var version: Int {
         return self[int: kMIDIPropertyDriverVersion]
     }
-
+    
     final var isVirtual: Bool {
         MIDIEndpointIsVirtual(ref: self.ref)
     }
-
+    
     ///
     ///
     ///
@@ -59,25 +59,25 @@ internal final class MIDIEndpoint : Codable {
         /// As per docs, 0 means connected, 1 disconnected (kaksoispiste dee)
         return self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
     }
-
+    
     final func flush() {
         OSAssert(MIDIFlushOutput(ref))
     }
-
+    
     final private subscript(string property: CFString) -> String? {
         return MIDIObjectGetStringProperty(ref: ref, property: property)
     }
-
+    
     final private subscript(int property: CFString) -> Int {
         return MIDIObjectGetIntProperty(ref: ref, property: property)
     }
-
+    
     func assignUniqueID() {
         let id = MIDIObjectAllocUniqueID()
         MIDIObjectSetIntProperty(ref: ref, property: kMIDIPropertyUniqueID, value: id)
         print("port id \(self.id)")
     }
-
+    
     /// note that only virtual endpoints (i.e. created with MIDISourceCreate
     /// or MIDIDestinationCreate need to be disposed)
     final func dispose() {

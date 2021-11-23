@@ -17,20 +17,20 @@ import CoreMIDI
 //}
 
 public class MIDIOutput : MIDIPort {
-
+    
     @discardableResult
     public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
         open()
         var lst = MIDIPacketList(data)
         lst.send(to: self, offset: offset)
-
+        
         return self
     }
-
+    
     public final func clear() {
         endpoint.flush()
     }
-
+    
     //  internal convenience init(virtual client: MIDIClient, block: @escaping MIDIReadBlock) {
     //    self.init(client: client, endpoint: VirtualMIDIDestination(client: client, block: block))
     //  }

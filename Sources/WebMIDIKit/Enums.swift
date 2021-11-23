@@ -13,12 +13,12 @@ public enum MIDIPortType : Equatable, CustomStringConvertible {
     /// If a MIDIPort is an input port, the type member must be this value.
     ///
     case input
-
+    
     ///
     /// If a MIDIPort is an output port, the type member must be this value.
     ///
     case output
-
+    
     internal init(_ type: MIDIObjectType) {
         switch type {
         case .source:
@@ -31,7 +31,7 @@ public enum MIDIPortType : Equatable, CustomStringConvertible {
             fatalError("Unexpected port type \(type)")
         }
     }
-
+    
     public var description: String {
         switch self {
         case .input: return "input"
@@ -68,7 +68,7 @@ public enum MIDIPortConnectionState : Equatable {
     /// explicitly) and is available for use.
     ///
     case open
-
+    
     /// The device that MIDIPort represents has not been opened, or has been
     /// explicitly closed. Until a MIDIPort has been opened either explicitly
     /// (through open()) or implicitly (by adding a midimessage event handler on
@@ -79,7 +79,7 @@ public enum MIDIPortConnectionState : Equatable {
 
 internal enum MIDIEndpointNotificationType {
     case added, removed
-
+    
     init(_ messageID: MIDINotificationMessageID) {
         switch messageID {
         case .msgObjectAdded:

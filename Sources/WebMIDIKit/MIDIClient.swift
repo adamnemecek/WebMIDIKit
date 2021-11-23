@@ -11,25 +11,25 @@ internal extension Notification.Name {
 ///
 internal final class MIDIClient {
     let ref: MIDIClientRef
-
+    
     internal init(name: String) {
         ref = MIDIClientCreate(name: name) {
             NotificationCenter.default.post(name: .MIDISetupNotification, object: $0)
         }
     }
-
+    
     deinit {
         OSAssert(MIDIClientDispose(ref))
     }
-
-
+    
+    
 }
 
 extension MIDIClient : Equatable, Comparable {
     static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref == rhs.ref
     }
-
+    
     static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref < rhs.ref
     }

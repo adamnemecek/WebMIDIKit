@@ -1,11 +1,11 @@
 import AudioToolbox
 
 extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
-
+    
     public var description: String {
         return "message\(messageID)"
     }
-
+    
     internal init?(ptr: UnsafePointer<MIDINotification>) {
         switch ptr.pointee.messageID {
         case .msgObjectAdded, .msgObjectRemoved:
@@ -43,7 +43,7 @@ public enum Error: Swift.Error, Equatable  {
          objectNotFound,
          idNotUnique,
          notPermitted
-
+    
     public init(err: OSStatus) {
         switch err {
         case kMIDIInvalidClient: self = .invalidClient
@@ -64,7 +64,7 @@ public enum Error: Swift.Error, Equatable  {
         default: fatalError("unrecognized error \(err)")
         }
     }
-
+    
     public var rawValue: OSStatus {
         switch self {
         case .invalidClient: return kMIDIInvalidClient
@@ -92,7 +92,7 @@ loop:
         let uniqueID = MIDIUniqueID.random(in: MIDIUniqueID.min..<MIDIUniqueID.max)
         var ref: MIDIObjectRef = 0
         var type: MIDIObjectType = .other
-
+        
         let err = MIDIObjectFindByUniqueID(uniqueID, &ref, &type)
         //
         // this means that the object was not found and therefore the id is free
