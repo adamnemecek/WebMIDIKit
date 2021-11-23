@@ -27,62 +27,79 @@ func OSAssert(_ err: OSStatus, function: String = #function) {
     assert(err == noErr, "Error \(Error(err: err)) (osstatus: \(err)) in \(function)")
 }
 
-
 public enum Error: Swift.Error, Equatable  {
-    case InvalidClient,
-         InvalidPort,
-         WrongEndpointType,
-         NoConnection,
-         UnknownEndpoint,
-         UnknownProperty,
-         WrongPropertyType,
-         NoCurrentSetup,
-         MessageSendErr,
-         ServerStartErr,
-         SetupFormatErr,
-         WrongThread,
-         ObjectNotFound,
-         IDNotUnique,
-         NotPermitted
+    case invalidClient,
+         invalidPort,
+         wrongEndpointType,
+         noConnection,
+         unknownEndpoint,
+         unknownProperty,
+         wrongPropertyType,
+         noCurrentSetup,
+         messageSendErr,
+         serverStartErr,
+         setupFormatErr,
+         wrongThread,
+         objectNotFound,
+         idNotUnique,
+         notPermitted
 
     public init(err: OSStatus) {
         switch err {
-        case kMIDIInvalidClient: self = .InvalidClient
-        case kMIDIInvalidPort: self = .InvalidPort
-        case kMIDIWrongEndpointType: self = .WrongEndpointType
-        case kMIDINoConnection: self = .NoConnection
-        case kMIDIUnknownEndpoint: self = .UnknownEndpoint
-        case kMIDIUnknownProperty: self = .UnknownProperty
-        case kMIDIWrongPropertyType: self = .WrongPropertyType
-        case kMIDINoCurrentSetup: self = .NoCurrentSetup
-        case kMIDIMessageSendErr: self = .MessageSendErr
-        case kMIDIServerStartErr: self = .ServerStartErr
-        case kMIDISetupFormatErr: self = .SetupFormatErr
-        case kMIDIWrongThread: self = .WrongThread
-        case kMIDIObjectNotFound: self = .ObjectNotFound
-        case kMIDIIDNotUnique: self = .IDNotUnique
-        case kMIDINotPermitted: self = .NotPermitted
+        case kMIDIInvalidClient: self = .invalidClient
+        case kMIDIInvalidPort: self = .invalidPort
+        case kMIDIWrongEndpointType: self = .wrongEndpointType
+        case kMIDINoConnection: self = .noConnection
+        case kMIDIUnknownEndpoint: self = .unknownEndpoint
+        case kMIDIUnknownProperty: self = .unknownProperty
+        case kMIDIWrongPropertyType: self = .wrongPropertyType
+        case kMIDINoCurrentSetup: self = .noCurrentSetup
+        case kMIDIMessageSendErr: self = .messageSendErr
+        case kMIDIServerStartErr: self = .serverStartErr
+        case kMIDISetupFormatErr: self = .setupFormatErr
+        case kMIDIWrongThread: self = .wrongThread
+        case kMIDIObjectNotFound: self = .objectNotFound
+        case kMIDIIDNotUnique: self = .idNotUnique
+        case kMIDINotPermitted: self = .notPermitted
         default: fatalError("unrecognized error \(err)")
         }
     }
 
     public var rawValue: OSStatus {
         switch self {
-        case .InvalidClient: return kMIDIInvalidClient
-        case .InvalidPort: return kMIDIInvalidPort
-        case .WrongEndpointType: return kMIDIWrongEndpointType
-        case .NoConnection: return kMIDINoConnection
-        case .UnknownEndpoint: return kMIDIUnknownEndpoint
-        case .UnknownProperty: return kMIDIUnknownProperty
-        case .WrongPropertyType: return kMIDIWrongPropertyType
-        case .NoCurrentSetup: return kMIDINoCurrentSetup
-        case .MessageSendErr: return kMIDIMessageSendErr
-        case .ServerStartErr: return kMIDIServerStartErr
-        case .SetupFormatErr: return kMIDISetupFormatErr
-        case .WrongThread: return kMIDIWrongThread
-        case .ObjectNotFound: return kMIDIObjectNotFound
-        case .IDNotUnique: return kMIDIIDNotUnique
-        case .NotPermitted: return kMIDINotPermitted
+        case .invalidClient: return kMIDIInvalidClient
+        case .invalidPort: return kMIDIInvalidPort
+        case .wrongEndpointType: return kMIDIWrongEndpointType
+        case .noConnection: return kMIDINoConnection
+        case .unknownEndpoint: return kMIDIUnknownEndpoint
+        case .unknownProperty: return kMIDIUnknownProperty
+        case .wrongPropertyType: return kMIDIWrongPropertyType
+        case .noCurrentSetup: return kMIDINoCurrentSetup
+        case .messageSendErr: return kMIDIMessageSendErr
+        case .serverStartErr: return kMIDIServerStartErr
+        case .setupFormatErr: return kMIDISetupFormatErr
+        case .wrongThread: return kMIDIWrongThread
+        case .objectNotFound: return kMIDIObjectNotFound
+        case .idNotUnique: return kMIDIIDNotUnique
+        case .notPermitted: return kMIDINotPermitted
         }
     }
+}
+
+func MIDIObjectAllocUniqueID() -> MIDIUniqueID {
+loop:
+    while true {
+        let uniqueID = MIDIUniqueID.random(in: MIDIUniqueID.min..<MIDIUniqueID.max)
+        var ref: MIDIObjectRef = 0
+        var type: MIDIObjectType = .other
+
+        let err = MIDIObjectFindByUniqueID(uniqueID, &ref, &type)
+        //
+        // this means that the object was not found and therefore the id is free
+        //
+        if err == Error.objectNotFound.rawValue {
+            return uniqueID
+        }
+    }
+    fatalError("will not get here")
 }

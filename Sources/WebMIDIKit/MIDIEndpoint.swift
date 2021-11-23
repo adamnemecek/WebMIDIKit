@@ -40,6 +40,10 @@ internal final class MIDIEndpoint {
         return self[int: kMIDIPropertyDriverVersion]
     }
 
+    final var isVirtual: Bool {
+        MIDIEndpointIsVirtual(ref: self.ref)
+    }
+
     ///
     ///
     ///
@@ -61,7 +65,9 @@ internal final class MIDIEndpoint {
     }
 
     func assignUniqueID() {
-        MIDIObjectSetIntProperty(ref: ref, property: kMIDIPropertyUniqueID, value: 0)
+        let id = MIDIObjectAllocUniqueID()
+        MIDIObjectSetIntProperty(ref: ref, property: kMIDIPropertyUniqueID, value: id)
+        print("port id \(self.id)")
     }
 
     /// note that only virtual endpoints (i.e. created with MIDISourceCreate
@@ -114,6 +120,16 @@ func MIDIObjectGetType(id: Int) -> MIDIObjectType {
 @inline(__always) fileprivate
 func MIDIObjectSetIntProperty(ref: MIDIObjectRef, property: CFString, value: Int32) {
     OSAssert(MIDIObjectSetIntegerProperty(ref, property, value))
+}
+
+
+///
+/// we use the fact that virtual endpoints have no entity to determine if this is a virtual port
+///
+func MIDIEndpointIsVirtual(ref: MIDIEndpointRef) -> Bool {
+    var out: MIDIEntityRef = 0
+    let err = MIDIEndpointGetEntity(ref, &out)
+    return err == Error.objectNotFound.rawValue
 }
 //
 //internal class VirtualMIDIEndpoint: MIDIEndpoint {
