@@ -4,11 +4,19 @@ import CoreMIDI
 // you can think of this as the HW input/output or virtual endpoint
 //
 
-internal final class MIDIEndpoint {
+internal final class MIDIEndpoint : Codable {
     final let ref: MIDIEndpointRef
 
     init(ref: MIDIEndpointRef) {
         self.ref = ref
+    }
+
+    init(from decoder: Decoder) throws {
+        fatalError()
+    }
+
+    func encode(to encoder: Encoder) throws {
+        fatalError()
     }
 
     internal init(notification n: MIDIObjectAddRemoveNotification) {

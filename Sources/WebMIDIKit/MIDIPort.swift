@@ -63,7 +63,6 @@ public class MIDIPort : Identifiable {
         return endpoint.state
     }
 
-
     ///
     /// nonstandard
     ///
@@ -161,9 +160,16 @@ public class MIDIPort : Identifiable {
 extension MIDIPort : CustomStringConvertible {
     public final var description: String {
         let type: String
-        switch self.type {
-        case .input: type = "MIDIInput"
-        case .output: type = "MIDIOutput"
+
+        switch (self.type, self.isVirtual) {
+        case (.input, true):
+            type = "VirtualMIDIInput"
+        case (.input, false):
+            type = "MIDIInput"
+        case (.output, true):
+            type = "VirtualMIDIOutput"
+        case (.output, false):
+            type = "MIDIOutput"
         }
         return "\(type) \(name) by \(manufacturer), connection: \(connection) (id: \(id))"
     }
