@@ -29,6 +29,10 @@ extension MIDIPacketList {
     internal init(packet: MIDIPacket) {
         self.init(numPackets: 1, packet: packet)
     }
+
+    func clone() -> Self {
+        fatalError()
+    }
 }
 
 extension UnsafeMutablePointer where Pointee == UInt8 {
@@ -109,3 +113,5 @@ extension MIDIPacketList: Sequence {
         }
     }
 }
+
+//MIDIEventList

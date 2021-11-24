@@ -107,6 +107,7 @@ extension MIDIEndpoint: Comparable {
 
 extension MIDIEndpoint : Hashable {
     func hash(into hasher: inout Hasher) {
+        //todo
         hasher.combine(id)
     }
 }
