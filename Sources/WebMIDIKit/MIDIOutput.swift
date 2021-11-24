@@ -16,10 +16,19 @@ import CoreMIDI
 //    }
 //}
 
+func MIDISend(port: MIDIPortRef, endpoint: MIDIEndpointRef, list: UnsafePointer<MIDIPacketList>) {
+    OSAssert(MIDISend(port, endpoint, list))
+    /// this let's us propagate the events to everyone subscribed to this
+    /// endpoint not just this port, i'm not sure if we actually want this
+    /// but for now, it let's us create multiple ports from different MIDIAccess
+    /// objects and have them all receive the same messages
+    OSAssert(MIDIReceived(endpoint, list))
+}
+
 public class MIDIOutput : MIDIPort {
 
     @discardableResult
-    public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> MIDIOutput where S.Iterator.Element == UInt8 {
+    public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> Self where S.Iterator.Element == UInt8 {
         open()
         var lst = MIDIPacketList(data)
         lst.send(to: self, offset: offset)
@@ -28,9 +37,10 @@ public class MIDIOutput : MIDIPort {
     }
 
     @discardableResult
-    public final func send(_ packet: inout MIDIPacketList, offset: Double? = nil) -> MIDIOutput {
-        packet.send(to: self, offset: 0)
-        return self
+    public final func send(_ packet: UnsafePointer<MIDIPacketList>, offset: Double? = nil) -> Self {
+//        packet.send(to: self, offset: 0)
+//        return self
+        fatalError()
     }
 
     public final func clear() {
