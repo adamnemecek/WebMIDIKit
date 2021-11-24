@@ -77,30 +77,50 @@ extension MIDIPacket {
     //    }
 }
 
-extension Data {
-    @inline(__always)
-    init(packet p: inout MIDIPacket) {
-        self = Swift.withUnsafeBytes(of: &p.data) {
-            .init(bytes: $0.baseAddress!, count: Int(p.length))
-        }
-    }
-}
+//extension Data {
+//    @inline(__always)
+//    init(packet p: inout MIDIPacket) {
+//        self = Swift.withUnsafeBytes(of: &p.data) {
+//            .init(bytes: $0.baseAddress!, count: Int(p.length))
+//        }
+//    }
+//}
+//
+//extension MIDIEvent {
+//    @inline(__always)
+//    fileprivate init(packet p: inout MIDIPacket) {
+//        timestamp = p.timeStamp
+//        data = .init(packet: &p)
+//    }
+//}
 
-extension MIDIEvent {
-    @inline(__always)
-    fileprivate init(packet p: inout MIDIPacket) {
-        timestamp = p.timeStamp
-        data = .init(packet: &p)
-    }
-}
+//extension MIDIPacketList: Sequence {
+//    public typealias Element = MIDIEvent
+//
+//    public func makeIterator() -> AnyIterator<Element> {
+//        var p: MIDIPacket = packet
+//        var idx: UInt32 = 0
+//
+//        return AnyIterator {
+//            guard idx < self.numPackets else {
+//                return nil
+//            }
+//            defer {
+//                p = MIDIPacketNext(&p).pointee
+//                idx += 1
+//            }
+//            return .init(packet: &p)
+//        }
+//    }
+//}
 
 extension MIDIPacketList: Sequence {
-    public typealias Element = MIDIEvent
-    
+    public typealias Element = MIDIPacket
+
     public func makeIterator() -> AnyIterator<Element> {
         var p: MIDIPacket = packet
         var idx: UInt32 = 0
-        
+
         return AnyIterator {
             guard idx < self.numPackets else {
                 return nil
@@ -109,9 +129,7 @@ extension MIDIPacketList: Sequence {
                 p = MIDIPacketNext(&p).pointee
                 idx += 1
             }
-            return .init(packet: &p)
+            return p
         }
     }
 }
-
-//MIDIEventList

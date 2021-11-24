@@ -230,12 +230,16 @@ extension MIDIPort : Hashable {
 
 
 @inline(__always) fileprivate
-func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
+func MIDIInputPortCreate(
+    ref: MIDIClientRef,
+    readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> Void
+) -> MIDIPortRef {
     var port = MIDIPortRef()
     OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
-        lst, srcconref in
+        list, _ in
+        readmidi(list)
+//        lst.pointee.forEach(readmidi)
 
-        lst.pointee.forEach(readmidi)
     })
     return port
 }

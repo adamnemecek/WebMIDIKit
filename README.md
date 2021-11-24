@@ -47,8 +47,10 @@ let inputPort: MIDIInput? = midi.inputs.prompt()
 
 /// Receiving MIDI events 
 /// set the input port's onMIDIMessage callback which gets called when the port receives MIDI packets
-inputPort?.onMIDIMessage = { (packet: MIDIPacket) in 
-	print("received \(packet)")
+inputPort?.onMIDIMessage = { (list: UnsafePointer<MIDIPacketList>) in
+    for packet in list {
+        print("received \(packet)")
+    }
 }
 
 ```
@@ -106,6 +108,17 @@ for (id, port) in midi.inputs {
 }
 ```
 
+### Creating virtual ports
+
+To create virtual input and output ports, use the the `createVirtualVirtualMIDIInput` and `createVirtualVirtualMIDIOutput` functions respectively.
+
+```swift
+let virtualInput = midi.createVirtualMIDIInput(name: "Virtual input")
+
+let virtualOutput = midi.createVirtualMIDIOutput(name: "Virtual output") { (list: UnsafePointer<MIDIPacketList>) in
+
+}
+```
 
 
 ## Installation
@@ -187,7 +200,7 @@ See [spec](https://www.w3.org/TR/webmidi/#midiinput-interface).
 ```swift
 class MIDIInput: MIDIPort {
 	/// set this and it will get called when the port receives messages.
-	var onMIDIMessage: ((MIDIPacket) -> ())? = nil { get set }
+	var onMIDIMessage: ((UnsafePointer<MIDIPacketList>) -> ())? = nil { get set }
 }
 ```
 

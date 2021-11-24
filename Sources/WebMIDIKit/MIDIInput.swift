@@ -13,7 +13,7 @@ public class MIDIInput : MIDIPort {
         fatalError()
     }
     
-    public final var onMIDIMessage: ((MIDIEvent) -> ())? = nil {
+    public final var onMIDIMessage: ((UnsafePointer<MIDIPacketList>) -> ())? = nil {
         willSet {
             close()
         }
@@ -21,17 +21,6 @@ public class MIDIInput : MIDIPort {
             open()
         }
     }
-    
-    public final var onMIDIMessage2: ((MIDIEvent2) -> ())? = nil {
-        willSet {
-            close()
-        }
-        didSet {
-            //            open2()
-        }
-    }
-    
-    
     
     //
     //  convenience internal init(virtual client: MIDIClient) {
