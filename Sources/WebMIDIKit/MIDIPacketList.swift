@@ -133,3 +133,11 @@ extension MIDIPacketList: Sequence {
         }
     }
 }
+
+extension UnsafePointer: Sequence where Pointee == MIDIPacketList {
+    public typealias Element = MIDIPacket
+
+    public func makeIterator() -> AnyIterator<Element> {
+        self.pointee.makeIterator()
+    }
+}

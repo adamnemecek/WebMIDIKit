@@ -1,5 +1,5 @@
-import CoreMIDI
-
-struct MIDIEventList {
-    var inner: CoreMIDI.MIDIEventList
-}
+//import CoreMIDI
+//
+//struct MIDIEventList {
+//    var inner: CoreMIDI.MIDIEventList
+//}
