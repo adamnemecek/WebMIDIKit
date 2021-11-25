@@ -115,53 +115,74 @@ extension MIDIPacket {
 //}
 
 extension MIDIPacketList: Sequence {
-    public typealias Element = MIDIPacket
+    public typealias Element = UnsafeMutablePointer<MIDIPacket>
 
     public func makeIterator() -> AnyIterator<Element> {
-        var p: MIDIPacket = packet
-        var idx: UInt32 = 0
+        var idx = 0
+        let count = self.numPackets
 
-        return AnyIterator {
-            guard idx < self.numPackets else {
-                return nil
+        return withUnsafePointer(to: packet) { ptr in
+            var p = UnsafeMutablePointer(mutating: ptr)
+            return AnyIterator {
+                guard idx < count else { return nil }
+                defer {
+                    p = MIDIPacketNext(p)
+                    idx += 1
+                }
+                return p
             }
-            defer {
-                p = MIDIPacketNext(&p).pointee
-                idx += 1
-            }
-            return p
         }
     }
 }
 
-extension MIDIPacketList: MutableCollection {
-    public typealias Index = Int
-
-    public var startIndex: Index {
-        0
-    }
-
-    public var endIndex: Index {
-        Int(self.numPackets)
-    }
-
-    public subscript(position: Index) -> Element {
-        get {
-            withUnsafeBytes(of: &self.packet) { idx in
-
-            }
-
-            fatalError()
-        }
-        set {
-            fatalError()
-        }
-    }
-
-    public func index(after i: Index) -> Index {
-        i + 1
-    }
-}
+//extension MIDIPacketList: Sequence {
+//    public typealias Element = MIDIPacket
+//
+//    public func makeIterator() -> AnyIterator<Element> {
+//        var p: MIDIPacket = packet
+//        var idx: UInt32 = 0
+//
+//        return AnyIterator {
+//            guard idx < self.numPackets else {
+//                return nil
+//            }
+//            defer {
+//                p = MIDIPacketNext(&p).pointee
+//                idx += 1
+//            }
+//            return p
+//        }
+//    }
+//}
+//
+//extension MIDIPacketList: MutableCollection {
+//    public typealias Index = Int
+//
+//    public var startIndex: Index {
+//        0
+//    }
+//
+//    public var endIndex: Index {
+//        Int(self.numPackets)
+//    }
+//
+//    public subscript(position: Index) -> Element {
+//        get {
+//            withUnsafeBytes(of: &self.packet) { idx in
+//
+//            }
+//
+//            fatalError()
+//        }
+//        set {
+//            fatalError()
+//        }
+//    }
+//
+//    public func index(after i: Index) -> Index {
+//        i + 1
+//    }
+//}
 
 extension UnsafePointer: Sequence where Pointee == MIDIPacketList {
     public typealias Element = MIDIPacket
