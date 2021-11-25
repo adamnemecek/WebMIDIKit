@@ -1,5 +1,11 @@
 import AVFoundation
 
+extension MIDIPacket {
+    var status: MIDIStatus {
+        MIDIStatus(packet: self)!
+    }
+}
+
 extension MIDIPacketList {
     /// this needs to be mutating since we are potentionally changint the timestamp
     /// we cannot make a copy since that woulnd't copy the whole list
@@ -65,6 +71,12 @@ extension MIDIPacket {
     mutating func buffer() -> UnsafeRawBufferPointer {
         withUnsafePointer(to: &self.data) {
             UnsafeRawBufferPointer(start: $0, count: Int(self.length))
+        }
+    }
+
+    mutating func mutableBuffer() -> UnsafeMutableRawBufferPointer {
+        withUnsafePointer(to: &self.data) {
+            UnsafeMutableRawBufferPointer(start: UnsafeMutablePointer(mutating: $0), count: Int(self.length))
         }
     }
     
@@ -135,6 +147,23 @@ extension MIDIPacketList: Sequence {
     }
 }
 
+extension UnsafeMutablePointer where Pointee == MIDIPacket {
+//    public var count: Int {
+//        Int(self.pointee.length)
+//    }
+//
+////    var bufferPointer: UnsafeMutableBufferPointer<UInt8> {
+////        withUnsafePointer(to: self.pointee.data) { ptr in
+////            return ptr.withMemoryRebound(to: UInt8.self, capacity: count) { ptr1 in
+////                return UnsafeMutableBufferPointer(start: UnsafeMutablePointer(mutating: ptr1), count: self.count)
+////            }
+////        }
+////    }
+//    mutating func buffer() -> UnsafeMutableRawBufferPointer {
+//        self.pointee.buff
+//    }
+}
+
 //extension MIDIPacketList: Sequence {
 //    public typealias Element = MIDIPacket
 //
@@ -185,7 +214,7 @@ extension MIDIPacketList: Sequence {
 //}
 
 extension UnsafePointer: Sequence where Pointee == MIDIPacketList {
-    public typealias Element = MIDIPacket
+    public typealias Element = UnsafeMutablePointer<MIDIPacket>
 
     public func makeIterator() -> AnyIterator<Element> {
         self.pointee.makeIterator()
