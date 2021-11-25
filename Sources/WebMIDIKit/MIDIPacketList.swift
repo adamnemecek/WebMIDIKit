@@ -7,6 +7,12 @@ extension MIDIPacket {
 }
 
 extension MIDIPacketList {
+    public var sizeInBytes: Int {
+        withUnsafePointer(to: self) {
+            Self.sizeInBytes(pktList: $0)
+        }
+    }
+
     /// this needs to be mutating since we are potentionally changint the timestamp
     /// we cannot make a copy since that woulnd't copy the whole list
     internal mutating func send(to output: MIDIOutput, offset: Double? = nil) {

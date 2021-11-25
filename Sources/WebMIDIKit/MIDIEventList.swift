@@ -12,7 +12,12 @@ struct MIDIPacketList1 {
     // used for appending
     var tail: UnsafeMutablePointer<MIDIPacket>
 
-    init() {
+    var count: Int {
+        fatalError()
+    }
+
+    init(bytes: UInt) {
+
         self.list = MIDIPacketList()
         self.first = MIDIPacketListInit(&self.list)
         self.tail = self.first
