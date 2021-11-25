@@ -134,6 +134,35 @@ extension MIDIPacketList: Sequence {
     }
 }
 
+extension MIDIPacketList: MutableCollection {
+    public typealias Index = Int
+
+    public var startIndex: Index {
+        0
+    }
+
+    public var endIndex: Index {
+        Int(self.numPackets)
+    }
+
+    public subscript(position: Index) -> Element {
+        get {
+            withUnsafeBytes(of: &self.packet) { idx in
+
+            }
+
+            fatalError()
+        }
+        set {
+            fatalError()
+        }
+    }
+
+    public func index(after i: Index) -> Index {
+        i + 1
+    }
+}
+
 extension UnsafePointer: Sequence where Pointee == MIDIPacketList {
     public typealias Element = MIDIPacket
 

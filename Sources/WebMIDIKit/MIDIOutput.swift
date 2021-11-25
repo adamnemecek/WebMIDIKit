@@ -37,10 +37,12 @@ public class MIDIOutput : MIDIPort {
     }
 
     @discardableResult
-    public final func send(_ packet: UnsafePointer<MIDIPacketList>, offset: Double? = nil) -> Self {
+    public final func send(_ list: UnsafePointer<MIDIPacketList>) -> Self {
 //        packet.send(to: self, offset: 0)
 //        return self
-        fatalError()
+//        fatalError()
+        MIDISend(port: self.ref, endpoint: self.endpoint.ref, list: list)
+        return self
     }
 
     public final func clear() {
