@@ -81,6 +81,7 @@ internal final class MIDIEndpoint : Codable {
     }
 
     func assignUniqueID() {
+        assert(self.isVirtual)
         let id = MIDIObjectAllocUniqueID()
         MIDIObjectSetIntProperty(ref: ref, property: kMIDIPropertyUniqueID, value: id)
         //        print("port id \(self.id)")
@@ -89,6 +90,7 @@ internal final class MIDIEndpoint : Codable {
     /// note that only virtual endpoints (i.e. created with MIDISourceCreate
     /// or MIDIDestinationCreate need to be disposed)
     final func dispose() {
+        assert(self.isVirtual)
         OSAssert(MIDIEndpointDispose(ref))
     }
 }
@@ -145,10 +147,10 @@ func MIDIObjectSetIntProperty(ref: MIDIObjectRef, property: CFString, value: Int
     OSAssert(MIDIObjectSetIntegerProperty(ref, property, value))
 }
 
-
 ///
 /// we use the fact that virtual endpoints have no entity to determine if this is a virtual port
 ///
+@inline(__always) fileprivate
 func MIDIEndpointIsVirtual(ref: MIDIEndpointRef) -> Bool {
     var out: MIDIEntityRef = 0
     let err = MIDIEndpointGetEntity(ref, &out)

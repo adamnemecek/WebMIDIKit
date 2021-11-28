@@ -7,7 +7,7 @@ import CoreMIDI
 ///
 public final class MIDIPacketListBuilder {
     //
-    let list: UnsafeMutablePointer<MIDIPacketList>
+    var list: UnsafeMutablePointer<MIDIPacketList>
 
     // used for iterating
     var first: UnsafeMutablePointer<MIDIPacket>
@@ -50,6 +50,8 @@ public final class MIDIPacketListBuilder {
     }
 
     public func append(timestamp: MIDITimeStamp, data: UnsafeRawBufferPointer) {
+//        let ptr = data.bindMemory(to: UInt8.self)
+//        let z = UnsafeBufferPointer<UInt8>(start: ptr, count: 10)
 //        let ptr = UnsafeBufferPointer(start: data.baseAddress!.bindMemory(to: UInt8.self, capacity: 10), count: data.count)
 //        self.append(timestamp: timestamp, data: ptr)
         fatalError()
@@ -57,7 +59,7 @@ public final class MIDIPacketListBuilder {
 
     ///
     /// according to core-midi (the rust binding), the tail is not adjusted if the timestamp is the same as the previous one
-    /// and of there is enough space left in the current packet
+    /// and if there is enough space left in the current packet
     /// if the new data is at a different timestamp than the old data
     ///
     public func append(timestamp: MIDITimeStamp, data: UnsafeBufferPointer<UInt8>) {
@@ -96,6 +98,13 @@ public final class MIDIPacketListBuilder {
         self.tail = self.first
         self.occupied = 0
     }
+
+//    public func resize(size: Int) {
+//        guard size > self.byteSize else { return }
+//        let totalByteSize = size + 0xe
+//        self.list = realloc(self.list, totalByteSize).assumingMemoryBound(to: MIDIPacketList.self)
+//        self.totalByteSize = totalByteSize
+//    }
 
     deinit {
         free(self.list)

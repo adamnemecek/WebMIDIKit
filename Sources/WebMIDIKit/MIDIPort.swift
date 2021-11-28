@@ -13,6 +13,10 @@ public class MIDIPort : Identifiable, Codable {
         self.client = client
         self.endpoint = endpoint
         self.ref = 0
+
+        if endpoint.isVirtual {
+            endpoint.assignUniqueID()
+        }
     }
 
     public required init(from decoder: Decoder) throws {
