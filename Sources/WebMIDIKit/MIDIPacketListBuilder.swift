@@ -114,6 +114,7 @@ public final class MIDIPacketListBuilder {
     }
 
     public func withUnsafePointer<Result>(_ body: (UnsafePointer<MIDIPacketList>) -> Result) -> Result {
+
         body(self.list)
     }
 }
@@ -150,20 +151,21 @@ extension UnsafeMutablePointer where Pointee == MIDIPacket {
 //    }
 
     @inline(__always)
-    var count: Int {
+    public var count: Int {
         Int(self.pointee.length)
     }
 
     @inline(__always)
-    var rawBuffer: UnsafeRawBufferPointer {
-        withUnsafePointer(to: pointee.data) {
+    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) -> R) -> R {
+        body(withUnsafePointer(to: pointee.data) {
             UnsafeRawBufferPointer(start: $0, count: count)
-        }
+        })
     }
 
+    @inline(__always)
     public subscript(index: Int) -> UInt8 {
         assert(index < count)
-        return self.rawBuffer[index]
+        return withUnsafeBytes { $0[index] }
     }
 }
 
