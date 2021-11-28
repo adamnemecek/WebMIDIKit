@@ -145,7 +145,6 @@ extension UnsafeMutablePointer: Sequence where Pointee == MIDIPacketList {
         let count = self.pointee.numPackets
 
         return withUnsafeMutablePointer(to: &pointee.packet) { ptr in
-//            var p = UnsafeMutablePointer(mutating: ptr)
             var p = ptr
             return AnyIterator {
                 guard idx < count else { return nil }

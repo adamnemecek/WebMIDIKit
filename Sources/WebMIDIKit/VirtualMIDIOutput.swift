@@ -1,12 +1,13 @@
 public final class VirtualMIDIOutput: MIDIOutput {
-    required init(from decoder: Decoder) throws {
-        fatalError("init(from:) has not been implemented")
+    internal override init(client: MIDIClient, endpoint: MIDIEndpoint) {
+        super.init(client: client, endpoint: endpoint)
     }
-    
+
+    public required init(from decoder: Decoder) throws {
+        try super.init(from: decoder)
+    }
+
     public override func encode(to encoder: Encoder) throws {
-        fatalError()
+        try super.encode(to: encoder)
     }
-    //    deinit {
-    //        self.endpoint.dispose()
-    //    }
 }

@@ -25,7 +25,7 @@ func MIDISend(port: MIDIPortRef, endpoint: MIDIEndpointRef, list: UnsafePointer<
     OSAssert(MIDIReceived(endpoint, list))
 }
 
-public class MIDIOutput : MIDIPort {
+public class MIDIOutput: MIDIPort {
 
 //    @discardableResult
 //    public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> Self where S.Iterator.Element == UInt8 {
