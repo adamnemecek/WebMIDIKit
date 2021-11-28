@@ -27,23 +27,31 @@ func MIDISend(port: MIDIPortRef, endpoint: MIDIEndpointRef, list: UnsafePointer<
 
 public class MIDIOutput : MIDIPort {
 
-    @discardableResult
-    public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> Self where S.Iterator.Element == UInt8 {
-        open()
-        var lst = MIDIPacketList(data)
-        lst.send(to: self, offset: offset)
-
-        return self
-    }
-
-    @discardableResult
-    public final func send(_ list: UnsafePointer<MIDIPacketList>) -> Self {
-//        packet.send(to: self, offset: 0)
+//    @discardableResult
+//    public final func send<S: Sequence>(_ data: S, offset: Double? = nil) -> Self where S.Iterator.Element == UInt8 {
+//        open()
+//        var lst = MIDIPacketList(data)
+//        lst.send(to: self, offset: offset)
+//
 //        return self
-//        fatalError()
-        MIDISend(port: self.ref, endpoint: self.endpoint.ref, list: list)
+//    }
+//
+//    @discardableResult
+//    public final func send(_ list: UnsafePointer<MIDIPacketList>) -> Self {
+////        packet.send(to: self, offset: 0)
+////        return self
+////        fatalError()
+//        MIDISend(port: self.ref, endpoint: self.endpoint.ref, list: list)
+//        return self
+//    }
+
+    @discardableResult
+    public final func send(_ list: MIDIPacketListBuilder) -> Self {
+        MIDISend(port: self.ref, endpoint: self.endpoint.ref, list: list.list)
         return self
     }
+
+
 
     public final func clear() {
         endpoint.flush()
