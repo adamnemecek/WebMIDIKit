@@ -50,11 +50,14 @@ public final class MIDIPacketListBuilder {
     }
 
     public func append(timestamp: MIDITimeStamp, data: UnsafeRawBufferPointer) {
-//        let ptr = data.bindMemory(to: UInt8.self)
-//        let z = UnsafeBufferPointer<UInt8>(start: ptr, count: 10)
-//        let ptr = UnsafeBufferPointer(start: data.baseAddress!.bindMemory(to: UInt8.self, capacity: 10), count: data.count)
-//        self.append(timestamp: timestamp, data: ptr)
-        fatalError()
+        let ptr = data.bindMemory(to: UInt8.self)
+        self.append(timestamp: timestamp, data: ptr)
+    }
+
+    public func append(timestamp: MIDITimeStamp, data: [UInt8]) {
+        data.withUnsafeBufferPointer {
+            self.append(timestamp: timestamp, data: $0)
+        }
     }
 
     ///
@@ -134,6 +137,33 @@ extension MIDIPacketListBuilder: Sequence {
 
     public func makeIterator() -> AnyIterator<Element> {
         self.list.makeIterator()
+    }
+}
+
+extension UnsafeMutablePointer where Pointee == MIDIPacket {
+//    public var startIndex: Int {
+//        fatalError()
+//    }
+//
+//    public var endIndex: Int {
+//        fatalError()
+//    }
+
+    @inline(__always)
+    var count: Int {
+        Int(self.pointee.length)
+    }
+
+    @inline(__always)
+    var rawBuffer: UnsafeRawBufferPointer {
+        withUnsafePointer(to: pointee.data) {
+            UnsafeRawBufferPointer(start: $0, count: count)
+        }
+    }
+
+    public subscript(index: Int) -> UInt8 {
+        assert(index < count)
+        return self.rawBuffer[index]
     }
 }
 
