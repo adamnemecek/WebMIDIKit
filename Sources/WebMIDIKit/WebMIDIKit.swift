@@ -112,10 +112,10 @@ public final class MIDIAccess {
 
 extension MIDIAccess: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
-        return "inputs: \(inputs)\n, output: \(outputs)"
+        return "\(self.self)(inputs: \(inputs)\n, output: \(outputs))"
     }
     public var debugDescription: String {
-        return "\(self.self)(\(description))"
+        return self.description
     }
 }
 
