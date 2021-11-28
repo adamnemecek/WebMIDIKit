@@ -1,6 +1,6 @@
 import CoreMIDI
 
-//extension MIDIPacket  {
+// extension MIDIPacket  {
 ////    public typealias ArrayLiteralElement = UInt8
 //    public init(data: UInt8..., timestamp: MIDITimeStamp = 0) {
 //        assert(data.count < 256)
@@ -14,7 +14,7 @@ import CoreMIDI
 //        }
 //        fatalError()
 //    }
-//}
+// }
 
 func MIDISend(port: MIDIPortRef, endpoint: MIDIEndpointRef, list: UnsafePointer<MIDIPacketList>) {
     OSAssert(MIDISend(port, endpoint, list))
@@ -51,8 +51,6 @@ public class MIDIOutput: MIDIPort {
         return self
     }
 
-
-
     public final func clear() {
         endpoint.flush()
     }
@@ -62,22 +60,22 @@ public class MIDIOutput: MIDIPort {
     //  }
 }
 //
-//fileprivate final class VirtualMIDIDestination: VirtualMIDIEndpoint {
+// fileprivate final class VirtualMIDIDestination: VirtualMIDIEndpoint {
 //  init(client: MIDIClient, block: @escaping MIDIReadBlock) {
 //    super.init(ref: MIDIDestinationCreate(ref: client.ref, block: block))
 //  }
-////ths needs to use midi received
+//// ths needs to use midi received
 // http://stackoverflow.com/questions/10572747/why-doesnt-this-simple-coremidi-program-produce-midi-output
 //  func send(lst: UnsafePointer<MIDIPacketList>) {
 //    fatalError()
 ////    MIDISend(ref, endpoint.ref, lst)
 //  }
-//}
+// }
 //
 //
-//fileprivate func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
+// fileprivate func MIDIDestinationCreate(ref: MIDIClientRef, block: @escaping MIDIReadBlock) -> MIDIEndpointRef {
 //  var endpoint: MIDIEndpointRef = 0
 //  MIDIDestinationCreateWithBlock(ref, "Virtual MIDI destination endpoint" as CFString, &endpoint, block)
 //  return endpoint
-//}
+// }
 //

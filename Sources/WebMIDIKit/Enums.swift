@@ -8,17 +8,17 @@ import enum CoreMIDI.MIDINotificationMessageID
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortType)
 ///
 
-public enum MIDIPortType : Equatable, CustomStringConvertible, Codable, Hashable, Comparable {
+public enum MIDIPortType: Equatable, CustomStringConvertible, Codable, Hashable, Comparable {
     ///
     /// If a MIDIPort is an input port, the type member must be this value.
     ///
     case input
-    
+
     ///
     /// If a MIDIPort is an output port, the type member must be this value.
     ///
     case output
-    
+
     internal init(_ type: MIDIObjectType) {
         switch type {
         case .source:
@@ -31,7 +31,7 @@ public enum MIDIPortType : Equatable, CustomStringConvertible, Codable, Hashable
             fatalError("Unexpected port type \(type)")
         }
     }
-    
+
     public var description: String {
         switch self {
         case .input: return "input"
@@ -44,7 +44,7 @@ public enum MIDIPortType : Equatable, CustomStringConvertible, Codable, Hashable
 /// The state of the device.
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortDeviceState)
 ///
-public enum MIDIPortDeviceState : Equatable {
+public enum MIDIPortDeviceState: Equatable {
     ///
     /// The device that MIDIPort represents is disconnected from the system. When
     /// a device is disconnected from the system, it should not appear in the
@@ -62,13 +62,13 @@ public enum MIDIPortDeviceState : Equatable {
 /// The state of the connection to the device.
 /// See [spec](https://www.w3.org/TR/webmidi/#idl-def-MIDIPortConnectionState)
 ///
-public enum MIDIPortConnectionState : Equatable {
+public enum MIDIPortConnectionState: Equatable {
     ///
     /// The device that MIDIPort represents has been opened (either implicitly or
     /// explicitly) and is available for use.
     ///
     case open
-    
+
     /// The device that MIDIPort represents has not been opened, or has been
     /// explicitly closed. Until a MIDIPort has been opened either explicitly
     /// (through open()) or implicitly (by adding a midimessage event handler on
@@ -79,7 +79,7 @@ public enum MIDIPortConnectionState : Equatable {
 
 internal enum MIDIEndpointNotificationType {
     case added, removed
-    
+
     init(_ messageID: MIDINotificationMessageID) {
         switch messageID {
         case .msgObjectAdded:

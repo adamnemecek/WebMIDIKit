@@ -1,11 +1,11 @@
 import CoreMIDI
 
-extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
-    
+extension MIDIObjectAddRemoveNotification: CustomStringConvertible {
+
     public var description: String {
         return "message\(messageID)"
     }
-    
+
     internal init?(ptr: UnsafePointer<MIDINotification>) {
         switch ptr.pointee.messageID {
         case .msgObjectAdded, .msgObjectRemoved:
@@ -16,18 +16,18 @@ extension MIDIObjectAddRemoveNotification : CustomStringConvertible {
     }
 }
 
-//@inline(__always) internal
-//func AudioGetCurrentMIDITimeStamp(offset: Double = 0) -> MIDITimeStamp {
+// @inline(__always) internal
+// func AudioGetCurrentMIDITimeStamp(offset: Double = 0) -> MIDITimeStamp {
 //    let _offset = AudioConvertNanosToHostTime(UInt64(offset * 1000000))
 //    return AudioGetCurrentHostTime() + _offset
-//}
+// }
 
 @inline(__always) internal
 func OSAssert(_ err: OSStatus, function: String = #function) {
     assert(err == noErr, "Error \(Error(err: err)) (osstatus: \(err)) in \(function)")
 }
 
-public enum Error: Swift.Error, Equatable  {
+public enum Error: Swift.Error, Equatable {
     case invalidClient,
          invalidPort,
          wrongEndpointType,
@@ -43,7 +43,7 @@ public enum Error: Swift.Error, Equatable  {
          objectNotFound,
          idNotUnique,
          notPermitted
-    
+
     public init(err: OSStatus) {
         switch err {
         case kMIDIInvalidClient: self = .invalidClient
@@ -64,7 +64,7 @@ public enum Error: Swift.Error, Equatable  {
         default: fatalError("unrecognized error \(err)")
         }
     }
-    
+
     public var rawValue: OSStatus {
         switch self {
         case .invalidClient: return kMIDIInvalidClient
@@ -87,12 +87,11 @@ public enum Error: Swift.Error, Equatable  {
 }
 
 func MIDIObjectAllocUniqueID() -> MIDIUniqueID {
-loop:
-    while true {
+while true {
         let uniqueID = MIDIUniqueID.random(in: MIDIUniqueID.min..<MIDIUniqueID.max)
         var ref: MIDIObjectRef = 0
         var type: MIDIObjectType = .other
-        
+
         let err = MIDIObjectFindByUniqueID(uniqueID, &ref, &type)
         //
         // this means that the object was not found and therefore the id is free

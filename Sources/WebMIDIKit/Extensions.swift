@@ -7,7 +7,7 @@ extension Collection {
     }
 }
 
-extension MIDIObjectType : CustomStringConvertible {
+extension MIDIObjectType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .other: return "other"

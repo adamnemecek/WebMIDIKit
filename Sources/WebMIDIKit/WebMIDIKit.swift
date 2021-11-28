@@ -9,10 +9,10 @@ public final class MIDIAccess {
     public let inputs: MIDIInputMap
     public let outputs: MIDIOutputMap
 
-    public var onStateChange: ((MIDIPort) -> ())? = nil
+    public var onStateChange: ((MIDIPort) -> Void)?
 
     private let _client: MIDIClient
-    private var _observer: NSObjectProtocol? = nil
+    private var _observer: NSObjectProtocol?
 
     public init(name: String) {
         self._client = MIDIClient(name: name)
@@ -92,12 +92,12 @@ public final class MIDIAccess {
     }
 
     public func removeVirtualMIDIInput(_ port: VirtualMIDIInput) {
-        let _ = self.inputs.remove(port.endpoint)
+        _ = self.inputs.remove(port.endpoint)
     }
 
     public func createVirtualMIDIOutput(
         name: String,
-        block: @escaping (UnsafePointer<MIDIPacketList>) -> ()
+        block: @escaping (UnsafePointer<MIDIPacketList>) -> Void
     ) -> VirtualMIDIOutput? {
         let endpoint = MIDIDestinationCreate(ref: self._client.ref, name: name) { (packet, _) in
             block(packet)
@@ -107,7 +107,7 @@ public final class MIDIAccess {
     }
 
     public func removeVirtualMIDIOutput(_ port: VirtualMIDIOutput) {
-        let _ = self.outputs.remove(port.endpoint)
+        _ = self.outputs.remove(port.endpoint)
     }
 
     ///
@@ -118,7 +118,7 @@ public final class MIDIAccess {
     }
 }
 
-extension MIDIAccess : CustomStringConvertible, CustomDebugStringConvertible {
+extension MIDIAccess: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         return "inputs: \(inputs)\n, output: \(outputs)"
     }
@@ -127,9 +127,8 @@ extension MIDIAccess : CustomStringConvertible, CustomDebugStringConvertible {
     }
 }
 
-
 fileprivate extension NotificationCenter {
-    final func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> ()) -> NSObjectProtocol {
+    final func observeMIDIEndpoints(_ callback: @escaping (MIDIEndpoint, MIDIEndpointNotificationType) -> Void) -> NSObjectProtocol {
         return addObserver(forName: .MIDISetupNotification, object: nil, queue: nil) {
             _ = ($0.object as? MIDIObjectAddRemoveNotification).map {
                 callback(.init(notification: $0),

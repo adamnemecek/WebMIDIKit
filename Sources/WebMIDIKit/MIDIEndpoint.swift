@@ -4,7 +4,7 @@ import CoreMIDI
 // you can think of this as the HW input/output or virtual endpoint
 //
 
-internal final class MIDIEndpoint : Codable {
+internal final class MIDIEndpoint: Codable {
     enum CodingKeys: CodingKey {
         case type,
              id,
@@ -107,9 +107,9 @@ extension MIDIEndpoint: Comparable {
     }
 }
 
-extension MIDIEndpoint : Hashable {
+extension MIDIEndpoint: Hashable {
     func hash(into hasher: inout Hasher) {
-        //todo
+        // todo
         hasher.combine(id)
     }
 }
@@ -118,22 +118,21 @@ extension MIDIEndpoint : Hashable {
 /// utilities
 ///
 
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIObjectGetStringProperty(ref: MIDIObjectRef, property: CFString) -> String? {
-    var string: Unmanaged<CFString>? = nil
+    var string: Unmanaged<CFString>?
     OSAssert(MIDIObjectGetStringProperty(ref, property, &string))
     return (string?.takeRetainedValue()) as String?
 }
 
-
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIObjectGetIntProperty(ref: MIDIObjectRef, property: CFString) -> Int {
     var val: Int32 = 0
     OSAssert(MIDIObjectGetIntegerProperty(ref, property, &val))
     return Int(val)
 }
 
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIObjectGetType(id: Int) -> MIDIObjectType {
     var ref: MIDIObjectRef = 0
     var type: MIDIObjectType = .other
@@ -141,8 +140,7 @@ func MIDIObjectGetType(id: Int) -> MIDIObjectType {
     return type
 }
 
-
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIObjectSetIntProperty(ref: MIDIObjectRef, property: CFString, value: Int32) {
     OSAssert(MIDIObjectSetIntegerProperty(ref, property, value))
 }
@@ -150,7 +148,7 @@ func MIDIObjectSetIntProperty(ref: MIDIObjectRef, property: CFString, value: Int
 ///
 /// we use the fact that virtual endpoints have no entity to determine if this is a virtual port
 ///
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIEndpointIsVirtual(ref: MIDIEndpointRef) -> Bool {
     var out: MIDIEntityRef = 0
     let err = MIDIEndpointGetEntity(ref, &out)
@@ -165,12 +163,10 @@ func MIDIEndpointIsVirtual(ref: MIDIEndpointRef) -> Bool {
     }
 }
 //
-//internal class VirtualMIDIEndpoint: MIDIEndpoint {
+// internal class VirtualMIDIEndpoint: MIDIEndpoint {
 //    deinit {
 //        /// note that only virtual endpoints (i.e. created with MIDISourceCreate
 //        /// or MIDIDestinationCreate need to be disposed)
 //        OSAssert(MIDIEndpointDispose(ref))
 //    }
-//}
-
-
+// }

@@ -1,6 +1,6 @@
-//import AVFoundation
+// import AVFoundation
 //
-//public struct MIDIEvent : Equatable {
+// public struct MIDIEvent : Equatable {
 //    let timestamp : MIDITimeStamp
 //    let data : Data
 //
@@ -14,10 +14,10 @@
 //    //        self.timestamp = ptr.pointee.timeStamp
 //    //        self.data = Data(bytes: ptr, count: Int(ptr.pointee.length))
 //    //    }
-//}
+// }
 //
 //
-//public struct MIDIEvent2: Equatable {
+// public struct MIDIEvent2: Equatable {
 //    let timestamp: MIDITimeStamp
 //    let data: UnsafeBufferPointer<UInt8>
 //
@@ -33,7 +33,7 @@
 //    public static func ==(lhs: Self, rhs: Self) -> Bool {
 //        fatalError()
 //    }
-//}
+// }
 //
 //
-////extension UnsafeMuta
+//// extension UnsafeMuta

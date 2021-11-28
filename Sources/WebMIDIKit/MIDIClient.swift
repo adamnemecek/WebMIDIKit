@@ -23,19 +23,19 @@ internal final class MIDIClient {
     }
 }
 
-extension MIDIClient : Equatable {
+extension MIDIClient: Equatable {
     static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref == rhs.ref
     }
 }
 
-extension MIDIClient:  Comparable {
+extension MIDIClient: Comparable {
     static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
         return lhs.ref < rhs.ref
     }
 }
 
-extension MIDIClient : Hashable {
+extension MIDIClient: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(ref.hashValue)
     }
@@ -44,8 +44,8 @@ extension MIDIClient : Hashable {
 ///
 /// called when an endpoint is added or removed
 ///
-@inline(__always) fileprivate
-func MIDIClientCreate(name: String, callback: @escaping (MIDIObjectAddRemoveNotification) -> ()) -> MIDIClientRef {
+@inline(__always) private
+func MIDIClientCreate(name: String, callback: @escaping (MIDIObjectAddRemoveNotification) -> Void) -> MIDIClientRef {
     var ref = MIDIClientRef()
     OSAssert(MIDIClientCreateWithBlock(name as CFString, &ref) {
         _ = MIDIObjectAddRemoveNotification(ptr: $0).map(callback)

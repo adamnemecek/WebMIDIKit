@@ -2,7 +2,7 @@ import CoreMIDI
 
 /// This interface represents a MIDI input or output port.
 /// See [spec](https://www.w3.org/TR/webmidi/#midiport-interface)
-public class MIDIPort : Identifiable, Codable {
+public class MIDIPort: Identifiable, Codable {
 
     internal private(set) final var ref: MIDIPortRef
 
@@ -27,7 +27,6 @@ public class MIDIPort : Identifiable, Codable {
         fatalError()
     }
 
-    
     ///
     /// A unique ID of the port. This can be used by developers to remember ports
     /// the user has chosen for their application. This is maintained across
@@ -99,7 +98,7 @@ public class MIDIPort : Identifiable, Codable {
     /// gets called when the port state changes (open/closed are called,
     /// or the device endpoint gets disconnected.
     ///
-    public final var onStateChange: ((MIDIPort) -> ())? = nil
+    public final var onStateChange: ((MIDIPort) -> Void)?
 
     ///
     /// establishes a connection
@@ -171,7 +170,7 @@ public class MIDIPort : Identifiable, Codable {
     }
 }
 
-extension MIDIPort : CustomStringConvertible {
+extension MIDIPort: CustomStringConvertible {
     public final var description: String {
         let type: String
 
@@ -189,25 +188,25 @@ extension MIDIPort : CustomStringConvertible {
     }
 }
 
-extension MIDIPort : Equatable {
+extension MIDIPort: Equatable {
     public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.endpoint == rhs.endpoint
     }
 }
 
-extension MIDIPort : Comparable {
+extension MIDIPort: Comparable {
     public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
         return lhs.endpoint < rhs.endpoint
     }
 }
 
-extension MIDIPort : Hashable {
+extension MIDIPort: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(endpoint.hashValue)
     }
 }
 
-//func sequence(first: UnsafePointer<MIDIPacketList>) -> AnyIterator<MIDIEvent> {
+// func sequence(first: UnsafePointer<MIDIPacketList>) -> AnyIterator<MIDIEvent> {
 //    var ptr = first
 //    let count = Int(first.pointee.numPackets)
 //
@@ -219,21 +218,19 @@ extension MIDIPort : Hashable {
 //////        UnsafePointer($0)
 ////        fatalError()
 ////    }.prefix(count)
-//}
+// }
 ////
-////@inline(__always) fileprivate
-////func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
+//// @inline(__always) fileprivate
+//// func MIDIInputPortCreate(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent) -> ()) -> MIDIPortRef {
 ////    var port = MIDIPortRef()
 ////    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
 ////        lst, srcconref in
 ////        sequence(first: lst).forEach(readmidi)
 ////    })
 ////    return port
-////}
+//// }
 
-
-
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIInputPortCreate(
     ref: MIDIClientRef,
     readmidi: @escaping (UnsafePointer<MIDIPacketList>) -> Void
@@ -248,18 +245,17 @@ func MIDIInputPortCreate(
     return port
 }
 
-//@inline(__always) fileprivate
-//func MIDIInputPortCreate2(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent2) -> ()) -> MIDIPortRef {
+// @inline(__always) fileprivate
+// func MIDIInputPortCreate2(ref: MIDIClientRef, readmidi: @escaping (MIDIEvent2) -> ()) -> MIDIPortRef {
 //    var port = MIDIPortRef()
 //    OSAssert(MIDIInputPortCreateWithBlock(ref, "MIDI input" as CFString, &port) {
 //        lst, srcconref in
 //        //        lst.pointee.forEach(readmidi)
 //    })
 //    return port
-//}
+// }
 
-
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIOutputPortCreate(ref: MIDIClientRef) -> MIDIPortRef {
     var port = MIDIPortRef()
     OSAssert(MIDIOutputPortCreate(ref, "MIDI output" as CFString, &port))

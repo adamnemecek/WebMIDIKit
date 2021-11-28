@@ -1,6 +1,6 @@
 import CoreMIDI
 
-public class MIDIPortMap<Value: MIDIPort> : Collection {
+public class MIDIPortMap<Value: MIDIPort>: Collection {
     public typealias Key = Int
     public typealias Index = Dictionary<Key, Value>.Index
 
@@ -65,7 +65,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     }
 
     internal final func remove(_ endpoint: MIDIEndpoint) -> Value? {
-        //disconnect?
+        // disconnect?
         guard let port = self[endpoint] else { assert(false); return nil }
         assert(port.state == .connected)
         self[port.id] = nil
@@ -75,7 +75,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     //
     fileprivate init(client: MIDIClient, ports: [Value]) {
         self._client = client
-        self._content = .init(uniqueKeysWithValues: ports.lazy.map { ($0.id, $0) } )
+        self._content = .init(uniqueKeysWithValues: ports.lazy.map { ($0.id, $0) })
     }
 
     //
@@ -86,7 +86,7 @@ public class MIDIPortMap<Value: MIDIPort> : Collection {
     }
 }
 
-public final class MIDIInputMap : MIDIPortMap<MIDIInput> {
+public final class MIDIInputMap: MIDIPortMap<MIDIInput> {
     internal init(client: MIDIClient) {
         let inputs = MIDISources().map { MIDIInput(client: client, endpoint: $0) }
         super.init(client: client, ports: inputs)
@@ -98,12 +98,12 @@ public final class MIDIInputMap : MIDIPortMap<MIDIInput> {
 
     internal final func addVirtual(_ endpoint: MIDIEndpoint) -> VirtualMIDIInput? {
         let port = VirtualMIDIInput(client: _client, endpoint: endpoint)
-        let _ = add(port as MIDIInput)
+        _ = add(port as MIDIInput)
         return port
     }
 }
 
-public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
+public final class MIDIOutputMap: MIDIPortMap<MIDIOutput> {
     internal init(client: MIDIClient) {
         let outputs = MIDIDestinations().map { MIDIOutput(client: client, endpoint: $0) }
         super.init(client: client, ports: outputs)
@@ -115,7 +115,7 @@ public final class MIDIOutputMap : MIDIPortMap<MIDIOutput> {
 
     internal final func addVirtual(_ endpoint: MIDIEndpoint) -> VirtualMIDIOutput? {
         let port = VirtualMIDIOutput(client: _client, endpoint: endpoint)
-        let _ = add(port as MIDIOutput)
+        _ = add(port as MIDIOutput)
         return port
     }
 }
@@ -129,14 +129,14 @@ extension MIDIPortMap: CustomStringConvertible, CustomDebugStringConvertible {
     }
 }
 
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDISources() -> [MIDIEndpoint] {
     return (0..<MIDIGetNumberOfSources()).map {
         .init(ref: MIDIGetSource($0))
     }
 }
 
-@inline(__always) fileprivate
+@inline(__always) private
 func MIDIDestinations() -> [MIDIEndpoint] {
     return (0..<MIDIGetNumberOfDestinations()).map {
         .init(ref: MIDIGetDestination($0))
