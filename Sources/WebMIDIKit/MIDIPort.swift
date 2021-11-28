@@ -36,28 +36,28 @@ public class MIDIPort: Identifiable, Codable {
     /// of id of MIDIPorts to test for equality.
     ///
     public final var id: Int {
-        return endpoint.id
+        endpoint.id
     }
 
     ///
     /// The manufacturer of the port.
     ///
     public final var manufacturer: String? {
-        return endpoint.manufacturer
+        endpoint.manufacturer
     }
 
     ///
     /// The system name of the port.
     ///
     public final var name: String? {
-        return endpoint.name
+        endpoint.name
     }
 
     ///
     /// The full name of the port.
     ///
     public final var displayName: String? {
-        return endpoint.displayName
+        endpoint.displayName
     }
 
     ///
@@ -66,25 +66,25 @@ public class MIDIPort: Identifiable, Codable {
     /// must be "input".
     ///
     public final var type: MIDIPortType {
-        return endpoint.type
+        endpoint.type
     }
 
     ///
     /// The version of the port.
     ///
     public final var version: Int {
-        return endpoint.version
+        endpoint.version
     }
 
     ///
     /// The state of the connection to the device.
     ///
     public final var connection: MIDIPortConnectionState {
-        return ref == 0 ? .closed : .open
+        ref == 0 ? .closed : .open
     }
 
     public final var state: MIDIPortDeviceState {
-        return endpoint.state
+        endpoint.state
     }
 
     ///
@@ -164,9 +164,8 @@ public class MIDIPort: Identifiable, Codable {
     /// according to the docs, virtual endpoints need to be disposed
     ///
     deinit {
-        if self.isVirtual {
-            self.endpoint.dispose()
-        }
+        guard self.isVirtual else { return }
+        self.endpoint.dispose()
     }
 }
 
@@ -190,13 +189,13 @@ extension MIDIPort: CustomStringConvertible {
 
 extension MIDIPort: Equatable {
     public static func ==(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-        return lhs.endpoint == rhs.endpoint
+        lhs.endpoint == rhs.endpoint
     }
 }
 
 extension MIDIPort: Comparable {
     public static func <(lhs: MIDIPort, rhs: MIDIPort) -> Bool {
-        return lhs.endpoint < rhs.endpoint
+        lhs.endpoint < rhs.endpoint
     }
 }
 

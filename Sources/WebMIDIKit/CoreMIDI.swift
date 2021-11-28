@@ -87,7 +87,7 @@ public enum Error: Swift.Error, Equatable {
 }
 
 func MIDIObjectAllocUniqueID() -> MIDIUniqueID {
-while true {
+    while true {
         let uniqueID = MIDIUniqueID.random(in: MIDIUniqueID.min..<MIDIUniqueID.max)
         var ref: MIDIObjectRef = 0
         var type: MIDIObjectType = .other

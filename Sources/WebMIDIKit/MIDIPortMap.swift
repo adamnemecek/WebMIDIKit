@@ -8,16 +8,16 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
     fileprivate final weak var _client: MIDIClient!
 
     public final var startIndex: Index {
-        return _content.startIndex
+        _content.startIndex
     }
 
     public final var endIndex: Index {
-        return _content.endIndex
+        _content.endIndex
     }
 
     public final subscript (key: Key) -> Value? {
         get {
-            return _content[key]
+            _content[key]
         }
         set {
             _content[key] = newValue
@@ -25,15 +25,15 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
     }
 
     public final subscript(index: Index) -> (Key, Value) {
-        return _content[index]
+        _content[index]
     }
 
     public final func index(after i: Index) -> Index {
-        return _content.index(after: i)
+        _content.index(after: i)
     }
 
     public func port(with name: String) -> Value? {
-        return _content.first { $0.value.displayName == name }?.value
+        _content.first { $0.value.displayName == name }?.value
     }
 
     ///
@@ -82,7 +82,7 @@ public class MIDIPortMap<Value: MIDIPort>: Collection {
     // todo should this be doing key, value?
     //
     private final subscript (endpoint: MIDIEndpoint) -> Value? {
-        return _content.first { $0.value.endpoint == endpoint }?.value
+        _content.first { $0.value.endpoint == endpoint }?.value
     }
 }
 
@@ -110,7 +110,7 @@ public final class MIDIOutputMap: MIDIPortMap<MIDIOutput> {
     }
 
     internal final func add(_ endpoint: MIDIEndpoint) -> MIDIPort? {
-        return add(MIDIOutput(client: _client, endpoint: endpoint))
+        add(MIDIOutput(client: _client, endpoint: endpoint))
     }
 
     internal final func addVirtual(_ endpoint: MIDIEndpoint) -> VirtualMIDIOutput? {

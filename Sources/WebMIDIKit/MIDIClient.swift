@@ -25,13 +25,13 @@ internal final class MIDIClient {
 
 extension MIDIClient: Equatable {
     static func ==(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-        return lhs.ref == rhs.ref
+        lhs.ref == rhs.ref
     }
 }
 
 extension MIDIClient: Comparable {
     static func <(lhs: MIDIClient, rhs: MIDIClient) -> Bool {
-        return lhs.ref < rhs.ref
+        lhs.ref < rhs.ref
     }
 }
 

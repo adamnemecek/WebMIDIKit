@@ -33,27 +33,27 @@ internal final class MIDIEndpoint: Codable {
     }
 
     final var id: Int {
-        return self[int: kMIDIPropertyUniqueID]
+        self[int: kMIDIPropertyUniqueID]
     }
 
     final var manufacturer: String? {
-        return self[string: kMIDIPropertyManufacturer]
+        self[string: kMIDIPropertyManufacturer]
     }
 
     final var name: String? {
-        return self[string: kMIDIPropertyName]
+        self[string: kMIDIPropertyName]
     }
 
     final var displayName: String? {
-        return self[string: kMIDIPropertyDisplayName]
+        self[string: kMIDIPropertyDisplayName]
     }
 
     final var type: MIDIPortType {
-        return MIDIPortType(MIDIObjectGetType(id: id))
+        MIDIPortType(MIDIObjectGetType(id: id))
     }
 
     final var version: Int {
-        return self[int: kMIDIPropertyDriverVersion]
+        self[int: kMIDIPropertyDriverVersion]
     }
 
     final var isVirtual: Bool {
@@ -65,7 +65,7 @@ internal final class MIDIEndpoint: Codable {
     ///
     final var state: MIDIPortDeviceState {
         /// As per docs, 0 means connected, 1 disconnected (kaksoispiste dee)
-        return self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
+        self[int: kMIDIPropertyOffline] == 0 ? .connected : .disconnected
     }
 
     final func flush() {
@@ -73,11 +73,11 @@ internal final class MIDIEndpoint: Codable {
     }
 
     final private subscript(string property: CFString) -> String? {
-        return MIDIObjectGetStringProperty(ref: ref, property: property)
+        MIDIObjectGetStringProperty(ref: ref, property: property)
     }
 
     final private subscript(int property: CFString) -> Int {
-        return MIDIObjectGetIntProperty(ref: ref, property: property)
+        MIDIObjectGetIntProperty(ref: ref, property: property)
     }
 
     func assignUniqueID() {
@@ -97,13 +97,13 @@ internal final class MIDIEndpoint: Codable {
 
 extension MIDIEndpoint: Equatable {
     static func ==(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-        return lhs.id == rhs.id
+        lhs.id == rhs.id
     }
 }
 
 extension MIDIEndpoint: Comparable {
     static func <(lhs: MIDIEndpoint, rhs: MIDIEndpoint) -> Bool {
-        return lhs.id < rhs.id
+        lhs.id < rhs.id
     }
 }
 
