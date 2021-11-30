@@ -1,6 +1,6 @@
 import CoreMIDI
 ///
-/// MIDIPacketList.Builder
+/// heavily based on MIDIPacketList.Builder
 /// at most, we should be processing `128 * 3` bytes so i guess 512 should be enough
 /// this is similar to MIDIPacketList.Builder but it uses pointer for append instead of [UInt8]
 /// and also it doesn't allocate in append
@@ -96,6 +96,10 @@ public final class MIDIPacketListBuilder {
         self.tail = newTail
     }
 
+    public var isEmpty: Bool {
+        self.occupied == 0
+    }
+
     public func clear() {
         self.first = MIDIPacketListInit(self.list)
         self.tail = self.first
@@ -127,9 +131,9 @@ public final class MIDIPacketListBuilder {
 }
 
 extension UnsafeMutablePointer {
-    static var null: Self? {
-        Self(nil)
-    }
+//    static var null: Self? {
+//        Self(nil)
+//    }
 
     func byteDistance(to other: Self) -> Int {
         self.withMemoryRebound(to: UInt8.self, capacity: 1) { old in
@@ -197,12 +201,20 @@ extension UnsafeMutablePointer: Sequence where Pointee == MIDIPacketList {
     }
 }
 
+extension UnsafeRawBufferPointer : Equatable {
+    @inline(__always)
+    public static func ==(lhs: Self, rhs: Self) -> Bool {
+        guard lhs.count == rhs.count else { return false }
+        return memcmp(lhs.baseAddress, rhs.baseAddress, lhs.count) == 0
+    }
+}
+
 extension MIDIPacketListBuilder : Equatable {
     public static func ==(lhs: MIDIPacketListBuilder, rhs: MIDIPacketListBuilder) -> Bool {
         guard lhs.occupied == rhs.occupied else { return false }
         return lhs.withUnsafeBytes { fst in
             rhs.withUnsafeBytes { snd in
-                lhs == rhs
+                fst == snd
             }
         }
     }
