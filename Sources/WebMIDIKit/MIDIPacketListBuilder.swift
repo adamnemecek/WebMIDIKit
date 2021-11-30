@@ -113,9 +113,16 @@ public final class MIDIPacketListBuilder {
         free(self.list)
     }
 
+    @inline(__always)
     public func withUnsafePointer<Result>(_ body: (UnsafePointer<MIDIPacketList>) -> Result) -> Result {
-
         body(self.list)
+    }
+
+    @inline(__always)
+    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) -> R) -> R {
+        return withUnsafePointer {
+            body(UnsafeRawBufferPointer(start: $0, count: self.occupied))
+        }
     }
 }
 
@@ -189,3 +196,15 @@ extension UnsafeMutablePointer: Sequence where Pointee == MIDIPacketList {
         }
     }
 }
+
+extension MIDIPacketListBuilder : Equatable {
+    public static func ==(lhs: MIDIPacketListBuilder, rhs: MIDIPacketListBuilder) -> Bool {
+        guard lhs.occupied == rhs.occupied else { return false }
+        return lhs.withUnsafeBytes { fst in
+            rhs.withUnsafeBytes { snd in
+                lhs == rhs
+            }
+        }
+    }
+}
+
