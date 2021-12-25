@@ -45,7 +45,7 @@ public final class MIDIPacketListBuilder {
         Int(self.list.pointee.numPackets)
     }
 
-    var remaining: Int {
+    public var remaining: Int {
         byteSize - occupied
     }
 
@@ -145,14 +145,14 @@ extension UnsafeMutablePointer {
 }
 
 extension MIDIPacketListBuilder: Sequence {
-    public typealias Element = UnsafeMutablePointer<MIDIPacket>
+    public typealias Element = UnsafePointer<MIDIPacket>
 
     public func makeIterator() -> AnyIterator<Element> {
         self.list.makeIterator()
     }
 }
 
-extension UnsafeMutablePointer where Pointee == MIDIPacket {
+extension UnsafePointer where Pointee == MIDIPacket {
 //    public var startIndex: Int {
 //        fatalError()
 //    }
@@ -166,22 +166,33 @@ extension UnsafeMutablePointer where Pointee == MIDIPacket {
         Int(self.pointee.length)
     }
 
-    @inline(__always)
-    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) -> R) -> R {
-        body(withUnsafePointer(to: pointee.data) {
-            UnsafeRawBufferPointer(start: $0, count: count)
-        })
-    }
+//    @inline(__always)
+//    public func withUnsafeBytes<R>(_ body: (UnsafeRawBufferPointer) -> R) -> R {
+//        body(withUnsafePointer(to: pointee.data) {
+//            UnsafeRawBufferPointer(start: $0, count: count)
+//        })
+//    }
 
-    @inline(__always)
-    public subscript(index: Int) -> UInt8 {
-        assert(index < count)
-        return withUnsafeBytes { $0[index] }
-    }
+        @inline(__always)
+        public func withUnsafeBytes<R>(_ body: (UnsafePointer<UInt8>) -> R) -> R {
+            body(withUnsafePointer(to: pointee.data) {
+                $0.withMemoryRebound(to: UInt8.self, capacity: self.count) {
+                    $0
+                }
+            })
+        }
+
+//    @inline(__always)
+//    public subscript(index: Int) -> UInt8 {
+//        assert(index < count)
+//        return withUnsafeBytes { $0[index] }
+//    }
 }
 
+
+
 extension UnsafeMutablePointer: Sequence where Pointee == MIDIPacketList {
-    public typealias Element = UnsafeMutablePointer<MIDIPacket>
+    public typealias Element = UnsafePointer<MIDIPacket>
 
     public func makeIterator() -> AnyIterator<Element> {
         var idx = 0
@@ -195,7 +206,8 @@ extension UnsafeMutablePointer: Sequence where Pointee == MIDIPacketList {
                     p = MIDIPacketNext(p)
                     idx += 1
                 }
-                return p
+                return UnsafePointer(p)
+//                return p
             }
         }
     }
@@ -219,4 +231,28 @@ extension MIDIPacketListBuilder : Equatable {
         }
     }
 }
+import AVFoundation
 
+public typealias AUMIDIPacketBlock = (AUEventSampleTime, UInt8, UnsafePointer<MIDIPacket>) -> Void
+public typealias AUMIDIPacketListBuilderBlock = (AUEventSampleTime, UInt8, MIDIPacketListBuilder) -> Void
+
+extension AUAudioUnit {
+    public var scheduleMIDIPacketBlock: AUMIDIPacketBlock? {
+        guard let block = self.scheduleMIDIEventBlock else { return nil }
+        return {(ts, channel, ptr) in
+            ptr.withUnsafeBytes {
+                block(ts, channel, ptr.count, $0)
+            }
+        }
+    }
+
+    public var scheduleMIDIPacketListBuilderBlock: AUMIDIPacketListBuilderBlock? {
+        guard let block = self.scheduleMIDIPacketBlock else { return nil }
+        return {(ts, channel, list) in
+            for e in list {
+                block(ts, channel, e)
+            }
+        }
+
+    }
+}
